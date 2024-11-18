@@ -1,0 +1,38 @@
+Comment[ArrayExpressAccession]	E-MTAB-12807
+MAGE-TAB Version	1.1
+Comment[Submitted Name]	RNA-seq of human liver biopsies from patients with NAFLD, patient with cirrhosis, and healthy controls under both fasting and postprandial conditions.						
+Investigation Title	RNA-seq of human liver biopsies from patients with NAFLD, patient with cirrhosis, and healthy controls under both fasting and postprandial conditions.
+Experiment Description	The data provides a unique opportunity for investigating the differences in the hepatic transcriptome in health and liver disease through studying gene expression in a cohort of patients with NAFLD, cirrhosis, and healthy controls. The randomization of patients and healthy controls between the fasting and fed state further enables exploration of differences in the liver transcriptome.
+Experimental Design	compound treatment design	disease state design
+Experimental Design Term Source REF	EFO	EFO
+Experimental Design Term Accession Number	EFO:0001755	EFO:0001756
+Experimental Factor Name	clinical information	disease
+Experimental Factor Type	clinical information	disease
+Experimental Factor Term Source REF		EFO
+Experimental Factor Term Accession Number		EFO_0000408
+Person Last Name	Johansen	Wewer Albrechtsen
+Person First Name	Christian	Nicolai
+Person Mid Initials	D.	J.
+Person Email	christian_dall@live.dk	Nicolai.Albrechtsen@regionh.dk
+Person Phone
+Person Fax
+Person Address		Blegdamsvej 3B, 2200 Copenhagen, Denmark
+Person Affiliation	Department of Biomedical Sciences, Faculty of Health and Medical Sciences, University of Copenhagen	Novo Nordisk Foundation Center for Protein Research, Faculty of Health and Medical Sciences, University of Copenhagen
+Person Roles	data analyst;data coder;submitter	investigator
+Date of Experiment	2021-01-28
+Public Release Date	2024-02-01
+Protocol Name	P-MTAB-131505	P-MTAB-131506	P-MTAB-131507	P-MTAB-131508	P-MTAB-131509	P-MTAB-131510	P-MTAB-131511
+Protocol Type	sample collection protocol	nucleic acid extraction protocol	nucleic acid library construction protocol	nucleic acid sequencing protocol	treatment protocol	normalization data transformation protocol	conversion protocol
+Protocol Term Source REF	EFO	EFO	EFO	EFO	EFO	EFO	EFO
+Protocol Term Accession Number	EFO_0005518	EFO_0002944	EFO_0004184	EFO_0004170	EFO_0003969	EFO_0003816	EFO_0005520
+Protocol Description	A balloon catheter was placed in the vena jugularis interna under local anesthesia and the correct position was controlled using sonography and x-ray. The catheter was moved forward and placed in the liver vein. A liver biopsy (19-G Tru-cut) was taken with a needle punctures. The whole procedure was done under sterile conditions by experienced specialists. In all subjects, histological assessment was performed on a second liver tissue sample. The liver biopsy sample was stored at -80 ◦C and transported with the use of dry ice to ensure optimal stability of the tissue samples.	Total DNA/RNA was purified by an AllPrep DNA/RNA Minikit (cat 80204 - QIAgen) according to manufacturer’s instructions and qualified using a 2100 Bioanalyzer instrument (Agilent Genomics). The extracted DNA/RNA were DNase treated with RNeasy Minikit (cat 74106 - QIAgen) and Rnase Free DNase set (cat 79254 - QIAgen) according to manufacturer’s protocol. All the above-mentioned processes was performed on a QiaCube machine.	Library preparation was done using TruSeq Stranded Total RNA Library Prep Gold (cat 20020599 - Illumina) and IDT for Illumina-TruSeq RNA UD Indexes (cat 20022371 - Illumina) according to the manufacturer’s instructions. Some samples were prepared with NEBNext Ultra II Directional RNA Library Prep Kit for Illumina (cat NEB-E7760S - New England Biolabs), NEBNext rRNA Depletion Kit 24 with beads (cat NEB-E7765 - New England Biolabs), and NEBNext Multiplex Oligos for Illumina (cat E7600S - New England Biolabs).	RNA-Seq libraries were paired-end sequenced (2 x 150 bp) on an Illumina Novaseq 6000 instrument using a S1 flowcell.	Healthy controls consumed a standardized liquid meal between 6PM and 10PM the night before the study day, consisting of two Nutridrink Standard (Nutricia, 200 ml) containing 300 kcal (16% protein, 49% carbohydrates and 35% fat) each. All participants met fasting at 8AM (fasting since 10PM). Participants randomised to receiving a standardized meal (postprandial) drank a standardized fluid meal, Nutridrink (Nutridrink Standard, 200 mL, 300 kcal, Nutricia) over 5 minutes 60 minutes prior to the liver biopsy. Participants randomised to fasting stayed fasting.	Reads were mapped to a decoy-aware transcriptome (GRCh38.p13) using Salmon version 1.4.0 and selective alignment. This created quant.sf files ready for import to R (e.g. using tximeta or tximport). In Salmon the gcBias and seqBias flags were used.	Raw sequencing data were processed using bcl2fastq software version 2.20.0 (Illumina).
+Protocol Hardware				Illumina NovaSeq 6000
+Protocol Software
+Term Source Name	EFO
+Term Source File	http://www.ebi.ac.uk/efo/
+Term Source Version
+Comment[AEExperimentType]	RNA-seq of coding RNA
+Comment[TemplateType]	Human - High-throughput sequencing
+Comment[SecondaryAccession]	ERP146053
+Comment[SequenceDataURI]	http://www.ebi.ac.uk/ena/data/view/ERR11171795-ERR11171825
+SDRF File	E-MTAB-12807.sdrf.txt
