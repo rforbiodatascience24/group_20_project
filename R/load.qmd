@@ -1,5 +1,5 @@
 ---
-title: "Group_20 project"
+title: "Loading data"
 author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 format:
   html:
