@@ -21,11 +21,15 @@ library("table1")
 ## Importing the data
 
 ```{r}
-metadata <- read_csv("../data/metadata.csv")
+#| message: False
+
+metadata <- read_csv("../data/02_metadata_clean.csv")
 metadata |> sample_n(10)
 ```
 
 ```{r}
+#| message: false
+
 metadata |> 
   mutate(sex = factor(sex),
          disease = factor(disease)) |> 
@@ -40,9 +44,11 @@ metadata <- metadata |>
   filter(disease != "excluded")
 ```
 
-## Analysing age, gender and disease distributions
+## Analysing age, gender, and disease distributions
 
 ```{r}
+#| warning: false
+
 metadata |> 
   mutate(age_group = cut(
     x = age,
@@ -55,6 +61,8 @@ metadata |>
 ```
 
 ```{r}
+#| warning: false
+
 metadata |> 
   ggplot(mapping = aes(x = disease, fill = sex)) +
   geom_histogram(stat = "count",
