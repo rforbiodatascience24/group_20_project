@@ -7,7 +7,6 @@ format:
 editor: visual
 ---
 
-
 ```{r}
 #| echo: false
 #| message: false
@@ -81,7 +80,6 @@ if( !file.exists(file.path("../data/02_metadata_clean.csv")) ){
 }
 ```
 
-
 Inspect a sample of the cleaned data
 
 ```{r}
@@ -113,7 +111,7 @@ file_paths <- list.files("../data/_raw/count_data/", pattern = ".csv$", full.nam
 # Load and combine files into a single tibble
 # ! Creates a big file !
 person_data <- file_paths |>
-  map(~ read.csv(.x, header = TRUE, sep = "\t") |> 
+  map(~ read.csv(.x, header = TRUE, sep = ",") |> 
         mutate(source_name = str_remove(basename(.x), "_quant\\.csv$"))) |>
   bind_rows()
 
