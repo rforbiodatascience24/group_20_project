@@ -7,47 +7,46 @@ format:
 editor: visual
 ---
 
+
 ```{r}
 #| echo: false
 #| message: false
 
+rm(list=ls())
 library(tidyverse)
 ```
 
 ## Cleaning the meta data
 
-Lets have a quick view of the data before cleaning
-
-```{r}
-
-# Read data
-data <- read.csv('../data/_raw/metadata/E-MTAB-12807.sdrf.csv')
-
-data |>
-  sample_n(size = 5)
-```
-
 Removing columns that do not show differences between patients
 
 ```{r}
+#| label: clean-metadata-load
+# Read metadata
+metadata <- read.csv('../data/_raw/metadata/E-MTAB-12807.sdrf.csv')
+
+
 # Check for differences in columns - we only want the columns that shows differences between patients
-filtered_data <- data |> 
+filtered_metadata <- metadata |> 
   select(where(~ n_distinct(.) > 1))
+
 ```
 
 Removing duplicates in rows based on source name
 
 ```{r}
+#| label: clean-metadata-duplicates
 
-filtered_data <- filtered_data |> 
+filtered_metadata <- filtered_metadata |> 
   distinct(Source.Name, .keep_all = TRUE) 
 ```
 
 Remove the `assay name` & `extract name` columns as they are the same as `source name`. Furthermore, we remove columns we do not intend to use.
 
 ```{r}
+#| label: clean-metadata-removing-columns
 
-filtered_data <- filtered_data |> 
+filtered_metadata <- filtered_metadata |> 
   select(-Extract.Name, 
          -Assay.Name,
          -Scan.Name,
@@ -58,8 +57,9 @@ filtered_data <- filtered_data |>
 Renaming the columns to be more meaningful
 
 ```{r}
+#| label: clean-metadata-renaming-columns
 
-filtered_data <- filtered_data |> 
+filtered_metadata <- filtered_metadata |> 
   rename(
     source_name = Source.Name,
     individual = Characteristics.individual.,
@@ -71,10 +71,21 @@ filtered_data <- filtered_data |>
   )
 ```
 
+Saving the metadata file
+
+```{r}
+#| label: clean-metadata-saving
+#| 
+if( !file.exists(file.path("../data/02_metadata_clean.csv")) ){
+  write_csv(filtered_metadata, file = file.path("../data/02_metadata_clean.csv"))
+}
+```
+
+
 Inspect a sample of the cleaned data
 
 ```{r}
-filtered_data |>
+filtered_metadata |>
   sample_n(size = 5)
 ```
 
