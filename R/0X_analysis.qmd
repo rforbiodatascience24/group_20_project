@@ -1,6 +1,9 @@
 ---
 title: "0X_analysis"
-format: html
+author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
+format:
+  html:
+    embed-resources: true
 editor: visual
 ---
 
