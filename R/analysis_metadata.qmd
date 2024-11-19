@@ -1,0 +1,84 @@
+---
+title: "Analysing metadata"
+author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
+format:
+  html:
+    embed-resources: true
+editor: visual
+---
+
+The objective of this file is to analyse the patients we have.
+
+## Importing libraries
+
+```{r}
+#| message: False
+
+library("tidyverse")
+library("table1")
+```
+
+## Importing the data
+
+```{r}
+metadata <- read_csv("../data/metadata.csv")
+metadata |> sample_n(10)
+```
+
+```{r}
+metadata |> 
+  mutate(sex = factor(sex),
+         disease = factor(disease)) |> 
+  table1(x = formula(~ sex + age | disease),
+         data = _)
+```
+
+We will now remove excluded people from our analysis.
+
+```{r}
+metadata <- metadata |> 
+  filter(disease != "excluded")
+```
+
+## Analysing age, gender and disease distributions
+
+```{r}
+metadata |> 
+  mutate(age_group = cut(
+    x = age,
+    breaks = seq(from = 0,
+                 to = 100,
+                 by = 10))) |> 
+  ggplot(mapping = aes(x = age_group, fill = sex)) +
+    geom_histogram(stat = "count", 
+                   position = position_dodge(preserve = "single"))
+```
+
+```{r}
+metadata |> 
+  ggplot(mapping = aes(x = disease, fill = sex)) +
+  geom_histogram(stat = "count",
+                 position = position_dodge(preserve = "single")) 
+```
+
+```{r}
+metadata |> 
+  ggplot(mapping = aes(x = disease, y = age, fill = sex)) +
+    geom_boxplot()
+```
+
+Lets make a statistical analysis to see if there is any significant difference in the average age of people with cirrhosis disease as it looks like in the above plot.
+
+```{r}
+male_cirrhosis <- metadata |> 
+  filter(sex == "male", disease == "cirrhosis of liver") |> 
+  pull(age)
+
+female_cirrhosis <- metadata |> 
+  filter(sex == "female", disease == "cirrhosis of liver") |> 
+  pull(age)
+
+t.test(male_cirrhosis, female_cirrhosis)
+```
+
+The p-value is above 0.05 so we can say that there is no significant difference between the two groups.

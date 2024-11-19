@@ -8,7 +8,7 @@ rm(list=ls())
 library("tidyverse")
 
 # Read data
-data <- read.csv('../data/_raw/metadata/E-MTAB-12807.sdrf.csv')
+data <- read.csv('./data/_raw/metadata/E-MTAB-12807.sdrf.csv')
 
 
 # Check for differences in columns - we only want the columns that shows differences between patients
@@ -48,6 +48,8 @@ filtered_data <- filtered_data |>
 filtered_data <- filtered_data |> 
   mutate(data_file = sub("\\.sf$", ".csv", data_file))
   
+# Save the dataset to csv
+write_csv(filtered_data, "./data/metadata.csv")
 
 
 
