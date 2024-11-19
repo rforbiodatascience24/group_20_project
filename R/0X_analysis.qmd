@@ -1,0 +1,125 @@
+---
+title: "0X_analysis"
+format: html
+editor: visual
+---
+
+# Analysis
+
+```{r}
+#| label: setup
+#| include: false
+
+rm(list=ls())
+
+library("tidyverse")
+library("pheatmap")
+
+## DEA libraries
+library("DESeq2")
+
+## Functions
+# source(file.path("99_proj_func.R")
+```
+
+## Load data
+
+### Load phenotype
+
+```{r}
+#| label: load-pheno
+#| include: false
+#| echo: true
+
+data_pheno <- read_csv("../data/02_metadata_clean.csv")
+table(data_pheno$disease)
+
+files <- data_pheno |> mutate(file = str_c("data/_raw/count_data/",source_name, "_quant.sf"))
+```
+
+### Load counts matrix
+
+```{r}
+#| label: load-counts
+#| include: false
+#| echo: true
+
+data_counts <- read_csv("../data/02_counts_clean.csv")
+## gene in columns
+## observations in line
+## value = TPM (transcripts par kilobase million)
+```
+
+## 
+
+## Differential Expression Analysis
+
+### Using DESeq2
+
+```{r}
+#| label: dea-deseq2
+#| include: false
+#| echo: true
+
+dds <- DESeqDataSetFromMatrix(countData = data_counts,
+                              colData = data_pheno,
+                              design = ~ disease + clinical information)
+dds
+```
+
+### PCA
+
+```{r}
+#| label: pca-individual
+## Transpose the counts matrix to have the PCA for individuals and not gene expression
+pca <- prcomp(t(data_counts))
+
+## Proportion of variance
+PoV <- pca$sdev^2/sum(pca$sdev^2)
+PoV <- PoV * 100
+PoV <- str_sub(PoV,1,4)
+PC1_t = str_c("PC1 (", PoV[1] , "%)")
+PC2_t = str_c("PC2 (", PoV[2] ,"%)")
+
+## Add patients metadata
+cbind(data_pheno, pca$x) %>% 
+ggplot(aes(x=PC1, y=PC2, shape=clinical_information, col=disease, label=source_name)) + 
+  geom_point() + 
+  geom_text_repel() +
+  labs(x = PC1_t , y = PC2_t, color = "Disease", shape = "Clinical information") 
+```
+
+### Heatmap (all genes)
+
+In order to check if the data create individual clusters (experimental bias) and detect potential outliers.
+
+```{r}
+#| label: heatmap-individual
+
+cor.matrix <- cor(data_counts)
+annotations <- pheno.info |> select(`Source Name`, `Factor Value[disease]`, `Factor Value[clinical information]`)
+
+heatmap.individual <- pheatmap(cor.matrix, 
+         annotation_col = annotations,
+         main = "Heatmap - All samples")
+
+save_pheatmap_pdf(heatmap.individual, "heatmap-all-samples.pdf")
+
+```
+
+### Volcano plots
+
+```{r}
+#| label: heatmap-individual
+
+
+
+```
+
+## Gene set enrichment analysis (GSEA)
+
+### Using fGSEA
+
+```{r}
+#| label: gsea
+```
