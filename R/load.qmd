@@ -1,5 +1,5 @@
 ---
-title: "Lab 6 Assignement: Group 20"
+title: "Group_20 project"
 author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 format:
   html:
