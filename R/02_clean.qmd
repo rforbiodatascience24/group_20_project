@@ -1,0 +1,128 @@
+---
+title: "Data cleaning"
+author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
+format:
+  html:
+    embed-resources: true
+editor: visual
+---
+
+
+```{r}
+#| echo: false
+#| message: false
+
+rm(list=ls())
+library(tidyverse)
+```
+
+## Cleaning the meta data
+
+Removing columns that do not show differences between patients
+
+```{r}
+#| label: clean-metadata-load
+# Read metadata
+metadata <- read.csv('../data/_raw/metadata/E-MTAB-12807.sdrf.csv')
+
+
+# Check for differences in columns - we only want the columns that shows differences between patients
+filtered_metadata <- metadata |> 
+  select(where(~ n_distinct(.) > 1))
+
+```
+
+Removing duplicates in rows based on source name
+
+```{r}
+#| label: clean-metadata-duplicates
+
+filtered_metadata <- filtered_metadata |> 
+  distinct(Source.Name, .keep_all = TRUE) 
+```
+
+Remove the `assay name` & `extract name` columns as they are the same as `source name`. Furthermore, we remove columns we do not intend to use.
+
+```{r}
+#| label: clean-metadata-removing-columns
+
+filtered_metadata <- filtered_metadata |> 
+  select(-Extract.Name, 
+         -Assay.Name,
+         -Scan.Name,
+         -Factor.Value.disease.,
+         -starts_with("Comment."))
+```
+
+Renaming the columns to be more meaningful
+
+```{r}
+#| label: clean-metadata-renaming-columns
+
+filtered_metadata <- filtered_metadata |> 
+  rename(
+    source_name = Source.Name,
+    individual = Characteristics.individual.,
+    age = Characteristics.age.,
+    sex = Characteristics.sex.,
+    disease = Characteristics.disease.,
+    data_file = Derived.Array.Data.File,
+    clinical_information = Factor.Value.clinical.information.
+  )
+```
+
+Saving the metadata file
+
+```{r}
+#| label: clean-metadata-saving
+#| 
+if( !file.exists(file.path("../data/02_metadata_clean.csv")) ){
+  write_csv(filtered_metadata, file = file.path("../data/02_metadata_clean.csv"))
+}
+```
+
+
+Inspect a sample of the cleaned data
+
+```{r}
+filtered_metadata |>
+  sample_n(size = 5)
+```
+
+## Combining the count_data into a data frame
+
+The data has the following columns:
+
+-   **Name**: Likely the transcript IDs (e.g., ENST... are Ensembl transcript identifiers).
+
+-   **Length**: The full length of the transcript in base pairs (bp).
+
+-   **EffectiveLength**: The adjusted length accounting for sequencing biases.
+
+-   **TPM (Transcripts Per Million)**: A normalized measure of transcript abundance, commonly used in RNA-Seq data.
+
+-   **NumReads**: The raw number of reads mapped to each transcript.
+
+-   **source_name**: The patient ID
+
+```{r}
+
+# List all files in the directory
+file_paths <- list.files("../data/_raw/count_data/", pattern = ".csv$", full.names = TRUE)
+
+# Load and combine files into a single tibble
+# ! Creates a big file !
+person_data <- file_paths |>
+  map(~ read.csv(.x, header = TRUE, sep = "\t") |> 
+        mutate(source_name = str_remove(basename(.x), "_quant\\.csv$"))) |>
+  bind_rows()
+
+```
+
+Inspect a sample of the combined data
+
+```{r}
+
+person_data |>
+  sample_n(size = 10)
+```
