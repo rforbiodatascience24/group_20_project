@@ -10,7 +10,7 @@ library("tidyverse")
 
 
 # Read data
-data <- read.delim('data/_raw/meta_data/E-MTAB-12807.sdrf.txt', sep = "\t")
+data <- read.delim('../data/_raw/meta_data/E-MTAB-12807.sdrf.txt', sep = "\t")
 
 
 # Check for differences in columns - we only want the columns that shows differences between patients
