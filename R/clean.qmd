@@ -24,7 +24,7 @@ file_paths <- list.files("data/_raw/count_data/", pattern = "\\.csv$", full.name
 # ! Creates a big file !
 person_data <- file_paths |>
   map(~ read.csv(.x, header = TRUE, sep = "\t") |> 
-        mutate(Source.Name = str_remove(basename(.x), "_quant\\.csv$"))) |>
+        mutate(source_name = str_remove(basename(.x), "_quant\\.csv$"))) |>
   bind_rows()
 
 # Inspect a sample of the combined data
