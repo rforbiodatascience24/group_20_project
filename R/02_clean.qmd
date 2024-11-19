@@ -129,6 +129,6 @@ Saving the cleaned count_data file
 
 ```{r}
 if( !file.exists(file.path("../data/02_count_data_clean.csv")) ){
-  write_csv(filtered_metadata, file = file.path("../data/02_count_data_clean.csv"))
+  write_csv(person_data, file = file.path("../data/02_count_data_clean.csv"))
 }
 ```
