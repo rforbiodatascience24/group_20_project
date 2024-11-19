@@ -9,15 +9,15 @@ editor: visual
 
 # Data
 
-The data we are using in this exercise comes from a paper from Gravier et al. (2020) and is available here: <https://ftp.ebi.ac.uk/biostudies/fire/E-MTAB-/807/E-MTAB-12807/Files/>.
+The data we are using in this exercise comes from here: <https://ftp.ebi.ac.uk/biostudies/fire/E-MTAB-/807/E-MTAB-12807/Files/>.
 
 ## Load Libraries
 
 ```{r}
 #| message: False
+#| warning: False
 
 library("tidyverse")
-library("sf")
 library("httr")
 library("XML")
 library("stringr")
@@ -76,6 +76,7 @@ metadata_files <- file_links |>
 # Importing each file and downloading it in the right folder
 base <- "../data/_raw"
 
+# Downloading count data files
 for (count_file in count_files) {
   new_file_name <- str_replace(count_file, ".sf", ".csv")
   new_file_path <- paste(base, "/count_data/", new_file_name,
@@ -89,6 +90,7 @@ for (count_file in count_files) {
   write_csv(file, file = new_file_path)
 }
 
+# Downloading metadata files
 for (metadata_file in metadata_files) {
   new_file_name <- str_replace(metadata_file, ".txt", ".csv")
   new_file_path <- paste(base, "/metadata/", new_file_name,
