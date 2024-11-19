@@ -52,6 +52,7 @@ if( !dir.exists(metadata_dir) ){
 
 ```{r}
 #| message: False
+#| echo: False
 
 base_url <- "https://ftp.ebi.ac.uk/biostudies/fire/E-MTAB-/807/E-MTAB-12807/Files/"
 

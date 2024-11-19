@@ -1,0 +1,43 @@
+---
+title: "Data cleaning"
+author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
+format:
+  html:
+    embed-resources: true
+editor: visual
+---
+
+```{r}
+#| echo: false
+
+library(tidyverse)
+```
+
+## Combining the count_data into a data frame
+
+```{r}
+
+# List all files in the directory
+file_paths <- list.files("data/_raw/count_data/", pattern = "\\.csv$", full.names = TRUE)
+
+# Load and combine files into a single tibble
+# ! Creates a big file !
+person_data <- file_paths |>
+  map(~ read.csv(.x, header = TRUE, sep = "\t") |> 
+        mutate(source_name = str_remove(basename(.x), "_quant\\.csv$"))) |>
+  bind_rows()
+
+# Inspect a sample of the combined data
+person_data |>
+  sample_n(size = 10)
+```
+
+**Name**: Likely the transcript IDs (e.g., ENST... are Ensembl transcript identifiers).
+
+**Length**: The full length of the transcript in base pairs (bp).
+
+**EffectiveLength**: The adjusted length accounting for sequencing biases.
+
+**TPM (Transcripts Per Million)**: A normalized measure of transcript abundance, commonly used in RNA-Seq data.
+
+**NumReads**: The raw number of reads mapped to each transcript.
