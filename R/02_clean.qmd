@@ -61,13 +61,13 @@ Renaming the columns to be more meaningful
 
 filtered_metadata <- filtered_metadata |> 
   rename(
-    source_name = Source.Name,
-    individual = Characteristics.individual.,
-    age = Characteristics.age.,
-    sex = Characteristics.sex.,
-    disease = Characteristics.disease.,
-    data_file = Derived.Array.Data.File,
-    clinical_information = Factor.Value.clinical.information.
+    source_name = "Source.Name",
+    individual = "Characteristics.individual.",
+    age = "Characteristics.age.",
+    sex = "Characteristics.sex.",
+    disease = "Characteristics.disease.",
+    data_file = "Derived.Array.Data.File",
+    clinical_information = "Factor.Value.clinical.information."
   )
 ```
 
@@ -115,7 +115,6 @@ person_data <- file_paths |>
   map(~ read.csv(.x, header = TRUE, sep = ",") |> 
         mutate(source_name = str_remove(basename(.x), "_quant\\.csv$"))) |>
   bind_rows()
-
 ```
 
 Inspect a sample of the combined data
