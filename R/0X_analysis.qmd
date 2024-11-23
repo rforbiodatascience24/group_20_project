@@ -49,7 +49,6 @@ data_pheno <- data.frame(data_pheno) |>
 ```{r}
 #| label: load-counts
 #| include: false
-#| echo: true
 
 data_counts <- read.csv("../data/02_normalized_count_data_wide.csv")
 # We want genes as row names, so we convert the tibble to a dataframe and names the rows
@@ -87,38 +86,19 @@ data_counts <- data_counts |>
 
 dds <- DESeqDataSetFromMatrix(countData = data_counts,
                               colData = data_pheno,
-<<<<<<< HEAD
-                              design = ~ disease + clinical_information)
-dds <- DESeq(dds)
-res <- results(dds)
-res
-=======
-                              design = ~ disease)
+                              design = ~clinical_information)
 
-# dds <- DESeqDataSetFromMatrix(countData = data_counts,
-#                               colData = data_pheno,
-#                               design = ~ disease + clinical_information)
-
-
-dds
 featureData <- data.frame(gene=rownames(data_counts))
 mcols(dds) <- DataFrame(mcols(dds), featureData)
 mcols(dds)
 
-## Pre=filtering
-smallestGroupSize <- 3
-keep <- rowSums(counts(dds) >= 10) >= smallestGroupSize
-dds <- dds[keep,]
-
 ## Adding the reference level (normal)
-dds$disease <- relevel(dds$disease, ref = "normal")
+#dds$disease <- relevel(dds$disease, ref = "postprandial")
 
 ## DEA
 dds <- DESeq(dds)
 res <- results(dds)
 res
-
->>>>>>> 96ee9595d2055c48161b234f43ab4eb46c687134
 ```
 
 ### PCA
@@ -169,7 +149,7 @@ heatmap.individual <- pheatmap(cor.matrix,
 #| label: heatmap-individual
 
 ## Adding cutoff
-fc_cutoff <- 2
+fc_cutoff <- 1
 p_cutoff <- 0.05
 volcano_data <- tibble(gene = rownames(res),
                        log2FoldChange = res$log2FoldChange,
