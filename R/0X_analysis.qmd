@@ -17,9 +17,13 @@ rm(list=ls())
 
 library("tidyverse")
 library("pheatmap")
+library("ggplot2")
+library("ggrepel")
 
 ## DEA libraries
 library("DESeq2")
+
+source(file.path("99_proj_func.R"))
 ```
 
 ## Load data
@@ -98,8 +102,8 @@ PC1_t = str_c("PC1 (", PoV[1] , "%)")
 PC2_t = str_c("PC2 (", PoV[2] ,"%)")
 
 ## Add patients metadata
-cbind(data_pheno, pca$x) %>% 
-ggplot(aes(x=PC1, y=PC2, shape=clinical_information, col=disease, label=source_name)) + 
+bind_cols(data_pheno, pca$x) %>% 
+ggplot(aes(x=PC1, y=PC2, shape=clinical_information, col=disease, label=individual)) + 
   geom_point() + 
   geom_text_repel() +
   labs(x = PC1_t , y = PC2_t, color = "Disease", shape = "Clinical information") 
@@ -113,13 +117,13 @@ In order to check if the data create individual clusters (experimental bias) and
 #| label: heatmap-individual
 
 cor.matrix <- cor(data_counts)
-annotations <- pheno.info |> select(`Source Name`, `Factor Value[disease]`, `Factor Value[clinical information]`)
+annotations <- data_pheno |> select(disease, clinical_information)
 
 heatmap.individual <- pheatmap(cor.matrix, 
          annotation_col = annotations,
          main = "Heatmap - All samples")
 
-save_pheatmap_pdf(heatmap.individual, "heatmap-all-samples.pdf")
+save_pheatmap_pdf(heatmap.individual, file.path("../results/0X_heatmap-all-samples.pdf"))
 
 ```
 
