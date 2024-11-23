@@ -158,7 +158,7 @@ heatmap.individual <- pheatmap(cor.matrix,
 #| label: heatmap-individual
 
 ## Adding cutoff
-fc_cutoff <- log2(1.5)
+fc_cutoff <- 2
 p_cutoff <- 0.05
 volcano_data <- tibble(gene = rownames(res),
                        log2FoldChange = res$log2FoldChange,
