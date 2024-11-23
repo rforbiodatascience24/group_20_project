@@ -13,7 +13,7 @@ editor: visual
 #| label: setup
 #| include: false
 
-rm(list=ls())
+# rm(list=ls())
 
 library("tidyverse")
 library("pheatmap")
@@ -87,10 +87,38 @@ data_counts <- data_counts |>
 
 dds <- DESeqDataSetFromMatrix(countData = data_counts,
                               colData = data_pheno,
+<<<<<<< HEAD
                               design = ~ disease + clinical_information)
 dds <- DESeq(dds)
 res <- results(dds)
 res
+=======
+                              design = ~ disease)
+
+# dds <- DESeqDataSetFromMatrix(countData = data_counts,
+#                               colData = data_pheno,
+#                               design = ~ disease + clinical_information)
+
+
+dds
+featureData <- data.frame(gene=rownames(data_counts))
+mcols(dds) <- DataFrame(mcols(dds), featureData)
+mcols(dds)
+
+## Pre=filtering
+smallestGroupSize <- 3
+keep <- rowSums(counts(dds) >= 10) >= smallestGroupSize
+dds <- dds[keep,]
+
+## Adding the reference level (normal)
+dds$disease <- relevel(dds$disease, ref = "normal")
+
+## DEA
+dds <- DESeq(dds)
+res <- results(dds)
+res
+
+>>>>>>> 96ee9595d2055c48161b234f43ab4eb46c687134
 ```
 
 ### PCA
@@ -108,7 +136,7 @@ PC1_t = str_c("PC1 (", PoV[1] , "%)")
 PC2_t = str_c("PC2 (", PoV[2] ,"%)")
 
 ## Add patients metadata
-bind_cols(data_pheno, pca$x) %>% 
+bind_cols(data_pheno, pca$x) |>  
 ggplot(aes(x=PC1, y=PC2, shape=clinical_information, col=disease, label=individual)) + 
   geom_point() + 
   geom_text_repel() +
@@ -129,7 +157,9 @@ heatmap.individual <- pheatmap(cor.matrix,
          annotation_col = annotations,
          main = "Heatmap - All samples")
 
-save_pheatmap_pdf(heatmap.individual, file.path("../results/0X_heatmap-all-samples.pdf"))
+# save_pheatmap_pdf(heatmap.individual, file.path("../results/0X_heatmap-all-samples.pdf"))
+
+## We can see 3 outliers in the heatmap and ACP
 
 ```
 
@@ -138,8 +168,33 @@ save_pheatmap_pdf(heatmap.individual, file.path("../results/0X_heatmap-all-sampl
 ```{r}
 #| label: heatmap-individual
 
+## Adding cutoff
+fc_cutoff <- 2
+p_cutoff <- 0.05
+volcano_data <- tibble(gene = rownames(res),
+                       log2FoldChange = res$log2FoldChange,
+                       pvalue = res$pvalue,
+                       padj = res$padj)
+
+volcano_data <- volcano_data |> 
+  dplyr::mutate(gene_type = case_when(log2FoldChange >= fc_cutoff & padj <= 0.05 ~ "Up regulated",
+                               log2FoldChange <= -fc_cutoff & padj <= 0.05 ~ "Down regulated",
+                               TRUE ~ "Non significant")) 
+cols <- c("Up regulated" = "gold", "Down regulated" = "blue", "Non significant" = "darkgrey")
 
 
+
+volcano_data |> 
+  ggplot(aes(x = log2FoldChange, y = -log10(padj), col=gene_type)) + geom_point() +
+  geom_hline(yintercept = -log10(p_cutoff), linetype = "dashed") + 
+  geom_vline(xintercept = c(-fc_cutoff, fc_cutoff),
+             linetype = "dashed") +
+  scale_color_manual(values=cols)+
+  labs(
+    title= "Volcano plot - log10(Adj-P-Value)",
+    colour = "Differencial expression")
+
+ggsave(file.path("../results/0X-volcano-plot-adj-p-val.pdf"))
 ```
 
 ## Gene set enrichment analysis (GSEA)
