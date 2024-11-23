@@ -74,17 +74,23 @@ common_samples <- intersect(colnames(data_counts), rownames(data_pheno))
 
 data_pheno <- data_pheno[common_samples,]
 data_counts <- data_counts[,common_samples]
+
+# We want only raws that are different from 0
+
+data_counts <- data_counts |> 
+  filter(if_all(everything(), ~ . != 0))
 ```
 
 ```{r}
 #| label: dea-deseq2
 #| include: false
-#| echo: true
 
 dds <- DESeqDataSetFromMatrix(countData = data_counts,
                               colData = data_pheno,
                               design = ~ disease + clinical_information)
-dds
+dds <- DESeq(dds)
+res <- results(dds)
+res
 ```
 
 ### PCA
