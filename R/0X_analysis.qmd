@@ -84,12 +84,6 @@ data_counts <- data_counts |>
 #| label: dea-deseq2
 #| include: false
 
-data_pheno_postprandial <- data_pheno |> 
-  filter(clinical_information == "postprandial")
-
-data_counts_postprandial <- data_counts |> 
-  select(rownames(data_pheno_postprandial))
-
 dds <- DESeqDataSetFromMatrix(countData = data_counts,
                               colData = data_pheno,
                               design = ~disease)
@@ -113,7 +107,7 @@ write.csv(res, "../data/03_DESeq2_results.csv")
 ```{r}
 #| label: pca-individual
 ## Transpose the counts matrix to have the PCA for individuals and not gene expression
-pca <- prcomp(t(data_counts_postprandial))
+pca <- prcomp(t(data_counts))
 
 ## Proportion of variance
 PoV <- pca$sdev^2/sum(pca$sdev^2)
@@ -123,7 +117,7 @@ PC1_t = str_c("PC1 (", PoV[1] , "%)")
 PC2_t = str_c("PC2 (", PoV[2] ,"%)")
 
 ## Add patients metadata
-bind_cols(data_pheno_postprandial, pca$x) |>  
+bind_cols(data_pheno, pca$x) |>  
 ggplot(aes(x=PC1, y=PC2, shape=clinical_information, col=disease, label=individual)) + 
   geom_point() + 
   geom_text_repel() +
@@ -137,8 +131,8 @@ In order to check if the data create individual clusters (experimental bias) and
 ```{r}
 #| label: heatmap-individual
 
-cor.matrix <- cor(data_counts_postprandial)
-annotations <- data_pheno_postprandial |> select(disease, clinical_information)
+cor.matrix <- cor(data_counts)
+annotations <- data_pheno |> select(disease, clinical_information)
 
 heatmap.individual <- pheatmap(cor.matrix, 
          annotation_col = annotations,
@@ -184,10 +178,29 @@ volcano_data |>
 ggsave(file.path("../results/0X-volcano-plot-adj-p-val.pdf"))
 ```
 
-## Gene set enrichment analysis (GSEA)
-
-### Using fGSEA
+## Testing now in fasting conditions
 
 ```{r}
-#| label: gsea
+#| label: dea-deseq2
+#| include: false
+
+data_pheno_fasting <- data_pheno |> 
+  filter(clinical_information == "fasting")
+
+data_counts_fasting <- data_counts |> 
+  select(rownames(data_pheno_fasting))
+
+dds <- DESeqDataSetFromMatrix(countData = data_counts,
+                              colData = data_pheno,
+                              design = ~disease)
+
+featureData <- data.frame(gene=rownames(data_counts))
+mcols(dds) <- DataFrame(mcols(dds), featureData)
+
+## Adding the reference level (normal)
+dds$disease <- relevel(dds$disease, ref = "normal")
+
+## DEA
+dds <- DESeq(dds)
+res <- results(dds)
 ```
