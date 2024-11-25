@@ -1,5 +1,9 @@
 # group_20_project
 
+## Describtion
+
+## Usage
+
 ## Project Contributors
 
 Lea Eschen Skytthe, s203531, contact: s203531@dtu.dk
