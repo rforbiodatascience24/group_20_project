@@ -133,17 +133,6 @@ normalized_countdata_wide |>
   sample_n(size = 5)
 ```
 
-Removing the version numbers from the transcript IDs
-
-```{r}
-# Removing version number (.X)
-count_data_wide <- count_data_wide |>
-  mutate(transcript_ID = str_remove(transcript_ID, "\\.\\d+$"))
-
-normalized_countdata_wide <- normalized_countdata_wide |>
-  mutate(transcript_ID = str_remove(transcript_ID, "\\.\\d+$"))
-```
-
 Getting the genes from the transcript IDs
 
 ```{r}
@@ -156,8 +145,8 @@ ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
 transcript_ids <- count_data_wide$transcript_ID
 
 result <- getBM(
-  attributes = c("ensembl_transcript_id", "ensembl_gene_id", "hgnc_symbol"),
-  filters = "ensembl_transcript_id",
+  attributes = c("ensembl_transcript_id_version", "ensembl_gene_id", "hgnc_symbol"),
+  filters = "ensembl_transcript_id_version",
   values = transcript_ids,
   mart = ensembl
 )
@@ -172,7 +161,7 @@ Including the gene IDs and HUGO Gene Nomenclature Committee (HGNC) symbols
 
 # Renaming "ensembl_transcript_id" in result to mach "transcript_ID" in count_data
 result <- result |> 
-  dplyr::rename(transcript_ID = ensembl_transcript_id)
+  dplyr::rename(transcript_ID = ensembl_transcript_id_version)
 
 # Removing any leading and/or trailing spaces
 count_data_wide <- count_data_wide |> 
