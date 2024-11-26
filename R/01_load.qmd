@@ -17,6 +17,7 @@ The data we are using in this exercise comes from here: <https://ftp.ebi.ac.uk/b
 #| message: False
 #| warning: False
 
+rm(list = ls())
 library("tidyverse")
 library("httr")
 library("XML")

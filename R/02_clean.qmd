@@ -54,7 +54,6 @@ filtered_metadata <- filtered_metadata |>
          -starts_with("Comment."))
 ```
 
-
 Renaming the columns to be more meaningful
 
 ```{r}
@@ -132,31 +131,5 @@ Saving the cleaned count_data file
 if( !file.exists(file.path("../data/02_count_data_long.csv")) ){
   write_csv(person_data, 
             file = file.path("../data/02_count_data_long.csv"))
-}
-```
-
-Pivot the count data to make some analyses
-
-```{r}
-count_data_wide <- person_data |> 
-  select(c("Name","source_name","NumReads")) |> 
-  pivot_wider(names_from = source_name, values_from = NumReads)
-
-if( !file.exists(file.path("../data/02_count_data_wide.csv")) ){
-  write_csv(count_data_wide, 
-            file = file.path("../data/02_count_data_wide.csv"))
-}
-```
-
-In case we need normalized counts instead of normal counts, we can create a dataset for it
-
-```{r}
-normalized_count_data_wide <- person_data |> 
-  select(c("Name","source_name","TPM")) |> 
-  pivot_wider(names_from = source_name, values_from = TPM)
-
-if( !file.exists(file.path("../data/02_normalized_count_data_wide.csv")) ){
-  write_csv(count_data_wide, 
-            file = file.path("../data/02_normalized_count_data_wide.csv"))
 }
 ```
