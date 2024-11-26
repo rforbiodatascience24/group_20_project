@@ -256,7 +256,7 @@ mcols(dds) <- DataFrame(mcols(dds), featureData)
 dds <- DESeq(dds)
 res <- results(dds)
 
-plot_volcano(x=res, title="normal", fc_cutofflog2(2), 0.05)
+plot_volcano(x=res, title="normal", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
 
 
