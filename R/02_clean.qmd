@@ -8,13 +8,13 @@ editor: visual
 ---
 
 ```{r}
+#| label: import-data
 #| echo: false
 #| message: false
 
 rm(list=ls())
 
 library(tidyverse)
-library(tidyr)
 ```
 
 ## Cleaning the meta data
@@ -74,6 +74,8 @@ filtered_metadata <- filtered_metadata |>
 Inspect a sample of the cleaned data
 
 ```{r}
+#| label: cleaned-metadata-inspect
+
 filtered_metadata |>
   sample_n(size = 5)
 ```
@@ -103,6 +105,7 @@ The data has the following columns:
 -   **source_name**: The patient ID
 
 ```{r}
+#| label: clean-count_data-load
 
 # List all files in the directory
 file_paths <- list.files("../data/_raw/count_data/", pattern = ".csv$", full.names = TRUE)
@@ -118,6 +121,7 @@ person_data <- file_paths |>
 Inspect a sample of the combined data
 
 ```{r}
+#| label: clean-count_data-inspect
 
 person_data |>
   sample_n(size = 10)
