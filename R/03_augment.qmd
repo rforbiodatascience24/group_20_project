@@ -41,11 +41,10 @@ metadata <- metadata |>
   dplyr::filter(disease != "excluded")
 ```
 
-We convert the patient names to row names
 
 ```{r}
-metadata <- data.frame(metadata) |> 
-  column_to_rownames("source_name")
+metadata <- data.frame(metadata)
+row.names(metadata) <- metadata|> pull(source_name)
 ```
 
 Viewing the cleaned and augmented meta data
