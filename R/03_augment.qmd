@@ -44,7 +44,6 @@ metadata <- metadata |>
 
 We convert the patient names to row names
 
-
 ```{r}
 metadata <- data.frame(metadata) |> 
   column_to_rownames("source_name")
@@ -66,22 +65,22 @@ count_data_wide <- count_data |>
   select(c("Name","source_name","NumReads")) |> 
   pivot_wider(names_from = source_name, values_from = NumReads)
 
-if( !file.exists(file.path("../data/02_count_data_wide.csv")) ){
+if( !file.exists(file.path("../data/03_count_data_wide.csv")) ){
   write_csv(count_data_wide, 
-            file = file.path("../data/02_count_data_wide.csv"))
+            file = file.path("../data/03_count_data_wide.csv"))
 }
 ```
 
 In case we need normalized counts instead of normal counts, we can create a dataset for it
 
 ```{r}
-normalized_count_data_wide <- count_data |> 
+normalized_countdata_wide <- count_data |> 
   select(c("Name","source_name","TPM")) |> 
   pivot_wider(names_from = source_name, values_from = TPM)
 
-if( !file.exists(file.path("../data/02_normalized_count_data_wide.csv")) ){
+if( !file.exists(file.path("../data/03_normalized_count_data_wide.csv")) ){
   write_csv(count_data_wide, 
-            file = file.path("../data/02_normalized_count_data_wide.csv"))
+            file = file.path("../data/03_normalized_count_data_wide.csv"))
 }
 ```
 
@@ -92,6 +91,7 @@ common_samples <- intersect(colnames(count_data_wide), rownames(metadata))
 
 metadata <- metadata[common_samples,]
 count_data_wide <- count_data_wide[,c("Name",common_samples)]
+normalized_countdata_wide <- normalized_countdata_wide[, c("Name",common_samples)]
 ```
 
 Saving the augmented metadata file
@@ -108,17 +108,28 @@ We want only rows that are different from 0
 ```{r}
 count_data_wide <- count_data_wide |> 
   filter(if_all(everything(), ~ . != 0))
+
+normalized_countdata_wide <- normalized_countdata_wide |> 
+  filter(if_all(everything(), ~ . != 0))
 ```
 
 Renaming the "Name" column
 
 ```{r}
 #| message: false
-
 count_data_wide <- count_data_wide |>
   dplyr::rename(transcript_ID = Name)
 
 count_data_wide |>
+  sample_n(size = 5)
+```
+
+```{r}
+#| message: false
+normalized_countdata_wide <- normalized_countdata_wide |>
+  dplyr::rename(transcript_ID = Name)
+
+normalized_countdata_wide |>
   sample_n(size = 5)
 ```
 
@@ -129,6 +140,8 @@ Removing the version numbers from the transcript IDs
 count_data_wide <- count_data_wide |>
   mutate(transcript_ID = str_remove(transcript_ID, "\\.\\d+$"))
 
+normalized_countdata_wide <- normalized_countdata_wide |>
+  mutate(transcript_ID = str_remove(transcript_ID, "\\.\\d+$"))
 ```
 
 Getting the genes from the transcript IDs
@@ -136,6 +149,8 @@ Getting the genes from the transcript IDs
 ```{r}
 # Set up the Ensembl BioMart connection
 ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
+
+# all(count_data_wide$transcript_ID %in% normalized_countdata_wide$transcript_ID)
 
 # Example list of Ensembl transcript IDs
 transcript_ids <- count_data_wide$transcript_ID
@@ -162,6 +177,8 @@ result <- result |>
 # Removing any leading and/or trailing spaces
 count_data_wide <- count_data_wide |> 
   mutate(transcript_ID = str_trim(transcript_ID))
+normalized_countdata_wide <- normalized_countdata_wide |> 
+  mutate(transcript_ID = str_trim(transcript_ID))
 result <- result |> 
   mutate(transcript_ID = str_trim(transcript_ID))
 
@@ -170,8 +187,8 @@ result <- result |>
 count_data_combined <- count_data_wide |> 
   left_join(result, by = "transcript_ID")
 
-count_data_combined |>
-  sample_n(size = 5)
+normalised_count_data_combined <- normalized_countdata_wide |> 
+  left_join(result, by = "transcript_ID")
 ```
 
 Renaming and relocating the new columns
@@ -189,12 +206,32 @@ count_data_combined |>
   sample_n(size = 5)
 ```
 
+```{r}
+normalised_count_data_combined <- normalised_count_data_combined |>
+  dplyr::rename(gene_id = ensembl_gene_id,
+                gene_symbol = hgnc_symbol)
+
+normalised_count_data_combined <- normalised_count_data_combined |>
+  dplyr::relocate(gene_id, gene_symbol, .after = transcript_ID)
+
+# Check the result
+normalised_count_data_combined |> 
+  sample_n(size = 5)
+```
+
 Saving the augmented count_data file
 
 ```{r}
 if( !file.exists(file.path("../data/03_count_data_wide_aug.csv")) ){
-  write_csv(count_data_combined, file = file.path("../data/03_count_data_wide_aug.csv"))
+  write_csv(count_data_combined, 
+            file = file.path("../data/03_count_data_wide_aug.csv"))
 }
 
 ```
 
+```{r}
+if( !file.exists(file.path("../data/03_normalized_count_data_wide_aug.csv")) ){
+  write_csv(count_data_combined, 
+            file = file.path("../data/03_normalized_count_data_wide_aug.csv"))
+}
+```
