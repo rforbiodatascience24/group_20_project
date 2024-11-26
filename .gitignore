@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 data/
-$.pdf
-$.html
+*.pdf
+*.html
