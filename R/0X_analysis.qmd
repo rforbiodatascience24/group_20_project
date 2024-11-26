@@ -51,7 +51,7 @@ data_pheno <- data.frame(data_pheno) |>
 #| label: load-counts
 #| include: false
 
-data_counts <- read.csv("../data/02_normalized_count_data_wide.csv")
+data_counts <- read.csv("../data/03_normalized_count_data_wide.csv")
 # We want genes as row names, so we convert the tibble to a dataframe and names the rows
 data_counts <- data.frame(data_counts) |>
   column_to_rownames("Name")
