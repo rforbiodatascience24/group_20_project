@@ -14,6 +14,7 @@ The data we are using in this exercise comes from here: <https://ftp.ebi.ac.uk/b
 ## Load Libraries
 
 ```{r}
+#| label: load-libraries
 #| message: False
 #| warning: False
 
@@ -26,6 +27,7 @@ library("stringr")
 ## Creating data folder
 
 ```{r}
+#| label: creating-data-folder
 data_dir <- "../data"
 raw_data_dir <- "../data/_raw/"
 count_data_dir <- "../data/_raw/count_data"
@@ -51,6 +53,7 @@ if( !dir.exists(metadata_dir) ){
 ## Import data
 
 ```{r}
+#| label: import-data
 #| message: False
 #| echo: False
 
