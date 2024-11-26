@@ -117,6 +117,8 @@ bind_cols(data_pheno, pca$x) |>
     geom_point() + 
     geom_text_repel() +
     labs(x = PC1_t , y = PC2_t, color = "Disease", shape = "Clinical information") 
+
+ggsave(file.path("../results/0X-pca-plot.pdf"))
 ```
 
 ### Heatmap (all genes)
@@ -249,7 +251,7 @@ gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to
 res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
 
 #Saving the results
-write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-cirrhosis"))
+write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-cirrhosis.csv"))
 
 plot_volcano(x=res, title="cirrhosis", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
@@ -279,7 +281,7 @@ gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to
 res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
 
 #Saving the results
-write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-normal"))
+write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-normal.csv"))
 
 
 plot_volcano(x=res, title="normal", fc_cutoff=log2(2), p_cutoff=0.05)
