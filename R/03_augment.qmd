@@ -73,6 +73,7 @@ if( !file.exists(file.path("../data/03_count_data_wide.csv")) ){
 In case we need normalized counts instead of normal counts, we can create a dataset for it
 
 ```{r}
+
 normalized_count_data_wide <- count_data |> 
   dplyr::select(c("Name","source_name","TPM")) |> 
   pivot_wider(names_from = source_name, values_from = TPM)
@@ -90,6 +91,7 @@ common_samples <- intersect(colnames(count_data_wide), rownames(metadata))
 
 metadata <- metadata[common_samples,]
 count_data_wide <- count_data_wide[,c("Name",common_samples)]
+normalized_countdata_wide <- normalized_countdata_wide[, c("Name",common_samples)]
 ```
 
 Saving the augmented metadata file
@@ -106,13 +108,15 @@ We want only rows that are different from 0
 ```{r}
 count_data_wide <- count_data_wide |> 
   dplyr::filter(if_all(everything(), ~ . != 0))
+
+normalized_countdata_wide <- normalized_countdata_wide |> 
+  dplyr::filter(if_all(everything(), ~ . != 0))
 ```
 
 Renaming the "Name" column
 
 ```{r}
 #| message: false
-
 count_data_wide <- count_data_wide |>
   dplyr::rename(transcript_ID = Name)
 
@@ -120,12 +124,13 @@ count_data_wide |>
   sample_n(size = 5)
 ```
 
-Removing the version numbers from the transcript IDs
-
 ```{r}
-# Removing version number (.X)
-count_data_wide <- count_data_wide |>
-  dplyr::mutate(transcript_ID = str_remove(transcript_ID, "\\.\\d+$"))
+#| message: false
+normalized_countdata_wide <- normalized_countdata_wide |>
+  dplyr::rename(transcript_ID = Name)
+
+normalized_countdata_wide |>
+  sample_n(size = 5)
 ```
 
 Getting the genes from the transcript IDs
@@ -134,12 +139,14 @@ Getting the genes from the transcript IDs
 # Set up the Ensembl BioMart connection
 ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
 
+# all(count_data_wide$transcript_ID %in% normalized_countdata_wide$transcript_ID)
+
 # Example list of Ensembl transcript IDs
 transcript_ids <- count_data_wide$transcript_ID
 
 result <- getBM(
-  attributes = c("ensembl_transcript_id", "ensembl_gene_id", "hgnc_symbol"),
-  filters = "ensembl_transcript_id",
+  attributes = c("ensembl_transcript_id_version", "ensembl_gene_id", "hgnc_symbol"),
+  filters = "ensembl_transcript_id_version",
   values = transcript_ids,
   mart = ensembl
 )
@@ -154,11 +161,14 @@ Including the gene IDs and HUGO Gene Nomenclature Committee (HGNC) symbols
 
 # Renaming "ensembl_transcript_id" in result to mach "transcript_ID" in count_data
 result <- result |> 
-  dplyr::rename(transcript_ID = ensembl_transcript_id)
+  dplyr::rename(transcript_ID = ensembl_transcript_id_version)
 
 # Removing any leading and/or trailing spaces
 count_data_wide <- count_data_wide |> 
   dplyr::mutate(transcript_ID = str_trim(transcript_ID))
+normalized_countdata_wide <- normalized_countdata_wide |> 
+  dplyr::mutate(transcript_ID = str_trim(transcript_ID))
+
 result <- result |> 
   dplyr::mutate(transcript_ID = str_trim(transcript_ID))
 
@@ -167,8 +177,8 @@ result <- result |>
 count_data_combined <- count_data_wide |> 
   left_join(result, by = "transcript_ID")
 
-count_data_combined |>
-  sample_n(size = 5)
+normalised_count_data_combined <- normalized_countdata_wide |> 
+  left_join(result, by = "transcript_ID")
 ```
 
 Renaming and relocating the new columns
@@ -186,10 +196,32 @@ count_data_combined |>
   sample_n(size = 5)
 ```
 
+```{r}
+normalised_count_data_combined <- normalised_count_data_combined |>
+  dplyr::rename(gene_id = ensembl_gene_id,
+                gene_symbol = hgnc_symbol)
+
+normalised_count_data_combined <- normalised_count_data_combined |>
+  dplyr::relocate(gene_id, gene_symbol, .after = transcript_ID)
+
+# Check the result
+normalised_count_data_combined |> 
+  sample_n(size = 5)
+```
+
 Saving the augmented count_data file
 
 ```{r}
 if( !file.exists(file.path("../data/03_count_data_wide_aug.csv")) ){
-  write_csv(count_data_combined, file = file.path("../data/03_count_data_wide_aug.csv"))
+  write_csv(count_data_combined, 
+            file = file.path("../data/03_count_data_wide_aug.csv"))
 }
 ```
+
+```{r}
+if( !file.exists(file.path("../data/03_normalized_count_data_wide_aug.csv")) ){
+  write_csv(count_data_combined, 
+            file = file.path("../data/03_normalized_count_data_wide_aug.csv"))
+}
+```
+
