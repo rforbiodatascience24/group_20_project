@@ -17,6 +17,12 @@ library("fgsea")
 library("dplyr")
 ```
 
+## Load data
+
+```{r}
+res_df <- read.csv("../data/03_DESeq2_results.csv")
+```
+
 ## Data preparation
 
 To perform Gene Set Enrichment Analysis we have to prepare data by ranking the genes and creating gene sets.

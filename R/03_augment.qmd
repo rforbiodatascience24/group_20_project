@@ -38,7 +38,7 @@ Removing excluded people from the data set
 
 ```{r}
 metadata <- metadata |>
-  filter(disease != "excluded")
+  dplyr::filter(disease != "excluded")
 ```
 
 We convert the patient names to row names
@@ -105,7 +105,7 @@ We want only rows that are different from 0
 
 ```{r}
 count_data_wide <- count_data_wide |> 
-  filter(if_all(everything(), ~ . != 0))
+  dplyr::filter(if_all(everything(), ~ . != 0))
 ```
 
 Renaming the "Name" column
@@ -125,7 +125,7 @@ Removing the version numbers from the transcript IDs
 ```{r}
 # Removing version number (.X)
 count_data_wide <- count_data_wide |>
-  mutate(transcript_ID = str_remove(transcript_ID, "\\.\\d+$"))
+  dplyr::mutate(transcript_ID = str_remove(transcript_ID, "\\.\\d+$"))
 ```
 
 Getting the genes from the transcript IDs
@@ -158,9 +158,9 @@ result <- result |>
 
 # Removing any leading and/or trailing spaces
 count_data_wide <- count_data_wide |> 
-  mutate(transcript_ID = str_trim(transcript_ID))
+  dplyr::mutate(transcript_ID = str_trim(transcript_ID))
 result <- result |> 
-  mutate(transcript_ID = str_trim(transcript_ID))
+  dplyr::mutate(transcript_ID = str_trim(transcript_ID))
 
 
 # Combine result with count_data based on transcript_ID
