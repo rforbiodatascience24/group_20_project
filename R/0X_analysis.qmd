@@ -13,7 +13,7 @@ editor: visual
 #| label: setup
 #| include: false
 
-# rm(list=ls())
+rm(list=ls())
 
 library("tidyverse")
 library("pheatmap")
@@ -40,7 +40,6 @@ data_pheno <- read.csv("../data/03_metadata_aug.csv")
 data_pheno <- data.frame(data_pheno) |> 
   column_to_rownames("source_name")
 
-#files <- data_pheno |> mutate(file = str_c("data/_raw/count_data/",source_name, "_quant.sf"))
 ```
 
 ### Load counts matrix
@@ -49,12 +48,19 @@ data_pheno <- data.frame(data_pheno) |>
 #| label: load-counts
 #| include: false
 
-data_counts <- read.csv("../data/03_normalized_count_data_wide.csv")
+data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv")
+
+
 # We want genes as row names, so we convert the tibble to a dataframe and names the rows
-data_counts <- data.frame(data_counts) |>
-  column_to_rownames("transcript_ID")
+data_counts <- data.frame(data_counts.total) |>
+  dplyr::mutate(transcript_ID = str_c(transcript_ID, runif(min = 1, max = 100000, n = length(transcript_ID)))) |> 
+  column_to_rownames("transcript_ID") |> 
+  dplyr::select(-gene_id, -gene_symbol)
+
+
 
 colnames(data_counts) <- colnames(data_counts) |> substring(2)
+
 
 # The output of the mapping algorithm they use is an estimated number of reads mapped to each gene. It is a float while we need an integer. We will then convert it.
 data_counts <- data_counts |> 
@@ -64,20 +70,6 @@ data_counts <- data_counts |>
 ## Differential Expression Analysis
 
 ### Using DESeq2
-
-We need to make sure that the rows of the metadata corresponds to the columns of the count data
-
-```{r}
-common_samples <- intersect(colnames(data_counts), rownames(data_pheno))
-
-data_pheno <- data_pheno[common_samples,]
-data_counts <- data_counts[,common_samples]
-
-# We want only raws that are different from 0
-
-data_counts <- data_counts |> 
-  filter(if_all(everything(), ~ . != 0))
-```
 
 ```{r}
 #| label: dea-deseq2
@@ -96,6 +88,10 @@ dds$disease <- relevel(dds$disease, ref = "normal")
 ## DEA
 dds <- DESeq(dds)
 res <- results(dds)
+
+gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to_column("transcript_ID")
+res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
+
 
 #Saving the results
 write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results.csv"))
@@ -210,6 +206,7 @@ dds$disease <- relevel(dds$disease, ref = "normal")
 dds <- DESeq(dds)
 res <- results(dds)
 
+
 plot_volcano(res, "postprandial", log2(2), 0.05)
 ```
 
@@ -259,7 +256,7 @@ mcols(dds) <- DataFrame(mcols(dds), featureData)
 dds <- DESeq(dds)
 res <- results(dds)
 
-plot_volcano(x=res, title="normal", fc_cutofflog2(2), 0.05)
+plot_volcano(x=res, title="normal", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
 
 
