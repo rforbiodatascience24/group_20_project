@@ -17,7 +17,6 @@ editor: visual
 
 library("tidyverse")
 library("pheatmap")
-library("ggplot2")
 library("ggrepel")
 
 ## DEA libraries
@@ -35,8 +34,7 @@ source(file.path("99_proj_func.R"))
 #| include: false
 #| echo: true
 
-
-data_pheno <- read.csv("../data/02_metadata_clean.csv")
+data_pheno <- read.csv("../data/03_metadata_aug.csv")
 
 # We want patients as row names, so we convert the tibble to a dataframe and names the rows
 data_pheno <- data.frame(data_pheno) |> 
@@ -54,7 +52,7 @@ data_pheno <- data.frame(data_pheno) |>
 data_counts <- read.csv("../data/03_normalized_count_data_wide.csv")
 # We want genes as row names, so we convert the tibble to a dataframe and names the rows
 data_counts <- data.frame(data_counts) |>
-  column_to_rownames("Name")
+  column_to_rownames("transcript_ID")
 
 colnames(data_counts) <- colnames(data_counts) |> substring(2)
 
@@ -100,7 +98,7 @@ dds <- DESeq(dds)
 res <- results(dds)
 
 #Saving the results
-write.csv(res, "../data/03_DESeq2_results.csv")
+write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results.csv"))
 ```
 
 ### PCA
@@ -119,10 +117,10 @@ PC2_t = str_c("PC2 (", PoV[2] ,"%)")
 
 ## Add patients metadata
 bind_cols(data_pheno, pca$x) |>  
-ggplot(aes(x=PC1, y=PC2, shape=clinical_information, col=disease, label=individual)) + 
-  geom_point() + 
-  geom_text_repel() +
-  labs(x = PC1_t , y = PC2_t, color = "Disease", shape = "Clinical information") 
+  ggplot(aes(x=PC1, y=PC2, shape=clinical_information, col=disease, label=individual)) + 
+    geom_point() + 
+    geom_text_repel() +
+    labs(x = PC1_t , y = PC2_t, color = "Disease", shape = "Clinical information") 
 ```
 
 ### Heatmap (all genes)
@@ -133,7 +131,7 @@ In order to check if the data create individual clusters (experimental bias) and
 #| label: heatmap-individual
 
 cor.matrix <- cor(data_counts)
-annotations <- data_pheno |> select(disease, clinical_information)
+annotations <- data_pheno |> dplyr::select(disease, clinical_information)
 
 heatmap.individual <- pheatmap(cor.matrix, 
          annotation_col = annotations,
@@ -149,47 +147,23 @@ heatmap.individual <- pheatmap(cor.matrix,
 
 ```{r}
 #| label: heatmap-individual
+#| warning: false
 
-## Adding cutoff
-fc_cutoff <- 1
-p_cutoff <- 0.05
-volcano_data <- tibble(gene = rownames(res),
-                       log2FoldChange = res$log2FoldChange,
-                       pvalue = res$pvalue,
-                       padj = res$padj)
-
-volcano_data <- volcano_data |> 
-  dplyr::mutate(gene_type = case_when(log2FoldChange >= fc_cutoff & padj <= 0.05 ~ "Up regulated",
-                               log2FoldChange <= -fc_cutoff & padj <= 0.05 ~ "Down regulated",
-                               TRUE ~ "Non significant")) 
-cols <- c("Up regulated" = "gold", "Down regulated" = "blue", "Non significant" = "darkgrey")
-
-
-
-volcano_data |> 
-  ggplot(aes(x = log2FoldChange, y = -log10(padj), col=gene_type)) + geom_point() +
-  geom_hline(yintercept = -log10(p_cutoff), linetype = "dashed") + 
-  geom_vline(xintercept = c(-fc_cutoff, fc_cutoff),
-             linetype = "dashed") +
-  scale_color_manual(values=cols)+
-  labs(
-    title= "Volcano plot - log10(Adj-P-Value)",
-    colour = "Differencial expression")
-
-ggsave(file.path("../results/0X-volcano-plot-adj-p-val.pdf"))
+## General analysis
+plot_volcano(res, "general", log2(2), 0.05)
 ```
 
 ## Testing now in fasting conditions
 
 ```{r}
-#| label: dea-deseq2
+#| label: dea-deseq2-fasting
 #| include: false
 
 data_pheno_fasting <- data_pheno |> 
-  filter(clinical_information == "fasting")
+  dplyr::filter(clinical_information == "fasting")
 
 data_counts_fasting <- data_counts |> 
-  select(rownames(data_pheno_fasting))
+  dplyr::select(rownames(data_pheno_fasting))
 
 dds <- DESeqDataSetFromMatrix(countData = data_counts_fasting,
                               colData = data_pheno_fasting,
@@ -204,37 +178,11 @@ dds$disease <- relevel(dds$disease, ref = "normal")
 ## DEA
 dds <- DESeq(dds)
 res <- results(dds)
+
+plot_volcano(res, "fasting", log2(2), 0.05)
 ```
 
-```{r}
-## Adding cutoff
-fc_cutoff <- 1
-p_cutoff <- 0.05
-volcano_data <- tibble(gene = rownames(res),
-                       log2FoldChange = res$log2FoldChange,
-                       pvalue = res$pvalue,
-                       padj = res$padj)
 
-volcano_data <- volcano_data |> 
-  dplyr::mutate(gene_type = case_when(log2FoldChange >= fc_cutoff & padj <= 0.05 ~ "Up regulated",
-                               log2FoldChange <= -fc_cutoff & padj <= 0.05 ~ "Down regulated",
-                               TRUE ~ "Non significant")) 
-cols <- c("Up regulated" = "gold", "Down regulated" = "blue", "Non significant" = "darkgrey")
-
-
-
-volcano_data |> 
-  ggplot(aes(x = log2FoldChange, y = -log10(padj), col=gene_type)) + geom_point() +
-  geom_hline(yintercept = -log10(p_cutoff), linetype = "dashed") + 
-  geom_vline(xintercept = c(-fc_cutoff, fc_cutoff),
-             linetype = "dashed") +
-  scale_color_manual(values=cols)+
-  labs(
-    title= "Volcano plot - log10(Adj-P-Value)",
-    colour = "Differencial expression")
-
-ggsave(file.path("../results/0X-volcano-plot-fasting.pdf"))
-```
 
 ## Testing now in postprandial condition
 
@@ -243,10 +191,10 @@ ggsave(file.path("../results/0X-volcano-plot-fasting.pdf"))
 #| include: false
 
 data_pheno_postprandial <- data_pheno |> 
-  filter(clinical_information == "postprandial")
+  dplyr::filter(clinical_information == "postprandial")
 
 data_counts_postprandial <- data_counts |> 
-  select(rownames(data_pheno_postprandial))
+  dplyr::select(rownames(data_pheno_postprandial))
 
 dds <- DESeqDataSetFromMatrix(countData = data_counts_postprandial,
                               colData = data_pheno_postprandial,
@@ -261,46 +209,20 @@ dds$disease <- relevel(dds$disease, ref = "normal")
 ## DEA
 dds <- DESeq(dds)
 res <- results(dds)
+
+plot_volcano(res, "postprandial", log2(2), 0.05)
 ```
 
-```{r}
-## Adding cutoff
-fc_cutoff <- 1
-p_cutoff <- 0.05
-volcano_data <- tibble(gene = rownames(res),
-                       log2FoldChange = res$log2FoldChange,
-                       pvalue = res$pvalue,
-                       padj = res$padj)
 
-volcano_data <- volcano_data |> 
-  dplyr::mutate(gene_type = case_when(log2FoldChange >= fc_cutoff & padj <= 0.05 ~ "Up regulated",
-                               log2FoldChange <= -fc_cutoff & padj <= 0.05 ~ "Down regulated",
-                               TRUE ~ "Non significant")) 
-cols <- c("Up regulated" = "gold", "Down regulated" = "blue", "Non significant" = "darkgrey")
-
-
-
-volcano_data |> 
-  ggplot(aes(x = log2FoldChange, y = -log10(padj), col=gene_type)) + geom_point() +
-  geom_hline(yintercept = -log10(p_cutoff), linetype = "dashed") + 
-  geom_vline(xintercept = c(-fc_cutoff, fc_cutoff),
-             linetype = "dashed") +
-  scale_color_manual(values=cols)+
-  labs(
-    title= "Volcano plot - log10(Adj-P-Value)",
-    colour = "Differencial expression")
-
-ggsave(file.path("../results/0X-volcano-plot-postprandial.pdf"))
-```
 
 ## Difference in expression fasting or not cirrhosis
 
 ```{r}
 data_pheno_cirrhosis <- data_pheno |> 
-  filter(disease == "cirrhosis of liver")
+  dplyr::filter(disease == "cirrhosis of liver")
 
 data_counts_cirrhosis <- data_counts |> 
-  select(rownames(data_pheno_cirrhosis))
+  dplyr::select(rownames(data_pheno_cirrhosis))
 
 dds <- DESeqDataSetFromMatrix(countData = data_counts_cirrhosis,
                               colData = data_pheno_cirrhosis,
@@ -312,46 +234,19 @@ mcols(dds) <- DataFrame(mcols(dds), featureData)
 ## DEA
 dds <- DESeq(dds)
 res <- results(dds)
+
+plot_volcano(x=res, title="postprandial", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
 
-```{r}
-## Adding cutoff
-fc_cutoff <- 1
-p_cutoff <- 0.05
-volcano_data <- tibble(gene = rownames(res),
-                       log2FoldChange = res$log2FoldChange,
-                       pvalue = res$pvalue,
-                       padj = res$padj)
-
-volcano_data <- volcano_data |> 
-  dplyr::mutate(gene_type = case_when(log2FoldChange >= fc_cutoff & padj <= 0.05 ~ "Up regulated",
-                               log2FoldChange <= -fc_cutoff & padj <= 0.05 ~ "Down regulated",
-                               TRUE ~ "Non significant")) 
-cols <- c("Up regulated" = "gold", "Down regulated" = "blue", "Non significant" = "darkgrey")
-
-
-
-volcano_data |> 
-  ggplot(aes(x = log2FoldChange, y = -log10(padj), col=gene_type)) + geom_point() +
-  geom_hline(yintercept = -log10(p_cutoff), linetype = "dashed") + 
-  geom_vline(xintercept = c(-fc_cutoff, fc_cutoff),
-             linetype = "dashed") +
-  scale_color_manual(values=cols)+
-  labs(
-    title= "Volcano plot - log10(Adj-P-Value)",
-    colour = "Differencial expression")
-
-ggsave(file.path("../results/0X-volcano-plot-cirrhosis.pdf"))
-```
 
 ## Difference in expression fasting or not normal
 
 ```{r}
 data_pheno_normal <- data_pheno |> 
-  filter(disease == "normal")
+  dplyr::filter(disease == "normal")
 
 data_counts_normal <- data_counts |> 
-  select(rownames(data_pheno_normal))
+  dplyr::select(rownames(data_pheno_normal))
 
 dds <- DESeqDataSetFromMatrix(countData = data_counts_normal,
                               colData = data_pheno_normal,
@@ -363,34 +258,8 @@ mcols(dds) <- DataFrame(mcols(dds), featureData)
 ## DEA
 dds <- DESeq(dds)
 res <- results(dds)
+
+plot_volcano(x=res, title="normal", fc_cutofflog2(2), 0.05)
 ```
 
-```{r}
-## Adding cutoff
-fc_cutoff <- 1
-p_cutoff <- 0.05
-volcano_data <- tibble(gene = rownames(res),
-                       log2FoldChange = res$log2FoldChange,
-                       pvalue = res$pvalue,
-                       padj = res$padj)
 
-volcano_data <- volcano_data |> 
-  dplyr::mutate(gene_type = case_when(log2FoldChange >= fc_cutoff & padj <= 0.05 ~ "Up regulated",
-                               log2FoldChange <= -fc_cutoff & padj <= 0.05 ~ "Down regulated",
-                               TRUE ~ "Non significant")) 
-cols <- c("Up regulated" = "gold", "Down regulated" = "blue", "Non significant" = "darkgrey")
-
-
-
-volcano_data |> 
-  ggplot(aes(x = log2FoldChange, y = -log10(padj), col=gene_type)) + geom_point() +
-  geom_hline(yintercept = -log10(p_cutoff), linetype = "dashed") + 
-  geom_vline(xintercept = c(-fc_cutoff, fc_cutoff),
-             linetype = "dashed") +
-  scale_color_manual(values=cols)+
-  labs(
-    title= "Volcano plot - log10(Adj-P-Value)",
-    colour = "Differencial expression")
-
-ggsave(file.path("../results/0X-volcano-plot-normal.pdf"))
-```
