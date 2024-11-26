@@ -1,4 +1,18 @@
-# group_20_project
+# Group 20 Project
+
+## Describtion
+This project investigates differences in hepatic gene expression between healthy individuals, patients with non-alcoholic fatty liver disease (NAFLD), and patients with cirrhosis. Using RNA-sequence of coding RNA, we analyze differences between these groups.
+
+## Project Structure
+- **Data Setup and Download:** `01_load` creates a `data/` directory, with the subdirectories `data/_raw/count_data/`, and `data/_raw/metadata/`. It downloads the raw data from the specified URL (found under `Data`) and saves it into the subfolders.
+
+- **Data Cleaning:** `02_clean`
+
+- **Data Augmentation:** `03_augment`
+
+- **Data Description:** `04_describe`
+
+- **Data Analysis:** `05_analysis_xx`
 
 ## Project Contributors
 

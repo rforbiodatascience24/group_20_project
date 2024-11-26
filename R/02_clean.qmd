@@ -12,8 +12,9 @@ editor: visual
 #| message: false
 
 rm(list=ls())
-library("tidyverse")
-library("dplyr")
+
+library(tidyverse)
+library(tidyr)
 ```
 
 ## Cleaning the meta data
@@ -51,6 +52,24 @@ filtered_metadata <- filtered_metadata |>
          -Scan.Name,
          -Factor.Value.disease.,
          -starts_with("Comment."))
+```
+
+
+Renaming the columns to be more meaningful
+
+```{r}
+#| label: clean-metadata-renaming-columns
+
+filtered_metadata <- filtered_metadata |> 
+  rename(
+    source_name = "Source.Name",
+    individual = "Characteristics.individual.",
+    age = "Characteristics.age.",
+    sex = "Characteristics.sex.",
+    disease = "Characteristics.disease.",
+    data_file = "Derived.Array.Data.File",
+    clinical_information = "Factor.Value.clinical.information."
+  )
 ```
 
 Inspect a sample of the cleaned data
@@ -95,7 +114,6 @@ person_data <- file_paths |>
   map(~ read.csv(.x, header = TRUE, sep = ",") |> 
         mutate(source_name = str_remove(basename(.x), "_quant\\.csv$"))) |>
   bind_rows()
-
 ```
 
 Inspect a sample of the combined data
@@ -111,5 +129,34 @@ Saving the cleaned count_data file
 ```{r}
 #| label: clean-count_data-saving
 
-write_csv(person_data, file = file.path("../data/02_count_data_clean.csv"))
+if( !file.exists(file.path("../data/02_count_data_long.csv")) ){
+  write_csv(person_data, 
+            file = file.path("../data/02_count_data_long.csv"))
+}
+```
+
+Pivot the count data to make some analyses
+
+```{r}
+count_data_wide <- person_data |> 
+  select(c("Name","source_name","NumReads")) |> 
+  pivot_wider(names_from = source_name, values_from = NumReads)
+
+if( !file.exists(file.path("../data/02_count_data_wide.csv")) ){
+  write_csv(count_data_wide, 
+            file = file.path("../data/02_count_data_wide.csv"))
+}
+```
+
+In case we need normalized counts instead of normal counts, we can create a dataset for it
+
+```{r}
+normalized_count_data_wide <- person_data |> 
+  select(c("Name","source_name","TPM")) |> 
+  pivot_wider(names_from = source_name, values_from = TPM)
+
+if( !file.exists(file.path("../data/02_normalized_count_data_wide.csv")) ){
+  write_csv(count_data_wide, 
+            file = file.path("../data/02_normalized_count_data_wide.csv"))
+}
 ```
