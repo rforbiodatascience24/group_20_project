@@ -79,7 +79,7 @@ base <- "../data/_raw"
 
 # Downloading count data files
 for (count_file in count_files) {
-  new_file_name <- str_replace(count_file, ".sf", ".csv")
+  new_file_name <- str_replace(count_file, "_quant.sf", "_quant.csv")
   new_file_path <- paste(base, "/count_data/", new_file_name,
                          sep = "")
   if (file.exists(new_file_path)) {
