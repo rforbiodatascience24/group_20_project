@@ -91,7 +91,7 @@ common_samples <- intersect(colnames(count_data_wide), rownames(metadata))
 
 metadata <- metadata[common_samples,]
 count_data_wide <- count_data_wide[,c("Name",common_samples)]
-normalized_countdata_wide <- normalized_countdata_wide[, c("Name",common_samples)]
+normalized_count_data_wide <- normalized_count_data_wide[, c("Name",common_samples)]
 ```
 
 Saving the augmented metadata file
@@ -109,7 +109,7 @@ We want only rows that are different from 0
 count_data_wide <- count_data_wide |> 
   dplyr::filter(if_all(everything(), ~ . != 0))
 
-normalized_countdata_wide <- normalized_countdata_wide |> 
+normalized_count_data_wide <- normalized_count_data_wide |> 
   dplyr::filter(if_all(everything(), ~ . != 0))
 ```
 
@@ -126,10 +126,10 @@ count_data_wide |>
 
 ```{r}
 #| message: false
-normalized_countdata_wide <- normalized_countdata_wide |>
+normalized_count_data_wide <- normalized_count_data_wide |>
   dplyr::rename(transcript_ID = Name)
 
-normalized_countdata_wide |>
+normalized_count_data_wide |>
   sample_n(size = 5)
 ```
 
@@ -139,7 +139,7 @@ Getting the genes from the transcript IDs
 # Set up the Ensembl BioMart connection
 ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
 
-# all(count_data_wide$transcript_ID %in% normalized_countdata_wide$transcript_ID)
+# all(count_data_wide$transcript_ID %in% normalized_count_data_wide$transcript_ID)
 
 # Example list of Ensembl transcript IDs
 transcript_ids <- count_data_wide$transcript_ID
@@ -166,7 +166,7 @@ result <- result |>
 # Removing any leading and/or trailing spaces
 count_data_wide <- count_data_wide |> 
   dplyr::mutate(transcript_ID = str_trim(transcript_ID))
-normalized_countdata_wide <- normalized_countdata_wide |> 
+normalized_count_data_wide <- normalized_count_data_wide |> 
   dplyr::mutate(transcript_ID = str_trim(transcript_ID))
 
 result <- result |> 
@@ -177,7 +177,7 @@ result <- result |>
 count_data_combined <- count_data_wide |> 
   left_join(result, by = "transcript_ID")
 
-normalised_count_data_combined <- normalized_countdata_wide |> 
+normalised_count_data_combined <- normalized_count_data_wide |> 
   left_join(result, by = "transcript_ID")
 ```
 
@@ -220,8 +220,7 @@ if( !file.exists(file.path("../data/03_count_data_wide_aug.csv")) ){
 
 ```{r}
 if( !file.exists(file.path("../data/03_normalized_count_data_wide_aug.csv")) ){
-  write_csv(count_data_combined, 
+  write_csv(normalised_count_data_combined, 
             file = file.path("../data/03_normalized_count_data_wide_aug.csv"))
 }
 ```
-
