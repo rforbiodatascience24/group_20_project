@@ -54,7 +54,6 @@ filtered_metadata <- filtered_metadata |>
          -starts_with("Comment."))
 ```
 
-
 Renaming the columns to be more meaningful
 
 ```{r}
