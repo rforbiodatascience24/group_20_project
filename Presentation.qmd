@@ -1,0 +1,43 @@
+---
+title: "Presentation - Group 20"
+author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
+date: 03 Dec 2024
+format: revealjs
+footer: "Group 20" 
+transition: slide
+slide-number: true
+
+---
+
+
+## Introduction
+
+
+
+
+
+## Material and Methods
+
+
+
+
+## Results
+
+
+
+
+## Discussion 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
