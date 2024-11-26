@@ -94,7 +94,7 @@ res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(ge
 
 
 #Saving the results
-write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results.csv"))
+write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-global.csv"))
 ```
 
 ### PCA
@@ -133,7 +133,7 @@ heatmap.individual <- pheatmap(cor.matrix,
          annotation_col = annotations,
          main = "Heatmap - All samples")
 
-# save_pheatmap_pdf(heatmap.individual, file.path("../results/0X_heatmap-all-samples.pdf"))
+save_pheatmap_pdf(heatmap.individual, file.path("../results/0X_heatmap-all-samples.pdf"))
 
 ## We can see 3 outliers in the heatmap and ACP
 
@@ -175,6 +175,13 @@ dds$disease <- relevel(dds$disease, ref = "normal")
 dds <- DESeq(dds)
 res <- results(dds)
 
+gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to_column("transcript_ID")
+res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
+
+
+#Saving the results
+write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-fasting.csv"))
+
 plot_volcano(res, "fasting", log2(2), 0.05)
 ```
 
@@ -206,7 +213,13 @@ dds$disease <- relevel(dds$disease, ref = "normal")
 dds <- DESeq(dds)
 res <- results(dds)
 
+gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to_column("transcript_ID")
+res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
 
+#Saving the results
+write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-postprandial.csv"))
+
+## Plot the volcano
 plot_volcano(res, "postprandial", log2(2), 0.05)
 ```
 
@@ -232,7 +245,13 @@ mcols(dds) <- DataFrame(mcols(dds), featureData)
 dds <- DESeq(dds)
 res <- results(dds)
 
-plot_volcano(x=res, title="postprandial", fc_cutoff=log2(2), p_cutoff=0.05)
+gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to_column("transcript_ID")
+res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
+
+#Saving the results
+write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-cirrhosis"))
+
+plot_volcano(x=res, title="cirrhosis", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
 
 
@@ -255,6 +274,13 @@ mcols(dds) <- DataFrame(mcols(dds), featureData)
 ## DEA
 dds <- DESeq(dds)
 res <- results(dds)
+
+gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to_column("transcript_ID")
+res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
+
+#Saving the results
+write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-normal"))
+
 
 plot_volcano(x=res, title="normal", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
