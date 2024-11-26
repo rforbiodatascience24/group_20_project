@@ -35,6 +35,7 @@ source(file.path("99_proj_func.R"))
 #| include: false
 #| echo: true
 
+
 data_pheno <- read.csv("../data/02_metadata_clean.csv")
 
 # We want patients as row names, so we convert the tibble to a dataframe and names the rows

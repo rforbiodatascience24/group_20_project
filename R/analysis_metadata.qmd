@@ -23,7 +23,7 @@ library("table1")
 ```{r}
 #| message: False
 
-metadata <- read_csv("../data/02_metadata_clean.csv")
+metadata <- read_csv("../data/03_metadata_aug.csv")
 metadata |> sample_n(10)
 ```
 
@@ -35,13 +35,6 @@ metadata |>
          disease = factor(disease)) |> 
   table1(x = formula(~ sex + age | disease),
          data = _)
-```
-
-We will now remove excluded people from our analysis.
-
-```{r}
-metadata <- metadata |> 
-  filter(disease != "excluded")
 ```
 
 ## Analysing age, gender, and disease distributions
@@ -57,7 +50,8 @@ metadata |>
                  by = 10))) |> 
   ggplot(mapping = aes(x = age_group, fill = sex)) +
     geom_histogram(stat = "count", 
-                   position = position_dodge(preserve = "single"))
+                   position = position_dodge(preserve = "single"),
+                   color = "black")
 ```
 
 ```{r}
@@ -66,7 +60,8 @@ metadata |>
 metadata |> 
   ggplot(mapping = aes(x = disease, fill = sex)) +
   geom_histogram(stat = "count",
-                 position = position_dodge(preserve = "single")) 
+                 position = position_dodge(preserve = "single"),
+                 color = "black") 
 ```
 
 ```{r}
@@ -90,3 +85,49 @@ t.test(male_cirrhosis, female_cirrhosis)
 ```
 
 The p-value is above 0.05 so we can say that there is no significant difference between the two groups.
+
+```{r}
+#| warning: false
+
+metadata |> 
+  mutate(age_group = cut(
+    x = age,
+    breaks = seq(from = 0,
+                 to = 100,
+                 by = 10))) |> 
+  ggplot(mapping = aes(x = age_group, fill = clinical_information)) +
+    geom_histogram(stat = "count", 
+                   position = position_dodge(preserve = "single"),
+                   color = "black")
+```
+
+```{r}
+#| warning: false
+
+metadata |> 
+  mutate(age_group = cut(
+    x = age,
+    breaks = seq(from = 0,
+                 to = 100,
+                 by = 10))) |> 
+  ggplot(mapping = aes(x = age_group, fill = disease)) +
+    geom_histogram(stat = "count", 
+                   position = position_dodge(preserve = "single"),
+                   color = "black")
+```
+
+```{r}
+#| warning: false
+
+metadata |> 
+  ggplot(mapping = aes(x = disease, fill = clinical_information)) +
+  geom_histogram(stat = "count",
+                 position = position_dodge(preserve = "single"),
+                 color = "black") 
+```
+
+```{r}
+metadata |> 
+  ggplot(mapping = aes(x = disease, y = age, fill = clinical_information)) +
+    geom_boxplot()
+```
