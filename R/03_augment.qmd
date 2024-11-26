@@ -13,7 +13,6 @@ editor: visual
 
 rm(list = ls())
 library("tidyverse")
-library("dplyr")
 library("biomaRt")
 ```
 
@@ -44,6 +43,7 @@ metadata <- metadata |>
 ```
 
 We convert the patient names to row names
+
 
 ```{r}
 metadata <- data.frame(metadata) |> 
@@ -192,8 +192,9 @@ count_data_combined |>
 Saving the augmented count_data file
 
 ```{r}
-if( !file.exists(file.path("../data/03_count_data_aug.csv")) ){
-  write_csv(count_data_combined, file = file.path("../data/03_count_data_aug.csv"))
+if( !file.exists(file.path("../data/03_count_data_wide_aug.csv")) ){
+  write_csv(count_data_combined, file = file.path("../data/03_count_data_wide_aug.csv"))
 }
 
 ```
+
