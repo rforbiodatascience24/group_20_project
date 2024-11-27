@@ -7,16 +7,14 @@ format:
 editor: visual
 ---
 
-## PCA
+## Heatmap
 
 Libraries
 
 ```{r}
-library("tidyverse")
-library("ggrepel")
-library("broom")
-library("tibble")
-library("dplyr")
+library("tidyverse") 
+library("pheatmap")
+
 ```
 
 Load data
@@ -54,30 +52,19 @@ data_counts <- data_counts |>
   mutate(across(where(is.numeric), as.integer))
 ```
 
-The Principal Component Analysis
+The analysis - heatmap
 
 ```{r}
-#| label: pca-individual
-## Transpose the counts matrix to have the PCA for individuals and not gene expression
-pca <- prcomp(t(data_counts))
+#| label: heatmap-individual
 
-## Proportion of variance
-PoV <- pca$sdev^2/sum(pca$sdev^2)
-PoV <- PoV * 100
-PoV <- str_sub(PoV,1,4)
-PC1_t = str_c("PC1 (", PoV[1] , "%)")
-PC2_t = str_c("PC2 (", PoV[2] ,"%)")
+cor.matrix <- cor(data_counts)
+annotations <- data_pheno |> dplyr::select(disease, clinical_information)
 
-## Add patients metadata
-bind_cols(data_pheno, pca$x) |>  
-  ggplot(aes(x=PC1, y=PC2, shape=clinical_information, col=disease, label=individual)) + 
-    geom_point() + 
-    geom_text_repel() +
-    labs(x = PC1_t , y = PC2_t, color = "Disease", shape = "Clinical information") 
-```
+heatmap.individual <- pheatmap(cor.matrix, 
+         annotation_col = annotations,
+         main = "Heatmap - All samples")
 
-Saving the plot
+save_pheatmap_pdf(heatmap.individual, file.path("../results/0X_heatmap-all-samples.pdf"))
 
-```{r}
-ggsave(file.path("../results/05_pca_plot.pdf"))
+## We can see 3 outliers in the heatmap and ACP
 ```
