@@ -13,29 +13,25 @@ data load
 
 ```{r}
 
-# 1. Load and preprocess phenotype data
-data_pheno <- read.csv("../data/02_metadata_clean.csv")
+# 1. Load preprocess metadata
+metadata <- read.csv("../data/02_metadata_clean.csv")
 
-# We want patients as row names, so we convert the tibble to a dataframe and names the rows
-data_pheno <- data.frame(data_pheno) |> 
+metadata <- data.frame(metadata) |> 
   column_to_rownames("source_name")
 
-# 2. Load and preprocess counts data
-data_counts <- read.csv("../data/02_normalized_count_data_wide.csv")
-# We want genes as row names, so we convert the tibble to a dataframe and names the rows
+# 2. Load preprocess counts data
+data_counts <- read.csv("../data/03_normalized_count_data_wide.csv", check.names = FALSE)
+
 data_counts <- data.frame(data_counts) |>
-  column_to_rownames("Name")
+  column_to_rownames("Name") |>
+  mutate(across(where(is.numeric), as.integer))
 
 colnames(data_counts) <- colnames(data_counts) |> substring(2)
 
-# The output of the mapping algorithm they use is an estimated number of reads mapped to each gene. It is a float while we need an integer. We will then convert it.
-data_counts <- data_counts |> 
-  mutate(across(where(is.numeric), as.integer))
-
 # 3. Subset data to only include common samples
-common_samples <- intersect(colnames(data_counts), rownames(data_pheno))
+common_samples <- intersect(colnames(data_counts), rownames(metadata))
 
-data_pheno <- data_pheno[common_samples,]
+metadata <- metadata[common_samples,]
 data_counts <- data_counts[,common_samples]
 
 # We want only raws that are different from 0
@@ -51,7 +47,7 @@ data_counts <- data_counts |>
 
 # 5. Create DESeq2 dataset
 dds <- DESeqDataSetFromMatrix(countData = data_counts,
-                              colData = data_pheno,
+                              colData = metadata,
                               design = ~disease)
 
 featureData <- data.frame(gene=rownames(data_counts))
@@ -65,7 +61,7 @@ dds <- DESeq(dds)
 res <- results(dds)
 
 #Saving the results
-write.csv(res, "../data/03_DESeq2_results.csv")
+write.csv(res, "../data/05_DESeq2_results.csv")
 
 ```
 
@@ -75,7 +71,7 @@ volcano
 ## Adding cutoff
 fc_cutoff <- 1
 p_cutoff <- 0.05
-volcano_data <- tibble(gene = rownames(res),
+volcano_data <- tibble(Name = rownames(res),
                        log2FoldChange = res$log2FoldChange,
                        pvalue = res$pvalue,
                        padj = res$padj)
@@ -101,125 +97,69 @@ volcano_data |>
 ggsave(file.path("../results/0X-volcano-plot-adj-p-val.pdf"))
 ```
 
-else
+-   Analyse most significantly over/under-expressed genes
 
 ```{r}
-# Create DESeqDataSet
-dds <- DESeqDataSetFromMatrix(countData = counts, colData = metadata, design = ~ condition)
-dds <- DESeq(dds)
 
-# Extract results and tidy up
-res_tidy <- as_tibble(as.data.frame(results(dds)), rownames = "gene")
+data_counts_long <- read.csv("../data/02_count_data_long.csv")
+metadata <- read.csv("../data/02_metadata_clean.csv")
 
-# Define cutoffs
-fc_cutoff <- 1
-p_cutoff <- 0.05
 
-# Classify genes and plot
-res_tidy <- res_tidy %>%
-  mutate(
-    gene_type = case_when(
-      log2FoldChange >= fc_cutoff & padj <= p_cutoff ~ "Up regulated",
-      log2FoldChange <= -fc_cutoff & padj <= p_cutoff ~ "Down regulated",
-      TRUE ~ "Non significant"
-    )
-  )
+analysis_data <- volcano_data |>
+  left_join(data_counts_long, by = "Name") |>
+  left_join(metadata, by = "source_name")
 
-# Define colors
-cols <- c("Up regulated" = "gold", "Down regulated" = "blue", "Non significant" = "darkgrey")
-
-# Plot
-ggplot(res_tidy, aes(x = log2FoldChange, y = -log10(padj), color = gene_type)) +
-  geom_point() +
-  scale_color_manual(values = cols) +
-  geom_hline(yintercept = -log10(p_cutoff), linetype = "dashed") +
-  geom_vline(xintercept = c(-fc_cutoff, fc_cutoff), linetype = "dashed") +
-  labs(
-    title = "Volcano Plot",
-    x = "Log2 Fold Change",
-    y = "-Log10 Adjusted P-Value",
-    color = "Gene Type"
-  ) +
-  theme_minimal()
 
 ```
 
-analyse up and down regulized
-
-correlation
+stats and correlation
 
 ```{r}
+# Calculate summary statistics for down-regulated genes
+regulated_data <- analysis_data |>
+  filter(gene_type != "Non significant") |>
+  mutate(across(c(Name, gene_type, sex, disease, clinical_information), as.factor)) |>
+  mutate(across(c(age, Length, EffectiveLength, TPM, NumReads), as.integer)) |>
+  drop_na()
 
-
-# Step 1: Pivot `data_counts` into a long format
-data_counts_long <- data_counts %>%
-  rownames_to_column("gene") %>%                  # Add row names as a "gene" column
-  pivot_longer(cols = -gene,                      # Pivot all columns except "gene"
-               names_to = "individual",           # Column to store original column names (individuals)
-               values_to = "count")               # Column to store the counts
-
-# Step 2: Join `data_counts_long` with `data_pheno` on the "individual" column
-combined_data <- data_counts_long %>%
-  left_join(data_pheno, by = "individual")        # Join on "individual" column
-
-# View the combined data structure
-combined_data
-
-
-# Summarize counts of up/down-regulated genes per patient
-patient_summary <- volcano_data %>%
-  group_by(gene) %>%
-  summarize(
-    num_up = sum(gene_type == "Up regulated"),
-    num_down = sum(gene_type == "Down regulated"),
-    mean_fc_up = mean(log2FoldChange[gene_type == "Up regulated"], na.rm = TRUE),
-    mean_fc_down = mean(log2FoldChange[gene_type == "Down regulated"], na.rm = TRUE)
+regulated_summary <- regulated_data |>
+  group_by(Name, gene_type) |>
+  summarise(n = n()
   )
 
-# Join with clinical data
-analysis_data <- patient_summary %>%
-  left_join(combined_data, by = "gene")
+ggplot(regulated_summary, aes(x = Name, fill = gene_type)) +
+  geom_bar(alpha = 0.7, position = "dodge") +   # Use geom_bar() for categorical counts
+  labs(title = "Count of Each Gene Present in Significant Gene Regulation",
+       x = "Gene Name", y = "Count (n)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for clarity
 
-# Correlation testing: Correlate gene counts with continuous clinical variables
-correlation_results <- analysis_data %>%
-  summarize(
-    cor_age_up = cor(num_up, age, method = "spearman"),
-    cor_stage_up = cor(num_up, disease_stage, method = "spearman"),
-    cor_age_down = cor(num_down, age, method = "spearman"),
-    cor_stage_down = cor(num_down, disease_stage, method = "spearman")
-  )
-
-```
-
-stats
-
-```{r}
-# Example: Test differences between two disease subtypes
-# Suppose `clinical_data` has a column `subtype`
-
-# Join patient_summary with clinical_data to get patient-specific info
-analysis_data <- patient_summary %>%
-  left_join(clinical_data, by = "patient_id")
-
-# Run statistical tests for group differences
-upregulated_test <- t.test(num_up ~ subtype, data = analysis_data)
-downregulated_test <- t.test(num_down ~ subtype, data = analysis_data)
-
-# Alternatively, use non-parametric test if assumptions of t-test are violated
-upregulated_test_wilcox <- wilcox.test(num_up ~ subtype, data = analysis_data)
-downregulated_test_wilcox <- wilcox.test(num_down ~ subtype, data = analysis_data)
 
 ```
 
 ```{r}
-# Create a boxplot for up-regulated gene counts by subtype
-ggplot(analysis_data, aes(x = subtype, y = num_up)) +
-  geom_boxplot() +
-  labs(title = "Up-Regulated Genes by Disease Subtype",
-       x = "Disease Subtype", y = "Number of Up-Regulated Genes")
 
-# Print correlation and test results
-print(correlation_results)
-print(upregulated_test)
-print(upregulated_test_wilcox)
+# Assuming regulated_data is already filtered and contains only "Up regulated" and "Down regulated"
+# Perform the ANOVA on log2FoldChange based on gene_type
+regulated_data$gene_type <- as.factor(regulated_data$gene_type)
+
+
+anova_result <- aov(gene_type ~ sex+disease+clinical_information, data = regulated_data)
+
+# Display the summary of the ANOVA
+anova_result
+
+logit_model <- glm(gene_type ~ sex:disease:clinical_information, 
+                   data = regulated_data, 
+                   family = binomial)  # Binary outcome
+summary(logit_model)
+```
+
+```{r}
+# Correlation between age and log2FoldChange
+cor.test(dataset$age, dataset$log2FoldChange, method = "spearman")
+
+# Correlation between TPM and age
+cor.test(dataset$TPM, dataset$age, method = "spearman")
+
 ```
