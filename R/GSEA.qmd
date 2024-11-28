@@ -24,7 +24,7 @@ source(file.path("99_proj_func.R"))
 ## Load data
 
 ```{r}
-res_df <- read.csv("../data/03_DESeq2_results-global.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-global.csv")
 ```
 
 ## Data preparation
@@ -91,7 +91,7 @@ plot_most_enriched_pathways(gsea_results,
 #| message: false
 #| error: false
 
-res_df <- read.csv("../data/03_DESeq2_results-cirrhosis.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-cirrhosis.csv")
 
 # Create list of ranked genes including names
 res_df <- res_df |> 
@@ -122,7 +122,7 @@ plot_most_enriched_pathways(gsea_results,
 #| message: false
 #| error: false
 
-res_df <- read.csv("../data/03_DESeq2_results-normal.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-normal.csv")
 
 # Create list of ranked genes including names
 res_df <- res_df |> 
@@ -153,7 +153,7 @@ plot_most_enriched_pathways(gsea_results,
 #| message: false
 #| error: false
 
-res_df <- read.csv("../data/03_DESeq2_results-fasting.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-fasting.csv")
 
 # Create list of ranked genes including names
 res_df <- res_df |> 
@@ -184,7 +184,7 @@ plot_most_enriched_pathways(gsea_results,
 #| message: false
 #| error: false
 
-res_df <- read.csv("../data/03_DESeq2_results-postprandial.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-postprandial.csv")
 
 # Create list of ranked genes including names
 res_df <- res_df |> 
