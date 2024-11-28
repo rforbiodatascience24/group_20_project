@@ -43,13 +43,13 @@ plot_volcano <- function(x, title, fc_cutoff, p_cutoff){
       )
   
   ## Create the folder to save it in
-  results_dir <- "../results/GEA"
+  results_dir <- "../results/DEA"
   if( !dir.exists(results_dir) ){
     dir.create(path = results_dir)
   }
   
   ## Saving and printing
-  ggsave(plot = p, file.path(str_c("../results/GEA/GEA-", 
+  ggsave(plot = p, file.path(str_c("../results/DEA/DEA-", 
                                    title, 
                                    ".png")))
   print(p)
