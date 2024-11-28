@@ -39,10 +39,54 @@ plot_volcano <- function(x, title, fc_cutoff, p_cutoff){
       colour = "Differencial expression")
   
   ## Saving and printing
-  ggsave(plot = p, file.path(str_c("../results/0X-volcano-plot-", title, "postprandial.pdf")))
+  ggsave(plot = p, file.path(str_c("../results/0X-volcano-plot-", 
+                                   title, 
+                                   "postprandial.pdf")))
   print(p)
 }
 
+compute_GSEA <- function(ranked_genes, gene_sets) {
+  gsea_results <- GSEA(
+    geneList = ranked_genes, # Ordered ranked gene list
+    minGSSize = 25, # Minimum gene set size
+    maxGSSize = 500, # Maximum gene set set
+    pvalueCutoff = 0.05, # p-value cutoff
+    eps = 0, # Boundary for calculating the p-value
+    seed = TRUE, # Set seed to make results reproducible
+    pAdjustMethod = "BH", # Benjamini-Hochberg correction
+    TERM2GENE = dplyr::select(
+      gene_sets,
+      gs_name,
+      gene_symbol
+    )
+  )
+  
+  gsea_results
+}
+
+plot_most_enriched_pathways <- function(gsea_results, 
+                                        title,
+                                        save_title) {
+  topPathways <- gsea_results |> 
+    dplyr::arrange(p.adjust) |> 
+    dplyr::slice(1:5)
+  
+  p <- ggplot(topPathways, 
+         mapping = aes(x = reorder(ID, NES), 
+                       y = NES)) +
+    geom_col() +
+    coord_flip() +
+    labs(x = "Pathway", 
+         y = "Normalized Enrichment Score (NES)", 
+         title = title) +
+    theme_minimal()
+  
+  ggsave(plot = p, file.path(str_c("../results/", 
+                                   save_title, 
+                                   ".pdf")))
+  
+  print(p)
+}
 
 
 
