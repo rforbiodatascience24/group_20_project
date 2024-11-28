@@ -115,8 +115,6 @@ bind_cols(data_pheno, pca$x) |>
     geom_point() + 
     geom_text_repel() +
     labs(x = PC1_t , y = PC2_t, color = "Disease", shape = "Clinical information") 
-
-ggsave(file.path("../results/0X-pca-plot.pdf"))
 ```
 
 ### Heatmap (all genes)
@@ -132,8 +130,6 @@ annotations <- data_pheno |> dplyr::select(disease, clinical_information)
 heatmap.individual <- pheatmap(cor.matrix, 
          annotation_col = annotations,
          main = "Heatmap - All samples")
-
-save_pheatmap_pdf(heatmap.individual, file.path("../results/0X_heatmap-all-samples.pdf"))
 
 ## We can see 3 outliers in the heatmap and ACP
 
@@ -185,8 +181,6 @@ write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-fasting.csv")
 plot_volcano(res, "fasting", log2(2), 0.05)
 ```
 
-
-
 ## Testing now in postprandial condition
 
 ```{r}
@@ -223,8 +217,6 @@ write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-postprandial.
 plot_volcano(res, "postprandial", log2(2), 0.05)
 ```
 
-
-
 ## Difference in expression fasting or not cirrhosis
 
 ```{r}
@@ -253,7 +245,6 @@ write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-cirrhosis.csv
 
 plot_volcano(x=res, title="cirrhosis", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
-
 
 ## Difference in expression fasting or not normal
 
@@ -284,5 +275,3 @@ write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-normal.csv"))
 
 plot_volcano(x=res, title="normal", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
-
-

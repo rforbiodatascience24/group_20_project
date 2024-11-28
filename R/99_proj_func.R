@@ -29,23 +29,35 @@ plot_volcano <- function(x, title, fc_cutoff, p_cutoff){
   
   ## Plot
   p <- volcano_data |> 
-    ggplot(aes(x = log2FoldChange, y = -log10(padj), col=gene_type)) + geom_point() +
-    geom_hline(yintercept = -log10(p_cutoff), linetype = "dashed") + 
-    geom_vline(xintercept = c(-fc_cutoff, fc_cutoff),
+    ggplot(aes(x = log2FoldChange, 
+               y = -log10(padj), 
+               col=gene_type)) + 
+      geom_point() +
+      geom_hline(yintercept = -log10(p_cutoff), linetype = "dashed") + 
+      geom_vline(xintercept = c(-fc_cutoff, fc_cutoff),
                linetype = "dashed") +
-    scale_color_manual(values=cols)+
-    labs(
-      title= str_c("Volcano plot - log10(Adj-P-Value) - ", title),
-      colour = "Differencial expression")
+      scale_color_manual(values=cols)+
+      labs(
+        title= str_c("Volcano plot - log10(Adj-P-Value) - ", title),
+        colour = "Differencial expression"
+      )
+  
+  ## Create the folder to save it in
+  results_dir <- "../results/GEA"
+  if( !dir.exists(results_dir) ){
+    dir.create(path = results_dir)
+  }
   
   ## Saving and printing
-  ggsave(plot = p, file.path(str_c("../results/0X-volcano-plot-", 
+  ggsave(plot = p, file.path(str_c("../results/GEA/GEA-", 
                                    title, 
-                                   "postprandial.pdf")))
+                                   ".png")))
   print(p)
 }
 
 compute_GSEA <- function(ranked_genes, gene_sets) {
+  
+  ## Applying GSEA
   gsea_results <- GSEA(
     geneList = ranked_genes, # Ordered ranked gene list
     minGSSize = 25, # Minimum gene set size
@@ -67,6 +79,8 @@ compute_GSEA <- function(ranked_genes, gene_sets) {
 plot_most_enriched_pathways <- function(gsea_results, 
                                         title,
                                         save_title) {
+  
+  ## Taking the 5 most enriched pathways
   topPathways <- gsea_results |> 
     dplyr::arrange(p.adjust) |> 
     dplyr::slice(1:5)
@@ -81,9 +95,16 @@ plot_most_enriched_pathways <- function(gsea_results,
          title = title) +
     theme_minimal()
   
-  ggsave(plot = p, file.path(str_c("../results/", 
+  ## Create the folder to save it in
+  results_dir <- "../results/GSEA"
+  if( !dir.exists(results_dir) ){
+    dir.create(path = results_dir)
+  }
+  
+  ## Save the plot
+  ggsave(plot = p, file.path(str_c("../results/GSEA/", 
                                    save_title, 
-                                   ".pdf")))
+                                   ".png")))
   
   print(p)
 }

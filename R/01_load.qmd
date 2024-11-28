@@ -30,12 +30,17 @@ library("stringr")
 ```{r}
 #| label: creating-data-folder
 data_dir <- "../data"
+results_dir <- "../results"
 raw_data_dir <- "../data/_raw/"
 count_data_dir <- "../data/_raw/count_data"
 metadata_dir <- "../data/_raw/metadata"
 
 if( !dir.exists(data_dir) ){
   dir.create(path = data_dir)
+}
+
+if( !dir.exists(results_dir) ){
+  dir.create(path = results_dir)
 }
 
 if( !dir.exists(raw_data_dir) ){
