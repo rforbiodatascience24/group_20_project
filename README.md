@@ -13,7 +13,7 @@ Olivier Gaufres (nollive), s243252, contact: s243252@dtu.dk
 Antoine Andreoletti (apollis44), s242830, contact: s242830@dtu.dk
 
 ## Describtion
-This project investigates differences in hepatic gene expression between healthy individuals, patients with non-alcoholic fatty liver disease (NAFLD), and patients with cirrhosis. Using RNA-sequence of coding RNA, we analyze differences between these groups.
+This project investigates differences in hepatic gene expression between healthy individuals, patients with non-alcoholic fatty liver disease (NAFLD), and patients with cirrhosis. Using RNA-sequence of coding RNA, we analyze differences between these groups, focusing on fasting vs postprandial.
 
 ## Project Structure
 - **Data Setup and Download:** `01_load` creates a `data/` directory, with the subdirectories `data/_raw/count_data/`, and `data/_raw/metadata/`. It downloads the raw data from the specified URL (found under `Data`) and saves it into the subfolders.
