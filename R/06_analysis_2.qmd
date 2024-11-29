@@ -1,5 +1,5 @@
 ---
-title: "05_analysis_pca"
+title: "06_analysis_2"
 author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 format:
   html:
@@ -7,9 +7,9 @@ format:
 editor: visual
 ---
 
-## Heatmap
+# Heatmap
 
-Libraries
+## Libraries
 
 ```{r}
 library("tidyverse") 
@@ -17,10 +17,12 @@ library("pheatmap")
 
 ```
 
-Load data
+## Load data
+
+Loading meta- and count data
 
 ```{r}
-#| label: load metadata
+#| label: load-metadata
 #| include: false
 #| echo: true
 
@@ -52,7 +54,7 @@ data_counts <- data_counts |>
   mutate(across(where(is.numeric), as.integer))
 ```
 
-The analysis - heatmap
+## The analysis - heatmap
 
 ```{r}
 #| label: heatmap-individual
