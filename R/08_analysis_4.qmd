@@ -123,12 +123,47 @@ names(ranked_genes) <- gene_symbols
 gsea_results <- compute_GSEA(ranked_genes, 
                              gene_sets)
 
-title <- "5 most enriched Pathways between fasting and postprandial cirrhosis patiens"
+title <- "5 most enriched Pathways between fasting and postprandial cirrhosis patients"
 save_title <- "GSEA_fasting_vs_postprandial_cirrhosis_patients"
 plot_most_enriched_pathways(gsea_results, 
                             title,
                             save_title)
 ```
+
+## Comparing expression during fasting or postprandial in cirrhosis patients
+
+```{r}
+#| label: fasting-or-postprandial-cirrhosis
+#| message: false
+#| error: false
+
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-fattyliver.csv")
+
+# Create list of ranked genes including names
+res_df <- res_df |> 
+  mutate(gene_symbol = na_if(gene_symbol, "")) |> 
+  drop_na(stat, gene_symbol) |> 
+  distinct(gene_symbol, .keep_all = TRUE) |> 
+  arrange(desc(stat))
+
+ranked_genes <- res_df |> 
+  pull(stat)
+
+gene_symbols <- res_df |> 
+  pull(gene_symbol)
+
+names(ranked_genes) <- gene_symbols
+
+gsea_results <- compute_GSEA(ranked_genes, 
+                             gene_sets)
+
+title <- "5 most enriched Pathways between fasting and postprandial for non-alcoholic fatty liver disease patients"
+save_title <- "GSEA_fasting_vs_postprandial_fattyliver_patients"
+plot_most_enriched_pathways(gsea_results, 
+                            title,
+                            save_title)
+```
+
 
 ## Comparing expression during fasting or postprandial in normal patients
 
@@ -156,7 +191,7 @@ names(ranked_genes) <- gene_symbols
 gsea_results <- compute_GSEA(ranked_genes, 
                              gene_sets)
 
-title <- "5 most enriched Pathways between fasting and postprandial healthy patiens"
+title <- "5 most enriched Pathways between fasting and postprandial healthy patients"
 save_title <- "GSEA_fasting_vs_postprandial_healthy_patients"
 plot_most_enriched_pathways(gsea_results, 
                             title,

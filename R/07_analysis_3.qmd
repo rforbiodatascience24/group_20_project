@@ -237,6 +237,44 @@ write_csv(as.data.frame(res),
 plot_volcano(x=res, title="cirrhosis", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
 
+## Difference in expression fasting or not non-alcoholic fatty liver disease
+
+```{r}
+#| label: dea-deseq2-fattyliver
+
+data_pheno_fattyliver <- data_pheno |> 
+  dplyr::filter(disease == "non-alcoholic fatty liver disease")
+
+data_counts_fattyliver <- data_counts |> 
+  dplyr::select(rownames(data_pheno_fattyliver))
+
+dds <- DESeqDataSetFromMatrix(countData = data_counts_fattyliver,
+                              colData = data_pheno_fattyliver,
+                              design = ~clinical_information)
+
+featureData <- data.frame(gene=rownames(data_counts_fattyliver))
+mcols(dds) <- DataFrame(mcols(dds), 
+                        featureData)
+
+# DEA
+dds <- DESeq(dds)
+res <- results(dds)
+
+gene_symbol.df <- data_counts.total |> 
+  dplyr::select(gene_symbol) |> 
+  rownames_to_column("transcript_ID")
+
+res <- as.data.frame(res) |> 
+  rownames_to_column("transcript_ID") |> 
+  left_join(gene_symbol.df, by = "transcript_ID")
+
+#Saving the results
+write_csv(as.data.frame(res), 
+          file.path("../data/DESeq2/03_DESeq2_results-fattyliver.csv"))
+
+plot_volcano(x=res, title="non-alcoholic-fatty-liver-disease", fc_cutoff=log2(2), p_cutoff=0.05)
+```
+
 ## Difference in expression fasting or not normal
 
 ```{r}
@@ -273,3 +311,5 @@ write_csv(as.data.frame(res),
 
 plot_volcano(x=res, title="normal", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
+
+## 
