@@ -1,8 +1,20 @@
 # Group 20 Project
 
+## Project Contributors
+
+Lea Eschen Skytthe, leasn-bot, s203531, contact: [s203531\@dtu.dk](mailto:s203531@dtu.dk){.email}
+
+Trine Søgaard, s204655, contact: [triso\@dtu.dk](mailto:triso@dtu.dk){.email}
+
+Amy Surry, s201902, contact: [s201902\@dtu.dk](mailto:s201902@dtu.dk){.email}
+
+Olivier Gaufres, s243252, contact: [s243252\@dtu.dk](mailto:s243252@dtu.dk){.email}
+
+Antoine Andreoletti, s242830, contact: [s242830\@dtu.dk](mailto:s242830@dtu.dk){.email}
+
 ## Description
 
-This project investigates differences in hepatic gene expression between healthy individuals, patients with non-alcoholic fatty liver disease (NAFLD), and patients with cirrhosis. Using RNA-sequence of coding RNA, we analyze differences between these groups, with focus on fasting vs postprandial.
+This project investigates differences in hepatic gene expression between healthy individuals, patients with non-alcoholic fatty liver disease (NAFLD), and patients with cirrhosis. Using RNA-sequence of coding RNA, we analyze differences between these groups, focusing on fasting vs postprandial.
 
 ## Project Structure
 
@@ -14,19 +26,7 @@ This project investigates differences in hepatic gene expression between healthy
 
 -   **Data Description:** `04_describe`
 
--   **Data Analysis:** `05_analysis_xx`
-
-## Project Contributors
-
-Lea Eschen Skytthe, s203531, contact: [s203531\@dtu.dk](mailto:s203531@dtu.dk){.email}
-
-Trine Søgaard, s204655, contact: [triso\@dtu.dk](mailto:triso@dtu.dk){.email}
-
-Amy Surry, s201902, contact: [s201902\@dtu.dk](mailto:s201902@dtu.dk){.email}
-
-Olivier Gaufres, s243252, contact: [s243252\@dtu.dk](mailto:s243252@dtu.dk){.email}
-
-Antoine Andreoletti, s242830, contact: [s242830\@dtu.dk](mailto:s242830@dtu.dk){.email}
+-   **Data Analysis:** `05_analysis_1` PCA, `06_analysis_2` Heatmap, `07_analysis_3` Volcano plot, `08_analysis_4` GSEA
 
 ## Data
 
