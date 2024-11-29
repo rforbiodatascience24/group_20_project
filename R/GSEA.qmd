@@ -49,6 +49,8 @@ ranked_genes <- res_df |>
 gene_symbols <- res_df |> 
   pull(gene_symbol)
 names(ranked_genes) <- gene_symbols
+
+#Just adding a comment
 ```
 
 ## Gene Set Enrichment Analysis
