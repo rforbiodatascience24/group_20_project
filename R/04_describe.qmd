@@ -12,7 +12,11 @@ The objective of this file is to analyse the patients we have.
 ## Importing libraries
 
 ```{r}
+#| label: load-libraries
 #| message: False
+#| warning: False
+
+rm(list=ls())
 
 library("tidyverse")
 library("table1")
@@ -21,14 +25,21 @@ library("table1")
 ## Importing the data
 
 ```{r}
-#| message: False
+#| label: load-data
 
 metadata <- read_csv("../data/03_metadata_aug.csv")
-metadata |> sample_n(10)
 ```
 
 ```{r}
-#| message: false
+#| label: inspect-data
+
+metadata |> sample_n(5)
+```
+
+Making a table of our data
+
+```{r}
+#| label: table1
 
 metadata |> 
   mutate(sex = factor(sex),
@@ -39,8 +50,10 @@ metadata |>
 
 ## Analysing age, gender, and disease distributions
 
+Lets start with age and sex
+
 ```{r}
-#| warning: false
+#| label: age-and-sex-distribution
 
 metadata |> 
   mutate(age_group = cut(
@@ -48,14 +61,17 @@ metadata |>
     breaks = seq(from = 0,
                  to = 100,
                  by = 10))) |> 
-  ggplot(mapping = aes(x = age_group, fill = sex)) +
-    geom_histogram(stat = "count", 
-                   position = position_dodge(preserve = "single"),
-                   color = "black")
+  ggplot(mapping = aes(x = age_group, 
+                       fill = sex)) +
+  geom_histogram(stat = "count", 
+                 position = position_dodge(preserve = "single"),
+                 color = "black")
 ```
 
+Now lets look at disease distribution in our dataset
+
 ```{r}
-#| warning: false
+#| label: disease-distribution
 
 metadata |> 
   ggplot(mapping = aes(x = disease, fill = sex)) +
@@ -64,7 +80,11 @@ metadata |>
                  color = "black") 
 ```
 
+Do the diseases depend on age?
+
 ```{r}
+#| label: average-age-for-the-diseases
+
 metadata |> 
   ggplot(mapping = aes(x = disease, y = age, fill = sex)) +
     geom_boxplot()
@@ -73,21 +93,28 @@ metadata |>
 Lets make a statistical analysis to see if there is any significant difference in the average age of people with cirrhosis disease as it looks like in the above plot.
 
 ```{r}
+#| label: significance-between-gender
+
 male_cirrhosis <- metadata |> 
-  filter(sex == "male", disease == "cirrhosis of liver") |> 
+  filter(sex == "male", 
+         disease == "cirrhosis of liver") |> 
   pull(age)
 
 female_cirrhosis <- metadata |> 
-  filter(sex == "female", disease == "cirrhosis of liver") |> 
+  filter(sex == "female", 
+         disease == "cirrhosis of liver") |> 
   pull(age)
 
-t.test(male_cirrhosis, female_cirrhosis)
+p_value <- t.test(male_cirrhosis, female_cirrhosis)$p.value
+print(paste("The p-value is:", round(p_value,3)))
 ```
 
 The p-value is above 0.05 so we can say that there is no significant difference between the two groups.
 
+## Fasting vs postprandial
+
 ```{r}
-#| warning: false
+#| label: fasting-and-postprandial-distribution
 
 metadata |> 
   mutate(age_group = cut(
@@ -95,39 +122,9 @@ metadata |>
     breaks = seq(from = 0,
                  to = 100,
                  by = 10))) |> 
-  ggplot(mapping = aes(x = age_group, fill = clinical_information)) +
-    geom_histogram(stat = "count", 
-                   position = position_dodge(preserve = "single"),
-                   color = "black")
-```
-
-```{r}
-#| warning: false
-
-metadata |> 
-  mutate(age_group = cut(
-    x = age,
-    breaks = seq(from = 0,
-                 to = 100,
-                 by = 10))) |> 
-  ggplot(mapping = aes(x = age_group, fill = disease)) +
-    geom_histogram(stat = "count", 
-                   position = position_dodge(preserve = "single"),
-                   color = "black")
-```
-
-```{r}
-#| warning: false
-
-metadata |> 
-  ggplot(mapping = aes(x = disease, fill = clinical_information)) +
-  geom_histogram(stat = "count",
+  ggplot(mapping = aes(x = age_group, 
+                       fill = clinical_information)) +
+  geom_histogram(stat = "count", 
                  position = position_dodge(preserve = "single"),
-                 color = "black") 
-```
-
-```{r}
-metadata |> 
-  ggplot(mapping = aes(x = disease, y = age, fill = clinical_information)) +
-    geom_boxplot()
+                 color = "black")
 ```

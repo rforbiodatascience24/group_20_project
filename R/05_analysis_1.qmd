@@ -12,6 +12,12 @@ editor: visual
 ## Libraries
 
 ```{r}
+#| label: load-libraries
+#| message: False
+#| warning: False
+
+rm(list=ls())
+
 library("tidyverse")
 library("ggrepel")
 library("broom")
@@ -19,12 +25,10 @@ library("broom")
 
 ## Load data
 
-Load meta- and count data
+Load meta and count data
 
 ```{r}
-#| label: load metadata
-#| include: false
-#| echo: true
+#| label: load-metadata
 
 data_pheno <- read.csv("../data/03_metadata_aug.csv")
 
@@ -34,11 +38,11 @@ data_pheno <- data.frame(data_pheno) |>
 ```
 
 ```{r}
-#| label: load-counts
-#| include: false
+#| label: load-count_data
 
 data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv") |>
-  dplyr::mutate(transcript_ID = str_c(transcript_ID, runif(n = length(transcript_ID)))) |> 
+  dplyr::mutate(transcript_ID = str_c(transcript_ID, 
+                                      runif(n = length(transcript_ID)))) |> 
   column_to_rownames("transcript_ID")
 
 
@@ -46,8 +50,8 @@ data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv") |>
 data_counts <- data.frame(data_counts.total) |>
   dplyr::select(-gene_id, -gene_symbol)
 
-colnames(data_counts) <- colnames(data_counts) |> substring(2)
-
+colnames(data_counts) <- colnames(data_counts) |> 
+  substring(2)
 
 # The output of the mapping algorithm they use is an estimated number of reads mapped to each gene. It is a float while we need an integer. We will then convert it.
 data_counts <- data_counts |> 
@@ -60,26 +64,31 @@ Performing PCA
 
 ```{r}
 #| label: pca-individual
-## Transpose the counts matrix to have the PCA for individuals and not gene expression
+#| warning: false
+
+# Transpose the counts matrix to have the PCA for individuals and not gene expression
 pca <- prcomp(t(data_counts))
 
-## Proportion of variance
+# Proportion of variance
 PoV <- pca$sdev^2/sum(pca$sdev^2)
 PoV <- PoV * 100
 PoV <- str_sub(PoV,1,4)
 PC1_t = str_c("PC1 (", PoV[1] , "%)")
 PC2_t = str_c("PC2 (", PoV[2] ,"%)")
 
-## Add patients metadata
+# Add patients metadata
 bind_cols(data_pheno, pca$x) |>  
-  ggplot(aes(x=PC1, y=PC2, shape=clinical_information, col=disease, label=individual)) + 
-    geom_point() + 
-    geom_text_repel() +
-    labs(x = PC1_t , y = PC2_t, color = "Disease", shape = "Clinical information") 
-```
-
-Saving the plot
-
-```{r}
-ggsave(file.path("../results/05_pca_plot.pdf"))
+  ggplot(aes(x=PC1, 
+             y=PC2, 
+             shape=clinical_information, 
+             col=disease, 
+             label=individual)) + 
+  geom_point() + 
+  geom_text_repel() +
+  labs(title = "PCA of the expression of patients",
+       x = PC1_t , 
+       y = PC2_t, 
+       color = "Disease", 
+       shape = "Clinical information") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```

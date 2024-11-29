@@ -29,6 +29,7 @@ library("stringr")
 
 ```{r}
 #| label: creating-data-folder
+
 data_dir <- "../data"
 results_dir <- "../results"
 raw_data_dir <- "../data/_raw/"
@@ -56,10 +57,10 @@ if( !dir.exists(metadata_dir) ){
 }
 ```
 
-## Import data
+## Upload data
 
 ```{r}
-#| label: import-data
+#| label: upload-data
 #| message: False
 #| echo: False
 
@@ -71,7 +72,7 @@ response <- GET(base_url)
 # Parse the HTML content
 html_doc <- htmlParse(content(response, as = "text"), asText = TRUE)
 
-# Extract file links (adjust the XPath as needed)
+# Extract file links
 file_links <- xpathSApply(html_doc, "//a/@href")
 file_links <- data.frame(files = file_links)
 
