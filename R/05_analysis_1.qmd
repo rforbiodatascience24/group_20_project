@@ -1,5 +1,5 @@
 ---
-title: "05_analysis_pca"
+title: "05_analysis_1"
 author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 format:
   html:
@@ -7,9 +7,9 @@ format:
 editor: visual
 ---
 
-## PCA
+# PCA
 
-Libraries
+## Libraries
 
 ```{r}
 library("tidyverse")
@@ -19,7 +19,9 @@ library("tibble")
 library("dplyr")
 ```
 
-Load data
+## Load data
+
+Load meta- and count data
 
 ```{r}
 #| label: load metadata
@@ -54,7 +56,9 @@ data_counts <- data_counts |>
   mutate(across(where(is.numeric), as.integer))
 ```
 
-The Principal Component Analysis
+## The Principal Component Analysis
+
+Performing PCA
 
 ```{r}
 #| label: pca-individual
