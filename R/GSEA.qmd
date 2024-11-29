@@ -33,7 +33,7 @@ To perform Gene Set Enrichment Analysis we have to prepare data by ranking the g
 
 To rank the genes, we use "stat" column from the DESeq2 results. The stat column represents the test statistic and provides a standardized measure of how differentially expressed each gene is.
 
-Furthermore, we remove potentially missing values.
+Furthermore, we remove missing values.
 
 ```{r}
 # Create list of ranked genes including names
@@ -50,7 +50,6 @@ gene_symbols <- res_df |>
   pull(gene_symbol)
 names(ranked_genes) <- gene_symbols
 
-#Just adding a comment
 ```
 
 ## Gene Set Enrichment Analysis
@@ -62,11 +61,9 @@ Before performing the GSEA, we need to divide the genes into gene sets. Using th
 gene_sets <- msigdbr(species = "Homo sapiens", category = "C8")
 ```
 
-From this we get the variable gene_sets, which is a named list, where each entry is a gene set (identified by gs_name) containing a vector of gene symbols.
+From this, we get the variable gene_sets, which is a named list, where each entry is a gene set (identified by gs_name) containing a vector of gene symbols.
 
 To perform the GSEA, we use the clusterProfiler package. The function tests each gene set for significant enrichment in high- or low-ranking genes.
-
-Pathways specifies the gene sets to be tested (the list created above) and stats provides the ranked list of genes based on the stat values (test statistic) from differential expression.
 
 ```{r}
 #| message: false
@@ -107,6 +104,7 @@ ranked_genes <- res_df |>
 
 gene_symbols <- res_df |> 
   pull(gene_symbol)
+
 names(ranked_genes) <- gene_symbols
 
 gsea_results <- compute_GSEA(ranked_genes, gene_sets)
