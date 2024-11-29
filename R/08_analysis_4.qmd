@@ -1,5 +1,5 @@
 ---
-title: "GSEA"
+title: "08_analysis_4"
 author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 format:
   html:
