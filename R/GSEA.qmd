@@ -12,15 +12,19 @@ editor: visual
 ## Load libraries
 
 ```{r}
+#| message: False
+
 library("msigdbr")
-library("fgsea")
-library("dplyr")
+library("clusterProfiler")
+library("tidyverse")
+
+source(file.path("99_proj_func.R"))
 ```
 
 ## Load data
 
 ```{r}
-res_df <- read.csv("../data/03_DESeq2_results.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-global.csv")
 ```
 
 ## Data preparation
@@ -33,56 +37,174 @@ Furthermore, we remove potentially missing values.
 
 ```{r}
 # Create list of ranked genes including names
-ranked_genes <- res_df$stat
-names(ranked_genes) <- rownames(res)
+res_df <- res_df |> 
+  mutate(gene_symbol = na_if(gene_symbol, '')) |> 
+  drop_na(stat, gene_symbol) |> 
+  distinct(gene_symbol, .keep_all = TRUE) |> 
+  arrange(desc(stat))
 
-# Remove missing values
-ranked_genes<- ranked_genes[!is.na(ranked_genes)]
+ranked_genes <- res_df |> 
+  pull(stat)
 
+gene_symbols <- res_df |> 
+  pull(gene_symbol)
+names(ranked_genes) <- gene_symbols
 ```
 
 ## Gene Set Enrichment Analysis
 
-Before performing the GSEA, we need to divide the genes into gene sets. Using the msigdbr package, the gene sets are fetched. We use category "C5" meaning gene ontology (GO) terms.
+Before performing the GSEA, we need to divide the genes into gene sets. Using the msigdbr package, the gene sets are fetched. We use category "C8" meaning cell type signature gene sets.
 
 ```{r}
 # Get gene sets
-gene_sets <- msigdbr(species = "Homo sapiens", category = "C5")
-
-# Reorganize gene sets 
-gene_sets <- split(x = gene_sets$gene_symbol, f = gene_sets$gs_name)
-
+gene_sets <- msigdbr(species = "Homo sapiens", category = "C8")
 ```
 
 From this we get the variable gene_sets, which is a named list, where each entry is a gene set (identified by gs_name) containing a vector of gene symbols.
 
-To perform the GSEA, we use the fgsea package. The function tests each gene set for significant enrichment in high- or low-ranking genes.
+To perform the GSEA, we use the clusterProfiler package. The function tests each gene set for significant enrichment in high- or low-ranking genes.
 
 Pathways specifies the gene sets to be tested (the list created above) and stats provides the ranked list of genes based on the stat values (test statistic) from differential expression.
 
 ```{r}
 #| message: false
+#| error: false
 
-fgsea_res <- fgsea(pathways = gene_sets,
-                   stats = ranked_genes)
+gsea_results <- compute_GSEA(ranked_genes, gene_sets)
 ```
 
-Now we want to look further into the top 5 most significantly enriched pathways identified by fgsea.
+Now we want to look further into the top 5 most significantly enriched pathways identified by our GSEA and plot it
 
 ```{r}
-topPathways <- fgsea_res |> 
-  filter(padj < 0.05) |> 
-  arrange(desc(NES)) |> 
-  slice(1:5)
+title <- "5 most enriched Pathways between healthy and sick people"
+save_title <- "GSEA_sick_vs_healthy_people"
+plot_most_enriched_pathways(gsea_results, 
+                            title,
+                            save_title)
 ```
 
+# Repeating the same procedure for each gene expression analysis we did
+
+## Comparing expression during fasting or postprandial in cirrhosis patients
+
 ```{r}
-ggplot(topPathways,
-       mapping = aes(x = reorder(pathway, NES), y = NES)) +
-  geom_col() +
-  coord_flip()+
-  labs(x = "Pathway",
-       y = "Normalized Enrichment Scores (NES)",
-       title = "Top 5 Enriched Pathways")+
-  theme_minimal()
+#| message: false
+#| error: false
+
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-cirrhosis.csv")
+
+# Create list of ranked genes including names
+res_df <- res_df |> 
+  mutate(gene_symbol = na_if(gene_symbol, '')) |> 
+  drop_na(stat, gene_symbol) |> 
+  distinct(gene_symbol, .keep_all = TRUE) |> 
+  arrange(desc(stat))
+
+ranked_genes <- res_df |> 
+  pull(stat)
+
+gene_symbols <- res_df |> 
+  pull(gene_symbol)
+names(ranked_genes) <- gene_symbols
+
+gsea_results <- compute_GSEA(ranked_genes, gene_sets)
+
+title <- "5 most enriched Pathways between fasting and postprandial cirrhosis patiens"
+save_title <- "GSEA_fasting_vs_postprandial_cirrhosis_patients"
+plot_most_enriched_pathways(gsea_results, 
+                            title,
+                            save_title)
+```
+
+## Comparing expression during fasting or postprandial in normal patients
+
+```{r}
+#| message: false
+#| error: false
+
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-normal.csv")
+
+# Create list of ranked genes including names
+res_df <- res_df |> 
+  mutate(gene_symbol = na_if(gene_symbol, '')) |> 
+  drop_na(stat, gene_symbol) |> 
+  distinct(gene_symbol, .keep_all = TRUE) |> 
+  arrange(desc(stat))
+
+ranked_genes <- res_df |> 
+  pull(stat)
+
+gene_symbols <- res_df |> 
+  pull(gene_symbol)
+names(ranked_genes) <- gene_symbols
+
+gsea_results <- compute_GSEA(ranked_genes, gene_sets)
+
+title <- "5 most enriched Pathways between fasting and postprandial healthy patiens"
+save_title <- "GSEA_fasting_vs_postprandial_healthy_patients"
+plot_most_enriched_pathways(gsea_results, 
+                            title,
+                            save_title)
+```
+
+## Comparing expression of sick or healthy patients in fasting conditions
+
+```{r}
+#| message: false
+#| error: false
+
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-fasting.csv")
+
+# Create list of ranked genes including names
+res_df <- res_df |> 
+  mutate(gene_symbol = na_if(gene_symbol, '')) |> 
+  drop_na(stat, gene_symbol) |> 
+  distinct(gene_symbol, .keep_all = TRUE) |> 
+  arrange(desc(stat))
+
+ranked_genes <- res_df |> 
+  pull(stat)
+
+gene_symbols <- res_df |> 
+  pull(gene_symbol)
+names(ranked_genes) <- gene_symbols
+
+gsea_results <- compute_GSEA(ranked_genes, gene_sets)
+
+title <- "5 most enriched Pathways between sick and healthy patients in fasting conditions"
+save_title <- "GSEA_sick_vs_healthy_patients_fasting"
+plot_most_enriched_pathways(gsea_results, 
+                            title,
+                            save_title)
+```
+
+## Comparing expression of sick or healthy patients in postprandial conditions
+
+```{r}
+#| message: false
+#| error: false
+
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-postprandial.csv")
+
+# Create list of ranked genes including names
+res_df <- res_df |> 
+  mutate(gene_symbol = na_if(gene_symbol, '')) |> 
+  drop_na(stat, gene_symbol) |> 
+  distinct(gene_symbol, .keep_all = TRUE) |> 
+  arrange(desc(stat))
+
+ranked_genes <- res_df |> 
+  pull(stat)
+
+gene_symbols <- res_df |> 
+  pull(gene_symbol)
+names(ranked_genes) <- gene_symbols
+
+gsea_results <- compute_GSEA(ranked_genes, gene_sets)
+
+title <- "5 most enriched Pathways between sick and healthy patients in postprandial conditions"
+save_title <- "GSEA_sick_vs_healthy_patients_postprandial"
+plot_most_enriched_pathways(gsea_results, 
+                            title,
+                            save_title)
 ```

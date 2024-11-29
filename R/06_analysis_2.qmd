@@ -1,0 +1,70 @@
+---
+title: "05_analysis_pca"
+author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
+format:
+  html:
+    embed-resources: true
+editor: visual
+---
+
+## Heatmap
+
+Libraries
+
+```{r}
+library("tidyverse") 
+library("pheatmap")
+
+```
+
+Load data
+
+```{r}
+#| label: load metadata
+#| include: false
+#| echo: true
+
+data_pheno <- read.csv("../data/03_metadata_aug.csv")
+
+# We want patients as row names, so we convert the tibble to a dataframe and names the rows
+data_pheno <- data.frame(data_pheno) |> 
+  column_to_rownames("source_name")
+```
+
+```{r}
+#| label: load-counts
+#| include: false
+
+data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv") |>
+  dplyr::mutate(transcript_ID = str_c(transcript_ID, runif(n = length(transcript_ID)))) |> 
+  column_to_rownames("transcript_ID")
+
+
+# We want genes as row names, so we convert the tibble to a dataframe and names the rows
+data_counts <- data.frame(data_counts.total) |>
+  dplyr::select(-gene_id, -gene_symbol)
+
+colnames(data_counts) <- colnames(data_counts) |> substring(2)
+
+
+# The output of the mapping algorithm they use is an estimated number of reads mapped to each gene. It is a float while we need an integer. We will then convert it.
+data_counts <- data_counts |> 
+  mutate(across(where(is.numeric), as.integer))
+```
+
+The analysis - heatmap
+
+```{r}
+#| label: heatmap-individual
+
+cor.matrix <- cor(data_counts)
+annotations <- data_pheno |> dplyr::select(disease, clinical_information)
+
+heatmap.individual <- pheatmap(cor.matrix, 
+         annotation_col = annotations,
+         main = "Heatmap - All samples")
+
+save_pheatmap_pdf(heatmap.individual, file.path("../results/0X_heatmap-all-samples.pdf"))
+
+## We can see 3 outliers in the heatmap and ACP
+```

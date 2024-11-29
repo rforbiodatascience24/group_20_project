@@ -60,7 +60,7 @@ Renaming the columns to be more meaningful
 #| label: clean-metadata-renaming-columns
 
 filtered_metadata <- filtered_metadata |> 
-  rename(
+  dplyr::rename(
     source_name = "Source.Name",
     individual = "Characteristics.individual.",
     age = "Characteristics.age.",
