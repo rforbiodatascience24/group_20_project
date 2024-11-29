@@ -1,6 +1,6 @@
 ---
 title: "Data cleaning"
-author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
+author: Antoine Andréoletti (s242830), Olivier Gaufrès (s243252), Amy Surry (s201902), Lea Skytthe (s203531), Trine Søgaard (s204655)
 format:
   html:
     embed-resources: true
@@ -92,7 +92,7 @@ write_csv(filtered_metadata, file = file.path("../data/02_metadata_clean.csv"))
 
 The data has the following columns:
 
--   **Name**: Likely the transcript IDs (e.g., ENST... are Ensembl transcript identifiers).
+-   **Name**: The transcript IDs (e.g., ENST... are Ensemble transcript identifiers).
 
 -   **Length**: The full length of the transcript in base pairs (bp).
 
