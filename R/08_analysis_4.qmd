@@ -1,5 +1,5 @@
 ---
-title: "GSEA"
+title: "08_analysis_4"
 author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 format:
   html:
@@ -24,7 +24,7 @@ source(file.path("99_proj_func.R"))
 ## Load data
 
 ```{r}
-res_df <- read.csv("../data/03_DESeq2_results-global.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-global.csv")
 ```
 
 ## Data preparation
@@ -33,7 +33,7 @@ To perform Gene Set Enrichment Analysis we have to prepare data by ranking the g
 
 To rank the genes, we use "stat" column from the DESeq2 results. The stat column represents the test statistic and provides a standardized measure of how differentially expressed each gene is.
 
-Furthermore, we remove potentially missing values.
+Furthermore, we remove missing values.
 
 ```{r}
 # Create list of ranked genes including names
@@ -49,6 +49,7 @@ ranked_genes <- res_df |>
 gene_symbols <- res_df |> 
   pull(gene_symbol)
 names(ranked_genes) <- gene_symbols
+
 ```
 
 ## Gene Set Enrichment Analysis
@@ -60,11 +61,9 @@ Before performing the GSEA, we need to divide the genes into gene sets. Using th
 gene_sets <- msigdbr(species = "Homo sapiens", category = "C8")
 ```
 
-From this we get the variable gene_sets, which is a named list, where each entry is a gene set (identified by gs_name) containing a vector of gene symbols.
+From this, we get the variable gene_sets, which is a named list, where each entry is a gene set (identified by gs_name) containing a vector of gene symbols.
 
 To perform the GSEA, we use the clusterProfiler package. The function tests each gene set for significant enrichment in high- or low-ranking genes.
-
-Pathways specifies the gene sets to be tested (the list created above) and stats provides the ranked list of genes based on the stat values (test statistic) from differential expression.
 
 ```{r}
 #| message: false
@@ -91,7 +90,7 @@ plot_most_enriched_pathways(gsea_results,
 #| message: false
 #| error: false
 
-res_df <- read.csv("../data/03_DESeq2_results-cirrhosis.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-cirrhosis.csv")
 
 # Create list of ranked genes including names
 res_df <- res_df |> 
@@ -105,6 +104,7 @@ ranked_genes <- res_df |>
 
 gene_symbols <- res_df |> 
   pull(gene_symbol)
+
 names(ranked_genes) <- gene_symbols
 
 gsea_results <- compute_GSEA(ranked_genes, gene_sets)
@@ -122,7 +122,7 @@ plot_most_enriched_pathways(gsea_results,
 #| message: false
 #| error: false
 
-res_df <- read.csv("../data/03_DESeq2_results-normal.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-normal.csv")
 
 # Create list of ranked genes including names
 res_df <- res_df |> 
@@ -153,7 +153,7 @@ plot_most_enriched_pathways(gsea_results,
 #| message: false
 #| error: false
 
-res_df <- read.csv("../data/03_DESeq2_results-fasting.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-fasting.csv")
 
 # Create list of ranked genes including names
 res_df <- res_df |> 
@@ -184,7 +184,7 @@ plot_most_enriched_pathways(gsea_results,
 #| message: false
 #| error: false
 
-res_df <- read.csv("../data/03_DESeq2_results-postprandial.csv")
+res_df <- read.csv("../data/DESeq2/03_DESeq2_results-postprandial.csv")
 
 # Create list of ranked genes including names
 res_df <- res_df |> 

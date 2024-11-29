@@ -61,11 +61,6 @@ Pivot the count data to make some analyses
 count_data_wide <- count_data |> 
   dplyr::select(c("Name","source_name","NumReads")) |> 
   pivot_wider(names_from = source_name, values_from = NumReads)
-
-if( !file.exists(file.path("../data/03_count_data_wide.csv")) ){
-  write_csv(count_data_wide, 
-            file = file.path("../data/03_count_data_wide.csv"))
-}
 ```
 
 In case we need normalized counts instead of normal counts, we can create a dataset for it
@@ -75,11 +70,6 @@ In case we need normalized counts instead of normal counts, we can create a data
 normalized_count_data_wide <- count_data |> 
   dplyr::select(c("Name","source_name","TPM")) |> 
   pivot_wider(names_from = source_name, values_from = TPM)
-
-if( !file.exists(file.path("../data/03_normalized_count_data_wide.csv")) ){
-  write_csv(count_data_wide, 
-            file = file.path("../data/03_normalized_count_data_wide.csv"))
-}
 ```
 
 We only want to include the patients that are present in both meta data and count data. We therefore need to make sure that the rows of the metadata corresponds to the columns of the count data

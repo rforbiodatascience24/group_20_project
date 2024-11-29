@@ -1,5 +1,5 @@
 ---
-title: "0X_analysis"
+title: "07_analysis_3"
 author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 format:
   html:
@@ -90,9 +90,15 @@ res <- results(dds)
 gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to_column("transcript_ID")
 res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
 
+# Creating the folder to save the data
+
+DESeq2_data_dir <- "../data/DESeq2"
+if( !dir.exists(DESeq2_data_dir) ){
+  dir.create(path = DESeq2_data_dir)
+}
 
 #Saving the results
-write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-global.csv"))
+write_csv(as.data.frame(res), file.path("../data/DESeq2/03_DESeq2_results-global.csv"))
 ```
 
 ### PCA
@@ -176,7 +182,7 @@ res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(ge
 
 
 #Saving the results
-write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-fasting.csv"))
+write_csv(as.data.frame(res), file.path("../data/DESeq2/03_DESeq2_results-fasting.csv"))
 
 plot_volcano(res, "fasting", log2(2), 0.05)
 ```
@@ -211,7 +217,7 @@ gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to
 res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
 
 #Saving the results
-write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-postprandial.csv"))
+write_csv(as.data.frame(res), file.path("../data/DESeq2/03_DESeq2_results-postprandial.csv"))
 
 ## Plot the volcano
 plot_volcano(res, "postprandial", log2(2), 0.05)
@@ -241,7 +247,7 @@ gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to
 res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
 
 #Saving the results
-write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-cirrhosis.csv"))
+write_csv(as.data.frame(res), file.path("../data/DESeq2/03_DESeq2_results-cirrhosis.csv"))
 
 plot_volcano(x=res, title="cirrhosis", fc_cutoff=log2(2), p_cutoff=0.05)
 ```
@@ -270,7 +276,7 @@ gene_symbol.df <- data_counts.total |> dplyr::select(gene_symbol) |> rownames_to
 res <- as.data.frame(res) |> rownames_to_column("transcript_ID") |> left_join(gene_symbol.df, by = "transcript_ID")
 
 #Saving the results
-write_csv(as.data.frame(res), file.path("../data/03_DESeq2_results-normal.csv"))
+write_csv(as.data.frame(res), file.path("../data/DESeq2/03_DESeq2_results-normal.csv"))
 
 
 plot_volcano(x=res, title="normal", fc_cutoff=log2(2), p_cutoff=0.05)
