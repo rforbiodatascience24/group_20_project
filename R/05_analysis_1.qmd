@@ -76,6 +76,8 @@ pca_fit |>
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
+It is hard to split our patients just using a PCA, we will have to use other tools to look at differences in gene expression between the groups.
+
 #### The rotation matrix
 
 ```{r}
@@ -89,22 +91,39 @@ arrow_style <- arrow(
   length = grid::unit(8, "pt")
 )
 
+# Lets keep only the genes with biggest impact on the PCA
+PC1_sorted <- pca_fit |>
+  tidy(matrix = "rotation") |>
+  pivot_wider(names_from = "PC", 
+              names_prefix = "PC", 
+              values_from = "value") |> 
+  mutate(PC1 = abs(PC1)) |> 
+  arrange(desc(PC1)) |> 
+  pull(PC1)
+
+biggest_value_PC1 <- PC1_sorted[10]
+
 # plot rotation matrix
 pca_fit |>
   tidy(matrix = "rotation") |>
   pivot_wider(names_from = "PC", 
               names_prefix = "PC", 
               values_from = "value") |>
-  ggplot(aes(PC1, PC2)) +
+  mutate(column = data_counts.total$gene_symbol) |> 
+  filter(PC1 > biggest_value_PC1 | PC1 < - biggest_value_PC1,
+         PC2 > biggest_value_PC1 | PC2 < - biggest_value_PC1) |> 
+  ggplot(aes(x = PC1, 
+             y = PC2)) +
   geom_segment(xend = 0, 
                yend = 0, 
                arrow = arrow_style) +
   geom_text(
     aes(label = column),
-    hjust = 1, nudge_x = -0.02, 
     color = "#56B4E9"
   ) +
-  coord_fixed()
+  coord_fixed() +
+  labs(title = "Rotation matrix of most impactful genes") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 #### The variance by each PC
@@ -114,13 +133,16 @@ pca_fit |>
 
 pca_fit |>
   tidy(matrix = "eigenvalues") |>
-  ggplot(aes(PC, percent)) +
-  geom_col(fill = "#56B4E9", alpha = 0.8) +
-  scale_x_continuous(breaks = 1:9) +
-  scale_y_continuous(
-    trans = "log2",
-    labels = scales::percent_format(),
-    expand = expansion(mult = c(0, 0.01))
-  ) +
-  theme_minimal_hgrid(12)
+  filter(percent > 0.005) |> 
+  ggplot(aes(x = PC, 
+             y = percent)) +
+  geom_col(fill = "#56B4E9", color = "black") +
+  scale_x_continuous(breaks = 1:length(data_counts)) +
+  scale_y_continuous(labels = scales::percent_format(),
+                     expand = expansion(mult = c(0, 0.01))) +
+  theme_minimal_hgrid(12) +
+  labs(title = "Variance explained by each components",
+       x = "Component",
+       y = "Percentage of variance") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```

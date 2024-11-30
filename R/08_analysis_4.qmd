@@ -86,6 +86,8 @@ Now we want to look further into the top 5 most significantly enriched pathways 
 
 ```{r}
 #| label: plotting-5-most-enriched-genes
+#| fig-asp: 0.5
+#| fig-width: 10
 
 title <- "5 most enriched Pathways between healthy and sick people"
 save_title <- "GSEA_sick_vs_healthy_people"
@@ -102,6 +104,8 @@ plot_most_enriched_pathways(gsea_results,
 #| label: fasting-or-postprandial-cirrhosis
 #| message: false
 #| error: false
+#| fig-asp: 0.5
+#| fig-width: 10
 
 res_df <- read.csv("../data/DESeq2/03_DESeq2_results-cirrhosis.csv")
 
@@ -136,6 +140,8 @@ plot_most_enriched_pathways(gsea_results,
 #| label: fasting-or-postprandial-cirrhosis
 #| message: false
 #| error: false
+#| fig-asp: 0.5
+#| fig-width: 10
 
 res_df <- read.csv("../data/DESeq2/03_DESeq2_results-fattyliver.csv")
 
@@ -164,13 +170,14 @@ plot_most_enriched_pathways(gsea_results,
                             save_title)
 ```
 
-
 ## Comparing expression during fasting or postprandial in normal patients
 
 ```{r}
 #| label: fasting-or-postprandial-normal
 #| message: false
 #| error: false
+#| fig-asp: 0.5
+#| fig-width: 10
 
 res_df <- read.csv("../data/DESeq2/03_DESeq2_results-normal.csv")
 
@@ -204,6 +211,8 @@ plot_most_enriched_pathways(gsea_results,
 #| label: sick-or-healthy-fasting
 #| message: false
 #| error: false
+#| fig-asp: 0.5
+#| fig-width: 10
 
 res_df <- read.csv("../data/DESeq2/03_DESeq2_results-fasting.csv")
 
@@ -237,6 +246,8 @@ plot_most_enriched_pathways(gsea_results,
 #| label: sick-or-healthy-postprandial
 #| message: false
 #| error: false
+#| fig-asp: 0.5
+#| fig-width: 10
 
 res_df <- read.csv("../data/DESeq2/03_DESeq2_results-postprandial.csv")
 

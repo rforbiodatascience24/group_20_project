@@ -65,7 +65,12 @@ metadata |>
                        fill = sex)) +
   geom_histogram(stat = "count", 
                  position = position_dodge(preserve = "single"),
-                 color = "black")
+                 color = "black") +
+  labs(title = "Age distribution of the patients in our study",
+       x = "Age group",
+       y = "Count",
+       fill = "Gender") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Now lets look at disease distribution in our dataset
@@ -77,7 +82,12 @@ metadata |>
   ggplot(mapping = aes(x = disease, fill = sex)) +
   geom_histogram(stat = "count",
                  position = position_dodge(preserve = "single"),
-                 color = "black") 
+                 color = "black") +
+  labs(title = "Disease distribution in our study",
+       x = "Disease",
+       y = "Count",
+       fill = "Gender") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Do the diseases depend on age?
@@ -87,7 +97,12 @@ Do the diseases depend on age?
 
 metadata |> 
   ggplot(mapping = aes(x = disease, y = age, fill = sex)) +
-    geom_boxplot()
+    geom_boxplot() +
+  labs(title = "Age distribution for each disease",
+       x = "Disease",
+       y = "Age",
+       fill = "Gender") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Lets make a statistical analysis to see if there is any significant difference in the average age of people with cirrhosis disease as it looks like in the above plot.
@@ -126,5 +141,10 @@ metadata |>
                        fill = clinical_information)) +
   geom_histogram(stat = "count", 
                  position = position_dodge(preserve = "single"),
-                 color = "black")
+                 color = "black") +
+  labs(title = "Age distribution for each study group",
+       x = "Age group",
+       y = "Count",
+       fill = "Study group") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```

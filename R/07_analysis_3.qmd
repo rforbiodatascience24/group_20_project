@@ -108,7 +108,8 @@ write_csv(as.data.frame(res),
 
 # General analysis
 plot_volcano(x = res, 
-             title = "general", 
+             title = "general",
+             title_plot = "sick against healthy",
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 ```
@@ -154,6 +155,7 @@ write_csv(as.data.frame(res),
 
 plot_volcano(x = res, 
              title = "fasting", 
+             title_plot = "in fasting conditions, sick against healthy",
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 ```
@@ -200,6 +202,7 @@ write_csv(as.data.frame(res),
 # Plot the volcano
 plot_volcano(x = res, 
              title = "postprandial", 
+             title_plot = "in postprandial conditions, sick against healthy",
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 ```
@@ -241,6 +244,7 @@ write_csv(as.data.frame(res),
 
 plot_volcano(x = res, 
              title = "cirrhosis", 
+             title_plot = "for cirrhosis patients, fasting against postprandial",
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 ```
@@ -282,6 +286,7 @@ write_csv(as.data.frame(res),
 
 plot_volcano(x = res, 
              title = "non-alcoholic-fatty-liver-disease", 
+             title_plot = "for non-alcoholic patients, fasting against postprandial",
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 ```
@@ -322,6 +327,7 @@ write_csv(as.data.frame(res),
 
 plot_volcano(x = res, 
              title = "normal", 
+             title_plot = "for healthy people, fasting against postprandial",
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 ```

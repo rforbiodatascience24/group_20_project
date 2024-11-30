@@ -1,4 +1,4 @@
-plot_volcano <- function(x, title, fc_cutoff, p_cutoff){
+plot_volcano <- function(x, title, title_plot, fc_cutoff, p_cutoff){
   
   ## Make sure title input can be used in filepath
   title <- gsub("[^A-Za-z0-9_\\-]", "_", title)
@@ -11,9 +11,12 @@ plot_volcano <- function(x, title, fc_cutoff, p_cutoff){
   
   ## Annotating genes 
   volcano_data <- volcano_data |> 
-    dplyr::mutate(gene_type = case_when(log2FoldChange >= fc_cutoff & padj <= 0.05 ~ "Up regulated",
-                                        log2FoldChange <= -fc_cutoff & padj <= 0.05 ~ "Down regulated",
+    dplyr::mutate(gene_type = case_when(log2FoldChange >= fc_cutoff & 
+                                          padj <= 0.05 ~ "Up regulated",
+                                        log2FoldChange <= -fc_cutoff & 
+                                          padj <= 0.05 ~ "Down regulated",
                                         TRUE ~ "Non significant")) 
+  
   cols <- c("Up regulated" = "gold", 
             "Down regulated" = "blue", 
             "Non significant" = "darkgrey")
@@ -24,14 +27,16 @@ plot_volcano <- function(x, title, fc_cutoff, p_cutoff){
                y = -log10(padj), 
                col=gene_type)) + 
     geom_point() +
-    geom_hline(yintercept = -log10(p_cutoff), linetype = "dashed") + 
+    geom_hline(yintercept = -log10(p_cutoff), 
+               linetype = "dashed") + 
     geom_vline(xintercept = c(-fc_cutoff, fc_cutoff),
              linetype = "dashed") +
     scale_color_manual(values=cols)+
     labs(
-      title= str_c("Volcano plot - ", title),
+      title= str_c("Volcano plot - ", title_plot),
       colour = "Differencial expression"
-    )
+    ) +
+    theme(plot.title = element_text(hjust = 0.5))
   
   ## Create the folder to save it in
   results_dir <- "../results/DEA"
