@@ -89,7 +89,7 @@ Now we want to look further into the top 5 most significantly enriched pathways 
 #| fig-asp: 0.5
 #| fig-width: 10
 
-title <- "5 most enriched Pathways between healthy and sick people"
+title <- "5 most enriched pathways - healthy and sick people"
 save_title <- "GSEA_sick_vs_healthy_people"
 plot_most_enriched_pathways(gsea_results, 
                             title,
@@ -127,7 +127,7 @@ names(ranked_genes) <- gene_symbols
 gsea_results <- compute_GSEA(ranked_genes, 
                              gene_sets)
 
-title <- "5 most enriched Pathways between fasting and postprandial cirrhosis patients"
+title <- "5 most enriched pathways - fasting and postprandial cirrhosis patients"
 save_title <- "GSEA_fasting_vs_postprandial_cirrhosis_patients"
 plot_most_enriched_pathways(gsea_results, 
                             title,
@@ -163,7 +163,7 @@ names(ranked_genes) <- gene_symbols
 gsea_results <- compute_GSEA(ranked_genes, 
                              gene_sets)
 
-title <- "5 most enriched Pathways between fasting and postprandial for non-alcoholic fatty liver disease patients"
+title <- "5 most enriched pathways - fasting and postprandial for non-alcoholic fatty liver disease patients"
 save_title <- "GSEA_fasting_vs_postprandial_fattyliver_patients"
 plot_most_enriched_pathways(gsea_results, 
                             title,
@@ -198,7 +198,7 @@ names(ranked_genes) <- gene_symbols
 gsea_results <- compute_GSEA(ranked_genes, 
                              gene_sets)
 
-title <- "5 most enriched Pathways between fasting and postprandial healthy patients"
+title <- "5 most enriched pathways - fasting and postprandial healthy patients"
 save_title <- "GSEA_fasting_vs_postprandial_healthy_patients"
 plot_most_enriched_pathways(gsea_results, 
                             title,
@@ -233,7 +233,7 @@ names(ranked_genes) <- gene_symbols
 gsea_results <- compute_GSEA(ranked_genes, 
                              gene_sets)
 
-title <- "5 most enriched Pathways between sick and healthy patients in fasting conditions"
+title <- "5 most enriched pathways - sick and healthy patients in fasting conditions"
 save_title <- "GSEA_sick_vs_healthy_patients_fasting"
 plot_most_enriched_pathways(gsea_results, 
                             title,
@@ -267,7 +267,7 @@ names(ranked_genes) <- gene_symbols
 
 gsea_results <- compute_GSEA(ranked_genes, gene_sets)
 
-title <- "5 most enriched Pathways between sick and healthy patients in postprandial conditions"
+title <- "5 most enriched pathways - sick and healthy patients in postprandial conditions"
 save_title <- "GSEA_sick_vs_healthy_patients_postprandial"
 plot_most_enriched_pathways(gsea_results, 
                             title,
