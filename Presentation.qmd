@@ -1,7 +1,6 @@
 ---
-title: "Presentation - Group 20"
+title: "Hepatic Gene Expression Analysis"
 author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
-date: 03 Dec 2024
 format: revealjs
 footer: "Group 20" 
 transition: slide
@@ -12,23 +11,28 @@ slide-number: true
 
 ## Introduction
 
+- **Aim**: Investigating hepatic gene expression by comparing expression levels across:  
+  - Healthy individuals  
+  - Patients with NAFLD
+  - Patients with cirrhosis  
+- **Goal**: Identify key differences linked to disease progression. 
+- **Impact:** Insights could guide early diagnosis, therapeutic targets, and personalized treatment strategies.
 
+---
 
+## Materials
+### Key Materials Used
 
+- Summarize the materials (organisms, datasets, tools).  
+- Provide context on why they were chosen.
 
-## Material and Methods
+---
 
+## Methods
+### Overview of Methodology
 
-
-
-## Results
-
-
-
-
-## Discussion 
-
-
+- Summarize the workflow or experimental pipeline.  
+- Use a flowchart or key points to explain the approach.  
 
 
 
