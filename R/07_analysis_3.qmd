@@ -107,7 +107,10 @@ write_csv(as.data.frame(res),
 #| label: plot-volcano
 
 # General analysis
-plot_volcano(res, "general", log2(2), 0.05)
+plot_volcano(x = res, 
+             title = "general", 
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
 ```
 
 ## Testing now in fasting conditions
@@ -149,7 +152,10 @@ res <- as.data.frame(res) |>
 write_csv(as.data.frame(res), 
           file.path("../data/DESeq2/03_DESeq2_results-fasting.csv"))
 
-plot_volcano(res, "fasting", log2(2), 0.05)
+plot_volcano(x = res, 
+             title = "fasting", 
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
 ```
 
 ## Testing now in postprandial condition
@@ -192,7 +198,10 @@ write_csv(as.data.frame(res),
           file.path("../data/DESeq2/03_DESeq2_results-postprandial.csv"))
 
 # Plot the volcano
-plot_volcano(res, "postprandial", log2(2), 0.05)
+plot_volcano(x = res, 
+             title = "postprandial", 
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
 ```
 
 ## Difference in expression fasting or not cirrhosis
@@ -230,7 +239,10 @@ res <- as.data.frame(res) |>
 write_csv(as.data.frame(res), 
           file.path("../data/DESeq2/03_DESeq2_results-cirrhosis.csv"))
 
-plot_volcano(x=res, title="cirrhosis", fc_cutoff=log2(2), p_cutoff=0.05)
+plot_volcano(x = res, 
+             title = "cirrhosis", 
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
 ```
 
 ## Difference in expression fasting or not non-alcoholic fatty liver disease
@@ -268,7 +280,10 @@ res <- as.data.frame(res) |>
 write_csv(as.data.frame(res), 
           file.path("../data/DESeq2/03_DESeq2_results-fattyliver.csv"))
 
-plot_volcano(x=res, title="non-alcoholic-fatty-liver-disease", fc_cutoff=log2(2), p_cutoff=0.05)
+plot_volcano(x = res, 
+             title = "non-alcoholic-fatty-liver-disease", 
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
 ```
 
 ## Difference in expression fasting or not normal
@@ -305,7 +320,10 @@ res <- as.data.frame(res) |>
 write_csv(as.data.frame(res), 
           file.path("../data/DESeq2/03_DESeq2_results-normal.csv"))
 
-plot_volcano(x=res, title="normal", fc_cutoff=log2(2), p_cutoff=0.05)
+plot_volcano(x = res, 
+             title = "normal", 
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
 ```
 
 ## 
