@@ -2,32 +2,38 @@
 
 ## Project Contributors
 
-Lea Eschen Skytthe, leasn-bot, s203531, contact: [s203531\@dtu.dk](mailto:s203531@dtu.dk){.email}
+Lea Eschen Skytthe (leasn-bot), s203531, contact: s203531@dtu.dk
 
-Trine Søgaard, s204655, contact: [triso\@dtu.dk](mailto:triso@dtu.dk){.email}
+Trine Søgaard (trinesoe), s204655, contact: triso@dtu.dk
 
-Amy Surry, s201902, contact: [s201902\@dtu.dk](mailto:s201902@dtu.dk){.email}
+Amy Surry (AmySurry), s201902, contact: s201902@dtu.dk
 
-Olivier Gaufres, s243252, contact: [s243252\@dtu.dk](mailto:s243252@dtu.dk){.email}
+Olivier Gaufres (nollive), s243252, contact: s243252@dtu.dk
 
-Antoine Andreoletti, s242830, contact: [s242830\@dtu.dk](mailto:s242830@dtu.dk){.email}
+Antoine Andreoletti (apollis44), s242830, contact: s242830@dtu.dk
 
-## Description
-
-This project investigates differences in hepatic gene expression between healthy individuals, patients with non-alcoholic fatty liver disease (NAFLD), and patients with cirrhosis. Using RNA-sequence of coding RNA, we analyze differences between these groups, focusing on fasting vs postprandial.
+## Describtion
+This project investigates differences in hepatic gene expression between healthy individuals, patients with non-alcoholic fatty liver disease (NAFLD), and patients with cirrhosis. Using RNA-sequence of coding RNA, we analyze differences between these groups.
 
 ## Project Structure
+- **Data Setup and Download:** `01_load` creates a `data/` directory, with the subdirectories `data/_raw/count_data/`, and `data/_raw/metadata/`. It downloads the raw data from the specified URL (found under `Data`) and saves it into the subfolders.
 
--   **Data Setup and Download:** `01_load` creates a `data/` directory, with the subdirectories `data/_raw/count_data/`, and `data/_raw/metadata/`. It downloads the raw data from the specified URL (found under `Data`) and saves it into the subfolders.
+- **Data Cleaning:** `02_clean`
 
--   **Data Cleaning:** `02_clean`
+- **Data Augmentation:** `03_augment`
 
--   **Data Augmentation:** `03_augment`
+- **Data Description:** `04_describe`: Generates descriptive plots of data 
 
--   **Data Description:** `04_describe`
+- **Data Analysis:**
+    `05_analysis_1`: Performs PCA
+    `06_analysis_2`: Making heatmap
+    `07_analysis_3`: Performing Differential Expression Analysis (DEA) using DESeq2. Performing PCA and generating heatmap & volcano plots
+    `08_analysis_4`: Performing Gene Set Enrichment Analysis (GSEA) and plot the 5 most significantly enriched pathways
 
--   **Data Analysis:** `05_analysis_1` PCA, `06_analysis_2` Heatmap, `07_analysis_3` Volcano plot, `08_analysis_4` GSEA
+- **All:** `00_all`: Runs the project in one go
 
 ## Data
+Data is available here: https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-12807
 
-Data is available here: <https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-12807>
+## Link to presentation
+XXXXX
