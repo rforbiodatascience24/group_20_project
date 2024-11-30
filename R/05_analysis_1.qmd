@@ -1,31 +1,19 @@
----
-title: "05_analysis_1"
-author: Antoine Andréoletti (s242830), Olivier Gaufrès (s243252), Amy Surry (s201902), Lea Skytthe (s203531), Trine Søgaard (s204655)
-format:
-  html:
-    embed-resources: true
-editor: visual
----
+## PCA
 
-# PCA
-
-## Libraries
+#### Libraries
 
 ```{r}
 #| label: load-libraries
 #| message: False
 #| warning: False
 
-rm(list=ls())
-
 library("tidyverse")
+library("broom")  # devtools::install_github("tidymodels/broom")
+library("cowplot")
 library("ggrepel")
-library("broom")
 ```
 
-## Load data
-
-Load meta and count data
+#### Data load
 
 ```{r}
 #| label: load-metadata
@@ -38,17 +26,13 @@ data_pheno <- data.frame(data_pheno) |>
 ```
 
 ```{r}
-#| label: load-count_data
+#| label: load-counts
 
-data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv") |>
-  dplyr::mutate(transcript_ID = str_c(transcript_ID, 
-                                      runif(n = length(transcript_ID)))) |> 
-  column_to_rownames("transcript_ID")
-
+data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv")
 
 # We want genes as row names, so we convert the tibble to a dataframe and names the rows
 data_counts <- data.frame(data_counts.total) |>
-  dplyr::select(-gene_id, -gene_symbol)
+  dplyr::select(-gene_id, -gene_symbol, -transcript_ID)
 
 colnames(data_counts) <- colnames(data_counts) |> 
   substring(2)
@@ -58,37 +42,85 @@ data_counts <- data_counts |>
   mutate(across(where(is.numeric), as.integer))
 ```
 
-## The Principal Component Analysis
+We would like to:
 
-Performing PCA
+1.  Look at the data in PC coordinates.
+
+2.  Look at the rotation matrix.
+
+3.  Look at the variance explained by each PC.
+
+#### The data in PC coordinates
 
 ```{r}
-#| label: pca-individual
-#| warning: false
+#| label: applying-pca
 
-# Transpose the counts matrix to have the PCA for individuals and not gene expression
-pca <- prcomp(t(data_counts))
+pca_fit <- data_counts |>
+  scale() |> # scaling data
+  t() |> # transpose data
+  prcomp() # make the PCA
 
-# Proportion of variance
-PoV <- pca$sdev^2/sum(pca$sdev^2)
-PoV <- PoV * 100
-PoV <- str_sub(PoV,1,4)
-PC1_t = str_c("PC1 (", PoV[1] , "%)")
-PC2_t = str_c("PC2 (", PoV[2] ,"%)")
-
-# Add patients metadata
-bind_cols(data_pheno, pca$x) |>  
-  ggplot(aes(x=PC1, 
-             y=PC2, 
-             shape=clinical_information, 
+pca_fit |>
+  augment(metadata) |> # add metadata
+  ggplot(aes(x = .fittedPC1, 
+             y = .fittedPC2, 
+             shape=clinical_information,
              col=disease, 
-             label=individual)) + 
-  geom_point() + 
-  geom_text_repel() +
-  labs(title = "PCA of the expression of patients",
-       x = PC1_t , 
-       y = PC2_t, 
-       color = "Disease", 
-       shape = "Clinical information") +
-  theme(plot.title = element_text(hjust = 0.5))
+             label=source_name)) + 
+    geom_point() + 
+    labs(title = "PCA of the expression of patients",
+         x = "PC1" , 
+         y = "PC2", 
+         color = "Disease", 
+         shape = "Clinical information") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
+
+#### The rotation matrix
+
+```{r}
+#| label: rotation-matrix
+
+# define arrow style for plotting
+arrow_style <- arrow(
+  angle = 20, 
+  ends = "first", 
+  type = "closed", 
+  length = grid::unit(8, "pt")
+)
+
+# plot rotation matrix
+pca_fit |>
+  tidy(matrix = "rotation") |>
+  pivot_wider(names_from = "PC", 
+              names_prefix = "PC", 
+              values_from = "value") |>
+  ggplot(aes(PC1, PC2)) +
+  geom_segment(xend = 0, 
+               yend = 0, 
+               arrow = arrow_style) +
+  geom_text(
+    aes(label = column),
+    hjust = 1, nudge_x = -0.02, 
+    color = "#56B4E9"
+  ) +
+  coord_fixed()
+```
+
+#### The variance by each PC
+
+```{r}
+#| label: variance-of-components
+
+pca_fit |>
+  tidy(matrix = "eigenvalues") |>
+  ggplot(aes(PC, percent)) +
+  geom_col(fill = "#56B4E9", alpha = 0.8) +
+  scale_x_continuous(breaks = 1:9) +
+  scale_y_continuous(
+    trans = "log2",
+    labels = scales::percent_format(),
+    expand = expansion(mult = c(0, 0.01))
+  ) +
+  theme_minimal_hgrid(12)
 ```

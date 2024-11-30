@@ -43,15 +43,11 @@ data_pheno <- data.frame(data_pheno) |>
 ```{r}
 #| label: load-count_data
 
-data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv") |>
-  dplyr::mutate(transcript_ID = str_c(transcript_ID, 
-                                      runif(n = length(transcript_ID)))) |> 
-  column_to_rownames("transcript_ID")
-
+data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv")
 
 # We want genes as row names, so we convert the tibble to a dataframe and names the rows
 data_counts <- data.frame(data_counts.total) |>
-  dplyr::select(-gene_id, -gene_symbol)
+  dplyr::select(-gene_id, -gene_symbol, -transcript_ID)
 
 colnames(data_counts) <- colnames(data_counts) |> 
   substring(2)
