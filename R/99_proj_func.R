@@ -105,6 +105,45 @@ plot_most_enriched_pathways <- function(gsea_results,
   print(p)
 }
 
+# save pheatmap to pdf (https://stackoverflow.com/questions/43051525/how-to-draw-pheatmap-plot-to-screen-and-also-save-to-file)
+save_pheatmap_pdf <- function(x, filename, width=7, height=7) {
+  stopifnot(!missing(x))
+  stopifnot(!missing(filename))
+  pdf(filename, width=width, height=height)
+  grid::grid.newpage()
+  grid::grid.draw(x$gtable)
+  dev.off()
+}
+
+plot_topN_heatmap <- function(res, dds, N, annotation_data_pheno, title, title_plot){
+  top_genes <- res |>
+    dplyr::filter(!is.na(padj)) |>
+    dplyr::arrange(padj) |>
+    dplyr::slice_head(n = N) |>
+    dplyr::pull(transcript_ID)
+  
+  norm_counts <- counts(dds, normalized = TRUE)
+  norm_counts <- as.data.frame(norm_counts) |>
+    tibble::rownames_to_column("transcript_ID") |> 
+    dplyr::filter(transcript_ID %in% top_genes) |>
+    dplyr::left_join(gene_symbol.df, by = "transcript_ID")
+  
+  heatmap_data <- norm_counts |>
+    dplyr::select(-transcript_ID) |>
+    dplyr::rename(gene_symbol = gene_symbol) |>
+    column_to_rownames(var = "gene_symbol")
+  
+  heatmap <- pheatmap(heatmap_data,
+                             cluster_rows = TRUE,
+                             cluster_cols = TRUE,
+                             annotation_col = annotation_data_pheno,
+                             main = str_c("Heatmap of Top ", N, " Expressed Genes - ", title_plot),
+                             scale = "row")
+  
+  save_pheatmap_pdf(heatmap, filename = file.path(str_c("../results/DEA/heatmap-topN-genes-", title, ".pdf")))
+  print(heatmap)
+}
+
 
 
 
