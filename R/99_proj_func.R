@@ -98,7 +98,8 @@ plot_most_enriched_pathways <- function(gsea_results,
   }
   
   ## Save the plot
-  ggsave(plot = p, file.path(str_c("../results/GSEA/", 
+  ggsave(plot = p, 
+         file.path(str_c("../results/GSEA/", 
                                    save_title, 
                                    ".png")))
   

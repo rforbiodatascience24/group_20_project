@@ -12,7 +12,7 @@ slide-number: true
 
 <div style="font-size: 78%;">
 
-- **Aim**: Investigating hepatic gene expression by comparing expression levels across:
+**Aim**: Investigating hepatic gene expression by comparing expression levels across:
 
 <table style="width:100%; font-size: inherit; line-height: 1.5;">
 <tr>
@@ -57,7 +57,27 @@ slide-number: true
 
 ## Results - Descriptive analysis
 
-Some plots
+<div style="font-size: 78%;">
+
+**Aim**: First analysis of our datasets
+
+<table style="height:80%; font-size: inherit; line-height: 1.5;">
+<tr>
+
+<td style="width:40%; text-align:center; vertical-align:middle; font-size: 20pt">
+- Distributions are fairly equal throughout our data
+- Sick people are older on average
+- No significance in disease between men and women
+</td>
+
+<td style="width:60%; text-align:center; vertical-align: top;">
+![](results/EDA.png){style="width:85%"}
+</td>
+
+</tr>
+</table>
+
+</div>
 
 ---
 
