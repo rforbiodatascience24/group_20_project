@@ -289,7 +289,7 @@ write_csv(as.data.frame(res),
           file.path("../data/DESeq2/03_DESeq2_results-NAFL.csv"))
 
 plot_volcano(x = res, 
-             title = "non-alcoholic-fatty-liver-disease", 
+             title = "NAFL", 
              title_plot = "for non-alcoholic patients, fasting against postprandial",
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
