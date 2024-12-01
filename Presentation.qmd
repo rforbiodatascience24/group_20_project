@@ -16,19 +16,14 @@ slide-number: true
   - Patients with NAFLD
   - Patients with cirrhosis  
 - **Goal**: Identify key differences linked to disease progression. 
-- **Impact:** Insights could guide early diagnosis, therapeutic targets, and personalized treatment strategies.
+- **Impact:**: Insights could guide early diagnosis, therapeutic targets, and personalized treatment strategies.
+- **Data**: RNA-seq of human liver biopsies from patients with NAFLD, patient with cirrhosis, and healthy controls under both fasting and postprandial conditions
+
+## Data processing
 
 ---
 
-## Data
-
-<br>
-
-- RNA-seq of human liver biopsies from patients with NAFLD, patient with cirrhosis, and healthy controls under both fasting and postprandial conditions
-
-  - Meta data
-  - Count data
-
+## Data processing
 
 ---
 
@@ -46,7 +41,7 @@ Some plots
 
 ---
 
-## Results - PCA
+## Results - PCA/Heatmap
 
 Some plots
 
@@ -64,14 +59,11 @@ Some plots
 
 ---
 
-## Discussion
+## Discussion / Conclusion
 
 - Key points
-
----
-
-## Conclusion
-
+- Count_data derived from micro-array
+- Troubles with DESeq2 package and dplyr
 - Key points
 
 

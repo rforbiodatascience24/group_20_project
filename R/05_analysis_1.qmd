@@ -19,10 +19,6 @@ library("ggrepel")
 #| label: load-metadata
 
 data_pheno <- read.csv("../data/03_metadata_aug.csv")
-
-# We want patients as row names, so we convert the tibble to a dataframe and names the rows
-data_pheno <- data.frame(data_pheno) |> 
-  column_to_rownames("source_name")
 ```
 
 ```{r}
@@ -61,12 +57,12 @@ pca_fit <- data_counts |>
   prcomp() # make the PCA
 
 pca_fit |>
-  augment(metadata) |> # add metadata
+  augment(data_pheno) |> # add metadata
   ggplot(aes(x = .fittedPC1, 
              y = .fittedPC2, 
-             shape=clinical_information,
-             col=disease, 
-             label=source_name)) + 
+             shape = clinical_information,
+             col = disease, 
+             label = source_name)) + 
     geom_point() + 
     labs(title = "PCA of the expression of patients",
          x = "PC1" , 

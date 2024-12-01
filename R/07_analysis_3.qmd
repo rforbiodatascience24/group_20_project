@@ -331,11 +331,10 @@ plot_volcano(x = res,
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 
-# plot_topN_heatmap(res = res, 
-#                   dds = dds,
-#                   N = 10,
-#                   annotation_data_pheno = data_pheno_normal |> select(clinical_information),
-#                   title = "normal",
-#                   title_plot = "Healthy people - Fasting vs Postprandial"
-#                   )
+plot_topN_heatmap(res = res, 
+                 dds = dds,
+                 N = 10,
+                 annotation_data_pheno = data_pheno_normal |> select(clinical_information),
+                 title = "normal",
+                 title_plot = "Healthy people - Fasting vs Postprandial"                 )
 ```
