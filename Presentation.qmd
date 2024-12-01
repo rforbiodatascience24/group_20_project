@@ -69,7 +69,11 @@ Some plots
 
 ## Results - DEA
 
-Some plots
+Compare gene expression levels between groups using **DESeq2** [Output:]{.underline} Global Mean - Fold-change - Adjusted-p-value
+
+::: {style="display: flex; align-items: center; justify-content: center;"}
+<img src="results/DEA/DEA-fasting.png" alt="Volcano Plot" style="width: 45%; margin-right: 90px;"/> <img src="results/DEA/heatmap-topN-genes-fasting.png" alt="Heatmap" style="width: 45%;"/>
+:::
 
 ---
 
