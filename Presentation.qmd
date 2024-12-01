@@ -8,16 +8,36 @@ slide-number: true
 
 ---
 
-
 ## Introduction
 
-- **Aim**: Investigating hepatic gene expression by comparing expression levels across:  
+<div style="font-size: 78%;">
+
+- **Aim**: Investigating hepatic gene expression by comparing expression levels across:
+
+<table style="width:100%; font-size: inherit; line-height: 1.5;">
+<tr>
+<td style="width:60%; vertical-align: top;"> 
+
   - Healthy individuals  
-  - Patients with NAFLD
-  - Patients with cirrhosis  
-- **Goal**: Identify key differences linked to disease progression. 
-- **Impact:**: Insights could guide early diagnosis, therapeutic targets, and personalized treatment strategies.
-- **Data**: RNA-seq of human liver biopsies from patients with NAFLD, patient with cirrhosis, and healthy controls under both fasting and postprandial conditions
+  - Patients with NAFLD  
+  - Patients with cirrhosis 
+
+### Data
+ 
+</td>
+<td style="width:40%; text-align:center; vertical-align: top;">
+
+![](Pictures_for_presentation/liver_pic.png){style="width:80%;"}
+
+</td>
+</tr>
+</table>
+
+  - **RNA-seq** of human liver biopsies from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions  
+  - **Meta data** containing additional information about the patients 
+
+</div>
+
 
 ## Data processing
 
