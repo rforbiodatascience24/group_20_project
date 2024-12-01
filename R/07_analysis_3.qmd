@@ -165,10 +165,11 @@ plot_volcano(x = res,
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 
+
 plot_topN_heatmap(res = res,
                   dds = dds,
                   N = 10,
-                  annotation_data_pheno = data_pheno_fasting |> select(clinical_information),
+                  annotation_data_pheno = data_pheno_fasting |> select(disease),
                   title = "fasting",
                   title_plot = "Fasting conditions - Sick vs healthy"
                   )
@@ -329,9 +330,9 @@ plot_volcano(x = res,
 plot_topN_heatmap(res = res,
                   dds = dds,
                   N = 10,
-                  annotation_data_pheno = data_pheno_fattyliver |> select(clinical_information),
-                  title = "non-alcoholic-fatty-liver-disease",
-                  title_plot = "Bon-alcoholic patients - Fasting vs postprandial"
+                  annotation_data_pheno = data_pheno_NAFL |> select(clinical_information),
+                  title = "NAFL",
+                  title_plot = "Non-alcoholic patients - Fasting vs postprandial"
                   )
 ```
 
