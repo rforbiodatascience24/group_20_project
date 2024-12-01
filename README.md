@@ -26,9 +26,9 @@ This project investigates differences in hepatic gene expression between healthy
 
 - **Data Analysis:**
     `05_analysis_1`: Performs PCA
-    `06_analysis_2`: Making heatmap
-    `07_analysis_3`: Performing Differential Expression Analysis (DEA) using DESeq2. Performing PCA and generating heatmap & volcano plots
-    `08_analysis_4`: Performing Gene Set Enrichment Analysis (GSEA) and plot the 5 most significantly enriched pathways
+    `06_analysis_2`: Makes heatmap
+    `07_analysis_3`: Performs Differential Expression Analysis (DEA) using DESeq2. Does also perform PCA and generate heatmap & volcano plots
+    `08_analysis_4`: Performs Gene Set Enrichment Analysis (GSEA) and plot the 5 most significantly enriched pathways
 
 - **All:** `00_all`: Runs the project in one go
 
