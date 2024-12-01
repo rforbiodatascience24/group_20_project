@@ -109,13 +109,15 @@ plot_volcano(x = res,
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 
+annotation_data_pheno <- data_pheno |> 
+  dplyr::select(disease)
+
 plot_topN_heatmap(res = res,
                   dds = dds,
                   N = 10,
-                  annotation_data_pheno = data_pheno |> select(disease),
+                  annotation_data_pheno = annotation_data_pheno,
                   title = "global",
-                  title_plot = "Global"
-                  )
+                  title_plot = "Global")
 ```
 
 ## Testing now in fasting conditions
@@ -165,14 +167,15 @@ plot_volcano(x = res,
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 
+annotation_data_pheno <- data_pheno_fasting |> 
+  dplyr::select(disease)
 
 plot_topN_heatmap(res = res,
                   dds = dds,
                   N = 10,
-                  annotation_data_pheno = data_pheno_fasting |> select(disease),
+                  annotation_data_pheno = annotation_data_pheno,
                   title = "fasting",
-                  title_plot = "Fasting conditions - Sick vs healthy"
-                  )
+                  title_plot = "Fasting conditions - Sick vs healthy")
 ```
 
 ## Testing now in postprandial condition
@@ -223,13 +226,15 @@ plot_volcano(x = res,
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 
+annotation_data_pheno <- data_pheno_postprandial |> 
+  dplyr::select(disease)
+
 plot_topN_heatmap(res = res,
                   dds = dds,
                   N = 10,
-                  annotation_data_pheno = data_pheno_postprandial |> select(disease),
+                  annotation_data_pheno = annotation_data_pheno,
                   title = "postprandial",
-                  title_plot = "Postprandial conditions - Sick vs healthy"
-                  )
+                  title_plot = "Postprandial conditions - Sick vs healthy")
 ```
 
 ## Difference in expression fasting or not cirrhosis
@@ -275,13 +280,15 @@ plot_volcano(x = res,
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 
+annotation_data_pheno <- data_pheno_cirrhosis |> 
+  dplyr::select(clinical_information)
+
 plot_topN_heatmap(res = res,
                   dds = dds,
                   N = 10,
-                  annotation_data_pheno = data_pheno_cirrhosis |> select(clinical_information),
+                  annotation_data_pheno = annotation_data_pheno,
                   title = "cirrhosis",
-                  title_plot = "Cirrhosis patients - Fasting vs postprandial"
-                  )
+                  title_plot = "Cirrhosis patients - Fasting vs postprandial")
 ```
 
 ## Difference in expression fasting or not non-alcoholic fatty liver disease
@@ -323,17 +330,19 @@ write_csv(as.data.frame(res),
 
 plot_volcano(x = res, 
              title = "NAFL", 
-             title_plot = "for non-alcoholic patients, fasting against postprandial",
+             title_plot = "NAFL patients, fasting against postprandial",
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
+
+annotation_data_pheno <- data_pheno_NAFL |> 
+  dplyr::select(clinical_information)
 
 plot_topN_heatmap(res = res,
                   dds = dds,
                   N = 10,
-                  annotation_data_pheno = data_pheno_NAFL |> select(clinical_information),
+                  annotation_data_pheno = annotation_data_pheno,
                   title = "NAFL",
-                  title_plot = "Non-alcoholic patients - Fasting vs postprandial"
-                  )
+                  title_plot = "NAFL patients - Fasting vs postprandial")
 ```
 
 ## Difference in expression fasting or not in healthy people
@@ -386,6 +395,5 @@ plot_topN_heatmap(res = res,
                   N = 10,
                   annotation_data_pheno = annotation_data_pheno,
                   title = "normal",
-                  title_plot = "Healthy people - Fasting vs Postprandial"
-                  )
+                  title_plot = "Healthy people - Fasting vs Postprandial")
 ```
