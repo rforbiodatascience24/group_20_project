@@ -31,9 +31,29 @@ This project investigates differences in hepatic gene expression between healthy
     `08_analysis_4`: Performs Gene Set Enrichment Analysis (GSEA) and plot the 5 most significantly enriched pathways
 
 - **All:** `00_all`: Runs the project in one go
+  
+- **Functions**: `99_proj_func.R`: Contains functions 
 
 ## Data
 Data is available here: https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-12807
+
+## Packages
+This project relies on several packages including:
+
+- biomaRt
+- broom
+- clusterProfiler
+- cowplot
+- DESeq2
+- ggrepel
+- httr
+- msigdbr
+- pheatmap
+- stringr
+- table1
+- tidyverse
+- XML
+
 
 ## Link to presentation
 XXXXX
