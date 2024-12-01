@@ -115,6 +115,15 @@ save_pheatmap_pdf <- function(x, filename, width=7, height=7) {
   dev.off()
 }
 
+save_pheatmap_png <- function(x, filename, width=7, height=7) {
+  stopifnot(!missing(x))
+  stopifnot(!missing(filename))
+  png(filename, width=width, height=height)
+  grid::grid.newpage()
+  grid::grid.draw(x$gtable)
+  dev.off()
+}
+
 plot_topN_heatmap <- function(res, dds, N, annotation_data_pheno, title, title_plot){
   top_genes <- res |>
     dplyr::filter(!is.na(padj) & !is.na(gene_symbol) & !(gene_symbol=="")) |> ## Removing the genes without annotation or adjusted p-value
@@ -141,7 +150,9 @@ plot_topN_heatmap <- function(res, dds, N, annotation_data_pheno, title, title_p
                              main = str_c("Heatmap of Top ", N, " Expressed Genes \n", title_plot),
                              scale = "row")
   
-  save_pheatmap_pdf(heatmap, filename = file.path(str_c("../results/DEA/heatmap-topN-genes-", title, ".pdf")))
+  # save_pheatmap_pdf(heatmap, filename = file.path(str_c("../results/DEA/heatmap-topN-genes-", title, ".pdf")))
+  save_pheatmap_png(heatmap, filename = file.path(str_c("../results/DEA/heatmap-topN-genes-", title, ".png")))
+  
   print(heatmap)
 }
 
