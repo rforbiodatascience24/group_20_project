@@ -117,8 +117,9 @@ save_pheatmap_pdf <- function(x, filename, width=7, height=7) {
 
 plot_topN_heatmap <- function(res, dds, N, annotation_data_pheno, title, title_plot){
   top_genes <- res |>
-    dplyr::filter(!is.na(padj)) |>
+    dplyr::filter(!is.na(padj) & !is.na(gene_symbol) & !(gene_symbol=="")) |> ## Removing the genes without annotation or adjusted p-value
     dplyr::arrange(padj) |>
+    dplyr::distinct(gene_symbol, .keep_all = TRUE) |> # Gene symbol can be duplicated (multiple probes for the same gene, if the same gene is multiple times in the topN gene, we skip the duplicate and take another one)
     dplyr::slice_head(n = N) |>
     dplyr::pull(transcript_ID)
   
@@ -137,7 +138,7 @@ plot_topN_heatmap <- function(res, dds, N, annotation_data_pheno, title, title_p
                              cluster_rows = TRUE,
                              cluster_cols = TRUE,
                              annotation_col = annotation_data_pheno,
-                             main = str_c("Heatmap of Top ", N, " Expressed Genes - ", title_plot),
+                             main = str_c("Heatmap of Top ", N, " Expressed Genes \n", title_plot),
                              scale = "row")
   
   save_pheatmap_pdf(heatmap, filename = file.path(str_c("../results/DEA/heatmap-topN-genes-", title, ".pdf")))
