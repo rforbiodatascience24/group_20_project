@@ -21,10 +21,12 @@ slide-number: true
 ---
 
 ## Materials
-### Key Materials Used
 
-- Summarize the materials (organisms, datasets, tools).  
-- Provide context on why they were chosen.
+### Data
+- RNA-seq of human liver biopsies from patients with NAFLD, patient with cirrhosis, and healthy controls under both fasting and postprandial conditions
+  - Meta data
+  - Count data
+
 
 ---
 
@@ -34,6 +36,7 @@ slide-number: true
 - Summarize the workflow or experimental pipeline.  
 - Use a flowchart or key points to explain the approach.  
 
+![Workflow Diagram](path/to/image.png)
 
 
 
