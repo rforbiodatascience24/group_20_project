@@ -116,8 +116,10 @@ stats and correlation
 
 ```{r}
 # Calculate summary statistics for down-regulated genes
-regulated_data <- analysis_data |>
-  filter(gene_type != "Non significant") |>
+regulated_data <- X03_DESeq2_results_cirrhosis |>
+  filter(pvalue <= 0.05) |>
+
+
   mutate(across(c(Name, gene_type, sex, disease, clinical_information), as.factor)) |>
   mutate(across(c(age, Length, EffectiveLength, TPM, NumReads), as.integer)) |>
   drop_na()

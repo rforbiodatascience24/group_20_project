@@ -35,11 +35,13 @@ data_pheno <- read.csv("../data/03_metadata_aug.csv")
 data_pheno <- data.frame(data_pheno) |> 
   column_to_rownames("source_name")
 
-data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv")
+data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv", check.names = FALSE)
 
 # We want genes as row names, so we convert the tibble to a dataframe and names the rows
-data_counts <- data.frame(data_counts.total) |>
-  dplyr::select(-gene_id, -gene_symbol, -transcript_ID)
+data_counts <- data_counts.total |>
+  select(-gene_id, -gene_symbol) |>
+  distinct(transcript_ID, .keep_all = TRUE) |>
+  column_to_rownames("transcript_ID")
 
 colnames(data_counts) <- colnames(data_counts) |> 
   substring(2)
@@ -75,13 +77,14 @@ dds <- DESeq(dds)
 res <- results(dds)
 
 gene_symbol.df <- data_counts.total |> 
-  dplyr::select(gene_symbol) |> 
-  rownames_to_column("transcript_ID")
+  select(gene_symbol, transcript_ID)
 
-res <- as.data.frame(res) |> 
-  rownames_to_column("transcript_ID") |> 
-  left_join(gene_symbol.df, 
-            by = "transcript_ID")
+res <- res |> 
+  as_data_frame() |>
+  rownames_to_column("transcript_ID")
+  
+left_join(gene_symbol.df, 
+            by = c("transcript_ID", "gene_symbol"))
 
 # Creating the folder to save the data
 
@@ -92,7 +95,7 @@ if( !dir.exists(DESeq2_data_dir) ){
 
 #Saving the results
 write_csv(as.data.frame(res), 
-          file.path("../data/DESeq2/03_DESeq2_results-global.csv"))
+          file.path("../data/DESeq2/07_DESeq2_results-global.csv"))
 ```
 
 ### Volcano plots
@@ -110,7 +113,7 @@ plot_volcano(x = res,
              p_cutoff = 0.05)
 
 annotation_data_pheno <- data_pheno |> 
-  dplyr::select(disease)
+  select(disease)
 
 plot_topN_heatmap(res = res,
                   dds = dds,
@@ -118,6 +121,10 @@ plot_topN_heatmap(res = res,
                   annotation_data_pheno = annotation_data_pheno,
                   title = "global",
                   title_plot = "Global")
+
+regulated_data <- res |>
+  filter(pvalue <= 0.05) |>
+  left_join(data_counts.total, by = "transcript_ID")
 ```
 
 ## Testing now in fasting conditions
@@ -291,7 +298,7 @@ plot_topN_heatmap(res = res,
                   title_plot = "Cirrhosis patients - Fasting vs postprandial")
 ```
 
-## Difference in expression fasting or not non-alcoholic fatty liver disease
+## Difference in expression fasting or not in patients with non-alcoholic fatty liver disease
 
 ```{r}
 #| label: 07_dea-deseq2-NAFL
