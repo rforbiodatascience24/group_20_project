@@ -1,0 +1,24 @@
+---
+title: "00_all"
+author: Antoine Andréoletti (s242830), Olivier Gaufrès (s243252), Amy Surry (s201902), Lea Skytthe (s203531), Trine Søgaard (s204655)
+format:
+  html:
+    embed-resources: true
+editor: visual
+---
+
+{{< include 01_load.qmd >}}
+
+{{< include 02_clean.qmd >}}
+
+{{< include 03_augment.qmd >}}
+
+{{< include 04_describe.qmd >}}
+
+{{< include 05_analysis_1.qmd >}}
+
+{{< include 06_analysis_2.qmd >}}
+
+{{< include 07_analysis_3.qmd >}}
+
+{{< include 08_analysis_4.qmd >}}

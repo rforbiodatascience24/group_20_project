@@ -1,5 +1,5 @@
 ---
-title: "Augment data"
+title: "03_augment"
 author: Antoine Andréoletti (s242830), Olivier Gaufrès (s243252), Amy Surry (s201902), Lea Skytthe (s203531), Trine Søgaard (s204655)
 format:
   html:
@@ -7,8 +7,12 @@ format:
 editor: visual
 ---
 
+# Augmenting the data
+
+## Load libraries
+
 ```{r}
-#| label: load-libraries
+#| label: 03_load-libraries
 #| message: False
 #| warning: False
 
@@ -23,7 +27,7 @@ library("biomaRt")
 Loading the cleaned data
 
 ```{r}
-#| label: load-data
+#| label: 03_load-data
 #| message: false
 
 metadata <- read_csv("../data/02_metadata_clean.csv")
@@ -33,7 +37,7 @@ count_data <- read_csv("../data/02_count_data_long.csv")
 ### Metadata
 
 ```{r}
-#| label: metadata-inspect
+#| label: 03_metadata-inspect
 
 metadata |>
   sample_n(size = 5)
@@ -42,7 +46,7 @@ metadata |>
 Removing excluded people from the data set
 
 ```{r}
-#| label: metadata-remove-excluded
+#| label: 03_metadata-remove-excluded
 
 metadata <- metadata |>
   dplyr::filter(disease != "excluded")
@@ -51,7 +55,7 @@ metadata <- metadata |>
 Converting metadata to a dataframe to set rownames
 
 ```{r}
-#| label: metadata-convert
+#| label: 03_metadata-convert
 
 metadata <- data.frame(metadata)
 row.names(metadata) <- metadata |> 
@@ -61,7 +65,7 @@ row.names(metadata) <- metadata |>
 Viewing the cleaned and augmented meta data
 
 ```{r}
-#| label: metadata-aug-inspect
+#| label: 03_metadata-aug-inspect
 
 metadata |>
   sample_n(size = 5)
@@ -72,7 +76,7 @@ metadata |>
 Pivot the count data to make some analyses
 
 ```{r}
-#| label: count_data-pivot
+#| label: 03_count_data-pivot
 
 count_data_wide <- count_data |> 
   dplyr::select(c("Name","source_name","NumReads")) |> 
@@ -83,7 +87,7 @@ count_data_wide <- count_data |>
 In case we need normalized counts instead of normal counts, we can create a dataset for it
 
 ```{r}
-#| label: normalized-count_data-pivot
+#| label: 03_normalized-count_data-pivot
 
 normalized_count_data_wide <- count_data |> 
   dplyr::select(c("Name","source_name","TPM")) |> 
@@ -93,7 +97,7 @@ normalized_count_data_wide <- count_data |>
 We only want to include the patients that are present in both meta data and count data. We therefore need to make sure that the rows of the metadata corresponds to the columns of the count data
 
 ```{r}
-#| label: keeping-common-patients
+#| label: 03_keeping-common-patients
 
 common_samples <- intersect(colnames(count_data_wide), rownames(metadata))
 
@@ -104,16 +108,16 @@ metadata <- metadata |>
   dplyr::select(-rank)
 
 count_data_wide <- count_data_wide |> 
-  dplyr::select(c("Name",common_samples))
+  dplyr::select(c("Name",all_of(common_samples)))
 
 normalized_count_data_wide <- normalized_count_data_wide |> 
-  dplyr::select(c("Name",common_samples))
+  dplyr::select(c("Name",all_of(common_samples)))
 ```
 
 Saving the augmented metadata file
 
 ```{r}
-#| label: saving-matadata-aug
+#| label: 03_saving-matadata-aug
 
 write_csv(metadata, 
           file = file.path("../data/03_metadata_aug.csv"))
@@ -122,7 +126,7 @@ write_csv(metadata,
 We want only rows that are different from 0
 
 ```{r}
-#| label: count_data-keeping-non-null-rows
+#| label: 03_count_data-keeping-non-null-rows
 
 count_data_wide <- count_data_wide |> 
   dplyr::filter(if_all(everything(), ~ . != 0))
@@ -134,7 +138,7 @@ normalized_count_data_wide <- normalized_count_data_wide |>
 Renaming the "Name" column
 
 ```{r}
-#| label: count_data-renaming-columns
+#| label: 03_count_data-renaming-columns
 
 count_data_wide <- count_data_wide |>
   dplyr::rename(transcript_ID = Name)
@@ -146,7 +150,8 @@ normalized_count_data_wide <- normalized_count_data_wide |>
 Getting the genes from the transcript IDs
 
 ```{r}
-#| label: genes_from_IDs
+#| label: 03_genes_from_IDs
+#| message: false
 
 # Set up the Ensembl BioMart connection
 ensembl <- useEnsembl(biomart = "genes", 
@@ -163,14 +168,12 @@ result <- getBM(
   values = transcript_ids,
   mart = ensembl
 )
-
-result
 ```
 
 Including the gene IDs and HUGO Gene Nomenclature Committee (HGNC) symbols
 
 ```{r}
-#| label: count_data-add-gene-names
+#| label: 03_count_data-add-gene-names
 
 # Renaming "ensembl_transcript_id" in result to mach "transcript_ID" in count_data
 result <- result |> 
@@ -197,7 +200,7 @@ normalised_count_data_combined <- normalized_count_data_wide |>
 Renaming and relocating the new columns
 
 ```{r}
-#| label: count_data-renaming-new-columns
+#| label: 03_count_data-renaming-new-columns
 
 # for the count data
 count_data_combined <- count_data_combined |>
@@ -221,7 +224,7 @@ normalised_count_data_combined <- normalised_count_data_combined |>
 Saving the augmented count_data file
 
 ```{r}
-#| label: count_data-aug-save
+#| label: 03_count_data-aug-save
 
 write_csv(count_data_combined, 
           file = file.path("../data/03_count_data_wide_aug.csv"))

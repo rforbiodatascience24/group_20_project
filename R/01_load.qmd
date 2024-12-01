@@ -1,5 +1,5 @@
 ---
-title: "Loading data"
+title: "01_load"
 author: Antoine Andréoletti (s242830), Olivier Gaufrès (s243252), Amy Surry (s201902), Lea Skytthe (s203531), Trine Søgaard (s204655)
 format:
   html:
@@ -7,14 +7,16 @@ format:
 editor: visual
 ---
 
-# Data
+# Uploading data
+
+## Data
 
 The data we are using in this exercise comes from here: <https://ftp.ebi.ac.uk/biostudies/fire/E-MTAB-/807/E-MTAB-12807/Files/>.
 
 ## Load Libraries
 
 ```{r}
-#| label: load-libraries
+#| label: 01_load-libraries
 #| message: False
 #| warning: False
 
@@ -29,7 +31,7 @@ library("stringr")
 ## Creating data folder
 
 ```{r}
-#| label: creating-data-folder
+#| label: 01_creating-data-folder
 
 data_dir <- "../data"
 results_dir <- "../results"
@@ -61,9 +63,8 @@ if( !dir.exists(metadata_dir) ){
 ## Upload data
 
 ```{r}
-#| label: upload-data
+#| label: 01_upload-data
 #| message: False
-#| echo: False
 
 base_url <- "https://ftp.ebi.ac.uk/biostudies/fire/E-MTAB-/807/E-MTAB-12807/Files/"
 

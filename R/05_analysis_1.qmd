@@ -1,9 +1,18 @@
-## PCA
+---
+title: "05_analysis_1"
+author: Antoine Andréoletti (s242830), Olivier Gaufrès (s243252), Amy Surry (s201902), Lea Skytthe (s203531), Trine Søgaard (s204655)
+format:
+  html:
+    embed-resources: true
+editor: visual
+---
+
+# PCA
 
 #### Libraries
 
 ```{r}
-#| label: load-libraries
+#| label: 05_load-libraries
 #| message: False
 #| warning: False
 
@@ -18,13 +27,9 @@ library("ggrepel")
 #### Data load
 
 ```{r}
-#| label: load-metadata
+#| label: 05_load-data
 
 data_pheno <- read.csv("../data/03_metadata_aug.csv")
-```
-
-```{r}
-#| label: load-counts
 
 data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv")
 
@@ -51,7 +56,7 @@ We would like to:
 #### The data in PC coordinates
 
 ```{r}
-#| label: applying-pca
+#| label: 05_applying-pca
 
 pca_fit <- data_counts |>
   scale() |> # scaling data
@@ -65,7 +70,7 @@ pca_fit |>
              shape = clinical_information,
              col = disease, 
              label = source_name)) + 
-    geom_point() + 
+    geom_point(size = 3) + 
     labs(title = "PCA of the expression of patients",
          x = "PC1" , 
          y = "PC2", 
@@ -79,7 +84,7 @@ It is hard to split our patients just using a PCA, we will have to use other too
 #### The rotation matrix
 
 ```{r}
-#| label: rotation-matrix
+#| label: 05_rotation-matrix
 
 # define arrow style for plotting
 arrow_style <- arrow(
@@ -127,7 +132,7 @@ pca_fit |>
 #### The variance by each PC
 
 ```{r}
-#| label: variance-of-components
+#| label: 05_variance-of-components
 
 pca_fit |>
   tidy(matrix = "eigenvalues") |>

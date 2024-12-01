@@ -1,5 +1,5 @@
 ---
-title: "Data cleaning"
+title: "02_clean"
 author: Antoine Andréoletti (s242830), Olivier Gaufrès (s243252), Amy Surry (s201902), Lea Skytthe (s203531), Trine Søgaard (s204655)
 format:
   html:
@@ -7,8 +7,12 @@ format:
 editor: visual
 ---
 
+# Cleaning data
+
+## Load libraries
+
 ```{r}
-#| label: load-libraries
+#| label: 02_load-libraries
 #| message: False
 #| warning: False
 
@@ -22,7 +26,7 @@ library(tidyverse)
 Removing columns that do not show differences between patients
 
 ```{r}
-#| label: load-clean-metadata
+#| label: 02_load-clean-metadata
 
 # Read metadata
 metadata <- read.csv('../data/_raw/metadata/E-MTAB-12807.sdrf.csv')
@@ -35,7 +39,7 @@ filtered_metadata <- metadata |>
 Removing duplicates in rows based on source name
 
 ```{r}
-#| label: clean-metadata-duplicates
+#| label: 02_clean-metadata-duplicates
 
 filtered_metadata <- filtered_metadata |> 
   distinct(Source.Name, .keep_all = TRUE) 
@@ -44,7 +48,7 @@ filtered_metadata <- filtered_metadata |>
 Remove the `Assay.Name` & `Extract.Name` columns as they are the same as `Source.Name`. Furthermore, we remove columns we do not intend to use.
 
 ```{r}
-#| label: clean-metadata-removing-columns
+#| label: 02_clean-metadata-removing-columns
 
 filtered_metadata <- filtered_metadata |> 
   dplyr::select(-Extract.Name, 
@@ -57,7 +61,7 @@ filtered_metadata <- filtered_metadata |>
 Renaming the columns to be more meaningful
 
 ```{r}
-#| label: clean-metadata-renaming-columns
+#| label: 02_clean-metadata-renaming-columns
 
 filtered_metadata <- filtered_metadata |> 
   dplyr::rename(
@@ -74,7 +78,7 @@ filtered_metadata <- filtered_metadata |>
 Inspect a sample of the cleaned data
 
 ```{r}
-#| label: cleaned-metadata-inspect
+#| label: 02_cleaned-metadata-inspect
 
 filtered_metadata |>
   sample_n(size = 5)
@@ -83,7 +87,7 @@ filtered_metadata |>
 Saving the metadata file
 
 ```{r}
-#| label: clean-metadata-saving
+#| label: 02_clean-metadata-saving
 
 write_csv(filtered_metadata, 
           file = file.path("../data/02_metadata_clean.csv"))
@@ -106,7 +110,7 @@ The data has the following columns:
 -   **source_name**: The patient ID
 
 ```{r}
-#| label: clean-count_data-load
+#| label: 02_clean-count_data-load
 
 # List all files in the directory
 file_paths <- list.files("../data/_raw/count_data/", 
@@ -127,7 +131,7 @@ person_data <- file_paths |>
 Inspect a sample of the combined data
 
 ```{r}
-#| label: clean-count_data-inspect
+#| label: 02_clean-count_data-inspect
 
 person_data |>
   sample_n(size = 10)
@@ -136,7 +140,7 @@ person_data |>
 Saving the cleaned count_data file
 
 ```{r}
-#| label: clean-count_data-saving
+#| label: 02_clean-count_data-saving
 
 write_csv(person_data, 
           file = file.path("../data/02_count_data_long.csv"))

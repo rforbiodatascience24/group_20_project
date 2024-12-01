@@ -12,7 +12,7 @@ editor: visual
 ## Libraries
 
 ```{r}
-#| label: load-libraries
+#| label: 06_load-libraries
 #| message: False
 #| warning: False
 
@@ -24,20 +24,14 @@ library("pheatmap")
 
 ## Load data
 
-Loading meta- and count data
-
 ```{r}
-#| label: load-metadata
+#| label: 06_load-data
 
 data_pheno <- read.csv("../data/03_metadata_aug.csv")
 
 # We want patients as row names, so we convert the tibble to a dataframe and names the rows
 data_pheno <- data.frame(data_pheno) |> 
   column_to_rownames("source_name")
-```
-
-```{r}
-#| label: load-count_data
 
 data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv")
 
@@ -56,7 +50,7 @@ data_counts <- data_counts |>
 ## The analysis - heatmap
 
 ```{r}
-#| label: heatmap-individual
+#| label: 06_heatmap-individual
 #| fig-asp: 0.7
 #| fig-width: 10
 

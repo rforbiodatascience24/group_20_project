@@ -1,5 +1,5 @@
 ---
-title: "Analysing metadata"
+title: "04_describe"
 author: Antoine Andréoletti (s242830), Olivier Gaufrès (s243252), Amy Surry (s201902), Lea Skytthe (s203531), Trine Søgaard (s204655)
 format:
   html:
@@ -7,12 +7,12 @@ format:
 editor: visual
 ---
 
-The objective of this file is to analyse the patients we have.
+# First description of the data
 
-## Importing libraries
+## Load libraries
 
 ```{r}
-#| label: load-libraries
+#| label: 04_load-libraries
 #| message: False
 #| warning: False
 
@@ -22,16 +22,17 @@ library("tidyverse")
 library("table1")
 ```
 
-## Importing the data
+## Load data
 
 ```{r}
-#| label: load-data
+#| label: 04_load-data
+#| message: false
 
 metadata <- read_csv("../data/03_metadata_aug.csv")
 ```
 
 ```{r}
-#| label: inspect-data
+#| label: 04_inspect-data
 
 metadata |> sample_n(5)
 ```
@@ -39,7 +40,7 @@ metadata |> sample_n(5)
 Making a table of our data
 
 ```{r}
-#| label: table1
+#| label: 04_table1
 
 metadata |> 
   mutate(sex = factor(sex),
@@ -53,7 +54,8 @@ metadata |>
 Lets start with age and sex
 
 ```{r}
-#| label: age-and-sex-distribution
+#| label: 04_age-and-sex-distribution
+#| warning: false
 
 metadata |> 
   mutate(age_group = cut(
@@ -76,7 +78,8 @@ metadata |>
 Now lets look at disease distribution in our dataset
 
 ```{r}
-#| label: disease-distribution
+#| label: 04_disease-distribution
+#| warning: false
 
 metadata |> 
   ggplot(mapping = aes(x = disease, fill = sex)) +
@@ -93,7 +96,7 @@ metadata |>
 Do the diseases depend on age?
 
 ```{r}
-#| label: average-age-for-the-diseases
+#| label: 04_average-age-for-the-diseases
 
 metadata |> 
   ggplot(mapping = aes(x = disease, y = age, fill = sex)) +
@@ -108,7 +111,7 @@ metadata |>
 Lets make a statistical analysis to see if there is any significant difference in the average age of people with cirrhosis disease as it looks like in the above plot.
 
 ```{r}
-#| label: significance-between-gender
+#| label: 04_significance-between-gender
 
 male_cirrhosis <- metadata |> 
   filter(sex == "male", 
@@ -129,7 +132,8 @@ The p-value is above 0.05 so we can say that there is no significant difference 
 ## Fasting vs postprandial
 
 ```{r}
-#| label: fasting-and-postprandial-distribution
+#| label: 04_fasting-and-postprandial-distribution
+#| warning: false
 
 metadata |> 
   mutate(age_group = cut(

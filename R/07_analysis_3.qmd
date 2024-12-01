@@ -7,10 +7,10 @@ format:
 editor: visual
 ---
 
-# Analysis
+# Differential Expression Analysis
 
 ```{r}
-#| label: load-libraries
+#| label: 07_load-libraries
 #| message: False
 #| warning: False
 
@@ -26,22 +26,14 @@ source(file.path("99_proj_func.R"))
 
 ## Load data
 
-### Load phenotype
-
 ```{r}
-#| label: load-metadata
+#| label: 07_load-data
 
 data_pheno <- read.csv("../data/03_metadata_aug.csv")
 
 # We want patients as row names, so we convert the tibble to a dataframe and names the rows
 data_pheno <- data.frame(data_pheno) |> 
   column_to_rownames("source_name")
-```
-
-### Load counts matrix
-
-```{r}
-#| label: load-count_data
 
 data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv")
 
@@ -62,7 +54,9 @@ data_counts <- data_counts |>
 ### Using DESeq2
 
 ```{r}
-#| label: dea-deseq2-general
+#| label: 07_dea-deseq2-general
+#| warning: false
+#| message: false
 
 dds <- DESeqDataSetFromMatrix(countData = data_counts,
                               colData = data_pheno,
@@ -104,7 +98,9 @@ write_csv(as.data.frame(res),
 ### Volcano plots
 
 ```{r}
-#| label: plot-volcano
+#| label: 07_plot-volcano
+#| warning: false
+#| message: false
 
 # General analysis
 plot_volcano(x = res, 
@@ -117,7 +113,9 @@ plot_volcano(x = res,
 ## Testing now in fasting conditions
 
 ```{r}
-#| label: dea-deseq2-fasting
+#| label: 07_dea-deseq2-fasting
+#| warning: false
+#| message: false
 
 data_pheno_fasting <- data_pheno |> 
   dplyr::filter(clinical_information == "fasting")
@@ -163,7 +161,9 @@ plot_volcano(x = res,
 ## Testing now in postprandial condition
 
 ```{r}
-#| label: dea-deseq2-postprandial
+#| label: 07_dea-deseq2-postprandial
+#| warning: false
+#| message: false
 
 data_pheno_postprandial <- data_pheno |> 
   dplyr::filter(clinical_information == "postprandial")
@@ -210,7 +210,9 @@ plot_volcano(x = res,
 ## Difference in expression fasting or not cirrhosis
 
 ```{r}
-#| label: dea-deseq2-cirrhosis
+#| label: 07_dea-deseq2-cirrhosis
+#| warning: false
+#| message: false
 
 data_pheno_cirrhosis <- data_pheno |> 
   dplyr::filter(disease == "cirrhosis of liver")
@@ -252,19 +254,21 @@ plot_volcano(x = res,
 ## Difference in expression fasting or not non-alcoholic fatty liver disease
 
 ```{r}
-#| label: dea-deseq2-fattyliver
+#| label: 07_dea-deseq2-NAFL
+#| warning: false
+#| message: false
 
-data_pheno_fattyliver <- data_pheno |> 
+data_pheno_NAFL <- data_pheno |> 
   dplyr::filter(disease == "non-alcoholic fatty liver disease")
 
-data_counts_fattyliver <- data_counts |> 
-  dplyr::select(rownames(data_pheno_fattyliver))
+data_counts_NAFL <- data_counts |> 
+  dplyr::select(rownames(data_pheno_NAFL))
 
-dds <- DESeqDataSetFromMatrix(countData = data_counts_fattyliver,
-                              colData = data_pheno_fattyliver,
+dds <- DESeqDataSetFromMatrix(countData = data_counts_NAFL,
+                              colData = data_pheno_NAFL,
                               design = ~clinical_information)
 
-featureData <- data.frame(gene=rownames(data_counts_fattyliver))
+featureData <- data.frame(gene=rownames(data_counts_NAFL))
 mcols(dds) <- DataFrame(mcols(dds), 
                         featureData)
 
@@ -282,7 +286,7 @@ res <- as.data.frame(res) |>
 
 #Saving the results
 write_csv(as.data.frame(res), 
-          file.path("../data/DESeq2/03_DESeq2_results-fattyliver.csv"))
+          file.path("../data/DESeq2/03_DESeq2_results-NAFL.csv"))
 
 plot_volcano(x = res, 
              title = "non-alcoholic-fatty-liver-disease", 
@@ -291,10 +295,12 @@ plot_volcano(x = res,
              p_cutoff = 0.05)
 ```
 
-## Difference in expression fasting or not normal
+## Difference in expression fasting or not in healthy people
 
 ```{r}
-#| label: dea-deseq2-normal
+#| label: 07_dea-deseq2-normal
+#| warning: false
+#| message: false
 
 data_pheno_normal <- data_pheno |> 
   dplyr::filter(disease == "normal")
@@ -331,10 +337,13 @@ plot_volcano(x = res,
              fc_cutoff = log2(2), 
              p_cutoff = 0.05)
 
+annotation_data_pheno <-  data_pheno_normal |> 
+  dplyr::select(clinical_information)
+
 plot_topN_heatmap(res = res, 
                  dds = dds,
                  N = 10,
-                 annotation_data_pheno = data_pheno_normal |> select(clinical_information),
+                 annotation_data_pheno = annotation_data_pheno,
                  title = "normal",
                  title_plot = "Healthy people - Fasting vs Postprandial"                 )
 ```
