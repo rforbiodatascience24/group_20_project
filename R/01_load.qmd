@@ -1,6 +1,6 @@
 ---
 title: "Loading data"
-author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
+author: Antoine Andréoletti (s242830), Olivier Gaufrès (s243252), Amy Surry (s201902), Lea Skytthe (s203531), Trine Søgaard (s204655)
 format:
   html:
     embed-resources: true
@@ -29,13 +29,19 @@ library("stringr")
 
 ```{r}
 #| label: creating-data-folder
+
 data_dir <- "../data"
+results_dir <- "../results"
 raw_data_dir <- "../data/_raw/"
 count_data_dir <- "../data/_raw/count_data"
 metadata_dir <- "../data/_raw/metadata"
 
 if( !dir.exists(data_dir) ){
   dir.create(path = data_dir)
+}
+
+if( !dir.exists(results_dir) ){
+  dir.create(path = results_dir)
 }
 
 if( !dir.exists(raw_data_dir) ){
@@ -51,10 +57,10 @@ if( !dir.exists(metadata_dir) ){
 }
 ```
 
-## Import data
+## Upload data
 
 ```{r}
-#| label: import-data
+#| label: upload-data
 #| message: False
 #| echo: False
 
@@ -66,7 +72,7 @@ response <- GET(base_url)
 # Parse the HTML content
 html_doc <- htmlParse(content(response, as = "text"), asText = TRUE)
 
-# Extract file links (adjust the XPath as needed)
+# Extract file links
 file_links <- xpathSApply(html_doc, "//a/@href")
 file_links <- data.frame(files = file_links)
 

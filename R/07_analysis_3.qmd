@@ -1,0 +1,381 @@
+---
+title: "07_analysis_3"
+author: Antoine Andréoletti (s242830), Olivier Gaufrès (s243252), Amy Surry (s201902), Lea Skytthe (s203531), Trine Søgaard (s204655)
+format:
+  html:
+    embed-resources: true
+editor: visual
+---
+
+# Analysis
+
+```{r}
+#| label: load-libraries
+#| message: False
+#| warning: False
+
+rm(list=ls())
+
+library("tidyverse")
+library("pheatmap")
+library("ggrepel")
+library("DESeq2") # DEA libraries
+
+source(file.path("99_proj_func.R"))
+```
+
+## Load data
+
+### Load phenotype
+
+```{r}
+#| label: load-metadata
+
+data_pheno <- read.csv("../data/03_metadata_aug.csv")
+
+# We want patients as row names, so we convert the tibble to a dataframe and names the rows
+data_pheno <- data.frame(data_pheno) |> 
+  column_to_rownames("source_name")
+```
+
+### Load counts matrix
+
+```{r}
+#| label: load-count_data
+
+data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv")
+
+# We want genes as row names, so we convert the tibble to a dataframe and names the rows
+data_counts <- data.frame(data_counts.total) |>
+  dplyr::select(-gene_id, -gene_symbol, -transcript_ID)
+
+colnames(data_counts) <- colnames(data_counts) |> 
+  substring(2)
+
+# The output of the mapping algorithm they use is an estimated number of reads mapped to each gene. It is a float while we need an integer. We will then convert it.
+data_counts <- data_counts |> 
+  mutate(across(where(is.numeric), as.integer))
+```
+
+## Differential Expression Analysis
+
+### Using DESeq2
+
+```{r}
+#| label: dea-deseq2-general
+
+dds <- DESeqDataSetFromMatrix(countData = data_counts,
+                              colData = data_pheno,
+                              design = ~disease)
+
+featureData <- data.frame(gene=rownames(data_counts))
+mcols(dds) <- DataFrame(mcols(dds), 
+                        featureData)
+
+# Adding the reference level (normal)
+dds$disease <- relevel(dds$disease, 
+                       ref = "normal")
+
+# DEA
+dds <- DESeq(dds)
+res <- results(dds)
+
+gene_symbol.df <- data_counts.total |> 
+  dplyr::select(gene_symbol) |> 
+  rownames_to_column("transcript_ID")
+
+res <- as.data.frame(res) |> 
+  rownames_to_column("transcript_ID") |> 
+  left_join(gene_symbol.df, 
+            by = "transcript_ID")
+
+# Creating the folder to save the data
+
+DESeq2_data_dir <- "../data/DESeq2"
+if( !dir.exists(DESeq2_data_dir) ){
+  dir.create(path = DESeq2_data_dir)
+}
+
+#Saving the results
+write_csv(as.data.frame(res), 
+          file.path("../data/DESeq2/03_DESeq2_results-global.csv"))
+```
+
+### Volcano plots
+
+```{r}
+#| label: plot-volcano
+
+# General analysis
+plot_volcano(x = res, 
+             title = "general",
+             title_plot = "sick against healthy",
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
+
+plot_topN_heatmap(res = res,
+                  dds = dds,
+                  N = 10,
+                  annotation_data_pheno = data_pheno |> select(disease),
+                  title = "global",
+                  title_plot = "Global"
+                  )
+```
+
+## Testing now in fasting conditions
+
+```{r}
+#| label: dea-deseq2-fasting
+
+data_pheno_fasting <- data_pheno |> 
+  dplyr::filter(clinical_information == "fasting")
+
+data_counts_fasting <- data_counts |> 
+  dplyr::select(rownames(data_pheno_fasting))
+
+dds <- DESeqDataSetFromMatrix(countData = data_counts_fasting,
+                              colData = data_pheno_fasting,
+                              design = ~disease)
+
+featureData <- data.frame(gene=rownames(data_counts_fasting))
+mcols(dds) <- DataFrame(mcols(dds), 
+                        featureData)
+
+# Adding the reference level (normal)
+dds$disease <- relevel(dds$disease, ref = "normal")
+
+# DEA
+dds <- DESeq(dds)
+res <- results(dds)
+
+gene_symbol.df <- data_counts.total |> 
+  dplyr::select(gene_symbol) |> 
+  rownames_to_column("transcript_ID")
+
+res <- as.data.frame(res) |> 
+  rownames_to_column("transcript_ID") |> 
+  left_join(gene_symbol.df, 
+            by = "transcript_ID")
+
+#Saving the results
+write_csv(as.data.frame(res), 
+          file.path("../data/DESeq2/03_DESeq2_results-fasting.csv"))
+
+plot_volcano(x = res, 
+             title = "fasting", 
+             title_plot = "in fasting conditions, sick against healthy",
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
+
+plot_topN_heatmap(res = res,
+                  dds = dds,
+                  N = 10,
+                  annotation_data_pheno = data_pheno_fasting |> select(clinical_information),
+                  title = "fasting",
+                  title_plot = "Fasting conditions - Sick vs healthy"
+                  )
+```
+
+## Testing now in postprandial condition
+
+```{r}
+#| label: dea-deseq2-postprandial
+
+data_pheno_postprandial <- data_pheno |> 
+  dplyr::filter(clinical_information == "postprandial")
+
+data_counts_postprandial <- data_counts |> 
+  dplyr::select(rownames(data_pheno_postprandial))
+
+dds <- DESeqDataSetFromMatrix(countData = data_counts_postprandial,
+                              colData = data_pheno_postprandial,
+                              design = ~disease)
+
+featureData <- data.frame(gene=rownames(data_counts_postprandial))
+mcols(dds) <- DataFrame(mcols(dds), 
+                        featureData)
+
+# Adding the reference level (normal)
+dds$disease <- relevel(dds$disease, 
+                       ref = "normal")
+
+# DEA
+dds <- DESeq(dds)
+res <- results(dds)
+
+gene_symbol.df <- data_counts.total |> 
+  dplyr::select(gene_symbol) |> 
+  rownames_to_column("transcript_ID")
+
+res <- as.data.frame(res) |> 
+  rownames_to_column("transcript_ID") |> 
+  left_join(gene_symbol.df, by = "transcript_ID")
+
+#Saving the results
+write_csv(as.data.frame(res), 
+          file.path("../data/DESeq2/03_DESeq2_results-postprandial.csv"))
+
+# Plot the volcano
+plot_volcano(x = res, 
+             title = "postprandial", 
+             title_plot = "in postprandial conditions, sick against healthy",
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
+
+plot_topN_heatmap(res = res,
+                  dds = dds,
+                  N = 10,
+                  annotation_data_pheno = data_pheno_postprandial |> select(disease),
+                  title = "postprandial",
+                  title_plot = "Postprandial conditions - Sick vs healthy"
+                  )
+```
+
+## Difference in expression fasting or not cirrhosis
+
+```{r}
+#| label: dea-deseq2-cirrhosis
+
+data_pheno_cirrhosis <- data_pheno |> 
+  dplyr::filter(disease == "cirrhosis of liver")
+
+data_counts_cirrhosis <- data_counts |> 
+  dplyr::select(rownames(data_pheno_cirrhosis))
+
+dds <- DESeqDataSetFromMatrix(countData = data_counts_cirrhosis,
+                              colData = data_pheno_cirrhosis,
+                              design = ~clinical_information)
+
+featureData <- data.frame(gene=rownames(data_counts_cirrhosis))
+mcols(dds) <- DataFrame(mcols(dds), 
+                        featureData)
+
+# DEA
+dds <- DESeq(dds)
+res <- results(dds)
+
+gene_symbol.df <- data_counts.total |> 
+  dplyr::select(gene_symbol) |> 
+  rownames_to_column("transcript_ID")
+
+res <- as.data.frame(res) |> 
+  rownames_to_column("transcript_ID") |> 
+  left_join(gene_symbol.df, by = "transcript_ID")
+
+#Saving the results
+write_csv(as.data.frame(res), 
+          file.path("../data/DESeq2/03_DESeq2_results-cirrhosis.csv"))
+
+plot_volcano(x = res, 
+             title = "cirrhosis", 
+             title_plot = "for cirrhosis patients, fasting against postprandial",
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
+
+plot_topN_heatmap(res = res,
+                  dds = dds,
+                  N = 10,
+                  annotation_data_pheno = data_pheno_cirrhosis |> select(clinical_information),
+                  title = "cirrhosis",
+                  title_plot = "Cirrhosis patients - Fasting vs postprandial"
+                  )
+```
+
+## Difference in expression fasting or not non-alcoholic fatty liver disease
+
+```{r}
+#| label: dea-deseq2-fattyliver
+
+data_pheno_fattyliver <- data_pheno |> 
+  dplyr::filter(disease == "non-alcoholic fatty liver disease")
+
+data_counts_fattyliver <- data_counts |> 
+  dplyr::select(rownames(data_pheno_fattyliver))
+
+dds <- DESeqDataSetFromMatrix(countData = data_counts_fattyliver,
+                              colData = data_pheno_fattyliver,
+                              design = ~clinical_information)
+
+featureData <- data.frame(gene=rownames(data_counts_fattyliver))
+mcols(dds) <- DataFrame(mcols(dds), 
+                        featureData)
+
+# DEA
+dds <- DESeq(dds)
+res <- results(dds)
+
+gene_symbol.df <- data_counts.total |> 
+  dplyr::select(gene_symbol) |> 
+  rownames_to_column("transcript_ID")
+
+res <- as.data.frame(res) |> 
+  rownames_to_column("transcript_ID") |> 
+  left_join(gene_symbol.df, by = "transcript_ID")
+
+#Saving the results
+write_csv(as.data.frame(res), 
+          file.path("../data/DESeq2/03_DESeq2_results-fattyliver.csv"))
+
+plot_volcano(x = res, 
+             title = "non-alcoholic-fatty-liver-disease", 
+             title_plot = "for non-alcoholic patients, fasting against postprandial",
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
+
+plot_topN_heatmap(res = res,
+                  dds = dds,
+                  N = 10,
+                  annotation_data_pheno = data_pheno_fattyliver |> select(clinical_information),
+                  title = "non-alcoholic-fatty-liver-disease",
+                  title_plot = "Bon-alcoholic patients - Fasting vs postprandial"
+                  )
+```
+
+## Difference in expression fasting or not normal
+
+```{r}
+#| label: dea-deseq2-normal
+
+data_pheno_normal <- data_pheno |> 
+  dplyr::filter(disease == "normal")
+
+data_counts_normal <- data_counts |> 
+  dplyr::select(rownames(data_pheno_normal))
+
+dds <- DESeqDataSetFromMatrix(countData = data_counts_normal,
+                              colData = data_pheno_normal,
+                              design = ~clinical_information)
+
+featureData <- data.frame(gene=rownames(data_counts_normal))
+mcols(dds) <- DataFrame(mcols(dds), featureData)
+
+# DEA
+dds <- DESeq(dds)
+res <- results(dds)
+
+gene_symbol.df <- data_counts.total |> 
+  dplyr::select(gene_symbol) |> 
+  rownames_to_column("transcript_ID")
+
+res <- as.data.frame(res) |> 
+  rownames_to_column("transcript_ID") |> 
+  left_join(gene_symbol.df, by = "transcript_ID")
+
+#Saving the results
+write_csv(as.data.frame(res), 
+          file.path("../data/DESeq2/03_DESeq2_results-normal.csv"))
+
+plot_volcano(x = res, 
+             title = "normal", 
+             title_plot = "for healthy people, fasting against postprandial",
+             fc_cutoff = log2(2), 
+             p_cutoff = 0.05)
+
+plot_topN_heatmap(res = res,
+                  dds = dds,
+                  N = 10,
+                  annotation_data_pheno = data_pheno_normal |> select(clinical_information),
+                  title = "normal",
+                  title_plot = "Healthy people - Fasting vs Postprandial"
+                  )
+```
