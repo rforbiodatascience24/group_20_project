@@ -20,10 +20,12 @@ slide-number: true
 
 ---
 
-## Materials
+## Data
 
-### Data
+<br>
+
 - RNA-seq of human liver biopsies from patients with NAFLD, patient with cirrhosis, and healthy controls under both fasting and postprandial conditions
+
   - Meta data
   - Count data
 
@@ -31,19 +33,46 @@ slide-number: true
 ---
 
 ## Methods
-### Overview of Methodology
 
-- Summarize the workflow or experimental pipeline.  
-- Use a flowchart or key points to explain the approach.  
+<br><br>
 
-![Workflow Diagram](path/to/image.png)
+![Workflow Diagram](Pictures_for_presentation/R-flowdiagram.drawio.png){style="margin-top: 30px;"}
 
+---
 
+## Results - Descriptive analysis
 
+Some plots
 
+---
 
+## Results - PCA
 
+Some plots
 
+---
+
+## Results - DEA
+
+Some plots
+
+---
+
+## Results - GSEA
+
+Some plots
+
+---
+
+## Discussion
+
+- Key points
+
+---
+
+## Conclusion
+
+- Key points
 
 
 
