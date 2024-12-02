@@ -11,49 +11,40 @@ slide-number: true
 self-contained: true
 ---
 
-## Introduction{.smaller}
+## Introduction {.smaller}
 
-:::: {.columns}
-
+:::::: columns
 ::: {.column width="60%"}
-
 #### Aim
 
 Investigating hepatic gene expression by comparing expression levels across:
 
-  - Healthy individuals  
-  - Patients with NAFLD  
-  - Patients with cirrhosis 
-
+-   Healthy individuals\
+-   Patients with NAFLD\
+-   Patients with cirrhosis
 :::
 
 ::: {.column width="40%"}
 ![](Pictures_for_presentation/liver_pic.png)
-::: 
+:::
 
 ::: {.fragment .fade-in}
 #### Data
 
-- **RNA-seq**: from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions
-- **Meta data**: additional information about patients 
+-   **RNA-seq**: from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions
+-   **Meta data**: additional information about patients
 :::
+::::::
 
-::::
+::: notes
+-   **Aim**: Investigating hepatic gene expression by comparing expression levels across:
+    -   Healthy individuals\
+    -   Patients with NAFLD\
+    -   Patients with cirrhosis
 
-
-
-:::notes
-
-- **Aim**: Investigating hepatic gene expression by comparing expression levels across:
-  - Healthy individuals  
-  - Patients with NAFLD  
-  - Patients with cirrhosis  
-  
 **RNA-seq** of human liver biopsies from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions
 
- **Meta data** containing additional information about the patients.
- 
-
+**Meta data** containing additional information about the patients.
 :::
 
 ------------------------------------------------------------------------
@@ -106,57 +97,43 @@ Lastly the column names were changed.
 
 ![](Pictures_for_presentation/methods_flow.png){style="margin-top: 30px;"}
 
-
 ------------------------------------------------------------------------
 
-## Descriptive analysis{.smaller}
+## Descriptive analysis {.smaller}
 
-:::: {.columns}
-
+::::: columns
 ::: {.column width="40%"}
-
 <br>
 
-- Distributions are fairly equal throughout our data
-- Sick people are older on average 
-- No significance in disease between men and women
-
+-   Distributions are fairly equal throughout our data
+-   Sick people are older on average
+-   No significance in disease between men and women
 :::
 
 ::: {.column width="60%"}
 ![](../results/EDA.png){style="width:90%"}
-::: 
-
-::::
+:::
+:::::
 
 ------------------------------------------------------------------------
 
-## PCA & Heatmap{.smaller}
+## PCA & Heatmap {.smaller}
 
-
-:::: {.columns}
-
-::: {.column width="35%"}
-
-<br>
-
-- item1
-- item2
-- item3
-
+::::: columns
+::: column
+![](Pictures_for_presentation/pca_plots_stacked_left.png)
 :::
 
-::: {.column width="65%"}
-![](){style="width:80%"}
-::: 
-
-::::
+::: column
+![](Pictures_for_presentation/all_samples_heatmap.png)
+:::
+:::::
 
 ------------------------------------------------------------------------
 
-
 ## Differential Expression Analysis
-::: {style="font-size: 78%;"}
+
+:::: {style="font-size: 78%;"}
 Compare gene expression levels between groups using **DESeq2**
 
 [Output for each gene:]{.underline} Global Mean - Fold-change - Adjusted p-value
@@ -166,35 +143,27 @@ Compare gene expression levels between groups using **DESeq2**
 
 ![](Pictures_for_presentation/heatmap-topN-genes-fasting.png){width="500"}
 :::
-:::
+::::
 
 ------------------------------------------------------------------------
 
-## Gene Set Enrichment Analysis{.smaller}
-
+## Gene Set Enrichment Analysis {.smaller}
 
 Investigating hepatic gene set enrichment
 
 <br>
 
-:::: {.columns}
-
+::::: columns
 ::: {.column width="35%"}
-
-
-- C11 hepatocytes is a subtype of hepatocytes (1 of 3) 
-- Hepatocytes produces hepatokines (hormone involved in metabolic regulation) 
-- Some therapies try to promote hepatocyte regeneration
-
+-   C11 hepatocytes is a subtype of hepatocytes (1 of 3)
+-   Hepatocytes produces hepatokines (hormone involved in metabolic regulation)
+-   Some therapies try to promote hepatocyte regeneration
 :::
 
 ::: {.column width="65%"}
-
-![](../results/GSEA/GSEA_sick_vs_healthy_patients_fasting.png){width=900}
-::: 
-
-::::
-
+![](../results/GSEA/GSEA_sick_vs_healthy_patients_fasting.png){width="900"}
+:::
+:::::
 
 ------------------------------------------------------------------------
 
