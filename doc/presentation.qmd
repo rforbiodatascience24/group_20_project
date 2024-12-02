@@ -8,6 +8,7 @@ format:
 footer: "Group 20" 
 transition: slide
 slide-number: true
+self-contained: true
 ---
 
 ## Introduction
@@ -15,7 +16,7 @@ slide-number: true
 ::: {style="font-size: 78%;"}
 **Aim**: Investigating hepatic gene expression by comparing expression levels across:
 
-|  |  |
+|                                                                                  |                                                                        |
 |--------------------------------------|:--------------------------------:|
 | \- Healthy individuals - Patients with NAFLD - Patients with cirrhosis \### Data | \![\](doc/Pictures_for_presentation/liver_pic.png){style="width:80%;"} |
 
@@ -80,8 +81,8 @@ Lastly the column names were changed.
 ::: {style="font-size: 78%;"}
 **Aim**: First analysis of our datasets
 
-|  |  |
-|:--------------------------------------------------:|:------------------:|
+|                                                                                                                                             |                                           |
+|:-------------------------------------------------:|:-------------------:|
 | \- Distributions are fairly equal throughout our data - Sick people are older on average - No significance in disease between men and women | \![\](results/EDA.png){style="width:85%"} |
 :::
 
@@ -110,8 +111,8 @@ Compare gene expression levels between groups using **DESeq2** [Output:]{.underl
 ::: {style="font-size: 78%;"}
 **Aim**: Investigating hepatic gene set enrichment
 
-|  |  |
-|:----------------------------------------------:|:---------------------:|
+|                                                                                                                                                                                               |                                                                                   |
+|:----------------------------------------------:|:----------------------:|
 | \- C11 hepatocytes is a subtype of hepatocytes (1 of 3) - Hepatocytes produces hepatokines (hormone involved in metabolic regulation) - Some therapies try to promote hepatocyte regeneration | \![\](results/GSEA/GSEA_sick_vs_healthy_patients_fasting.png){style="width:100%"} |
 :::
 
