@@ -164,7 +164,7 @@ Compare gene expression levels between groups using **DESeq2**
 ::: {style="display: flex; align-items: center; justify-content: center;"}
 ![](Pictures_for_presentation/DEA-fasting.png){width="500"}
 
-![](Pictures_for_presentation/heatmap-topN-genes-fasting.png){width="400"}
+![](Pictures_for_presentation/heatmap-topN-genes-fasting.png){width="500"}
 :::
 :::
 
