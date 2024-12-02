@@ -67,5 +67,5 @@ heatmap.individual <- pheatmap(cor.matrix,
 #### Save plot
 
 ```{r}
-ggsave("../Pictures_for_presentation/all_samples_heatmap.png")
+ggsave("../doc/Pictures_for_presentation/all_samples_heatmap.png", plot = heatmap.individual)
 ```
