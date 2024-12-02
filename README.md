@@ -56,4 +56,4 @@ This project relies on several packages including:
 
 
 ## Link to presentation
-XXXXX
+https://raw.githack.com/rforbiodatascience24/group_20_project/main/doc/presentation.html 
