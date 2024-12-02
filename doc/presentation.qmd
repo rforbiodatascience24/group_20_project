@@ -95,15 +95,17 @@ Some plots
 ------------------------------------------------------------------------
 
 ## Results - DEA
+::: {style="font-size: 78%;"}
+Compare gene expression levels between groups using **DESeq2**
 
-Compare gene expression levels between groups using **DESeq2** [Output:]{.underline} Global Mean - Fold-change - Adjusted-p-value
+[Output for each gene:]{.underline} Global Mean - Fold-change - Adjusted p-value
 
 ::: {style="display: flex; align-items: center; justify-content: center;"}
-![](images/DEA-fasting.png){width="500"}
+![](Pictures_for_presentation/DEA-fasting.png){width="500"}
 
-![](images/heatmap-topN-genes-fasting.png){width="400"}
+![](Pictures_for_presentation/heatmap-topN-genes-fasting.png){width="400"}
 :::
-
+:::
 ------------------------------------------------------------------------
 
 ## Results - GSEA
