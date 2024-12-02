@@ -63,3 +63,9 @@ heatmap.individual <- pheatmap(cor.matrix,
                                annotation_col = annotations,
                                main = "Heatmap - All samples")
 ```
+
+#### Save plot
+
+```{r}
+ggsave("../Pictures_for_presentation/all_samples_heatmap.png")
+```

@@ -5,47 +5,28 @@ format: revealjs
 footer: "Group 20" 
 transition: slide
 slide-number: true
-
 ---
 
 ## Introduction
 
-<div style="font-size: 78%;">
+::: {style="font-size: 78%;"}
+-   **Aim**: Investigating hepatic gene expression by comparing expression levels across:
 
-- **Aim**: Investigating hepatic gene expression by comparing expression levels across:
+|  |  |
+|---------------------------------------|:-------------------------------:|
+| \- Healthy individuals - Patients with NAFLD - Patients with cirrhosis \### Data | \![\](Pictures_for_presentation/liver_pic.png){style="width:80%;"} |
 
-<table style="width:100%; font-size: inherit; line-height: 1.5;">
-<tr>
-<td style="width:60%; vertical-align: top;"> 
-
-  - Healthy individuals  
-  - Patients with NAFLD  
-  - Patients with cirrhosis 
-
-### Data
- 
-</td>
-<td style="width:40%; text-align:center; vertical-align: top;">
-
-![](Pictures_for_presentation/liver_pic.png){style="width:80%;"}
-
-</td>
-</tr>
-</table>
-
-  - **RNA-seq** of human liver biopsies from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions  
-  - **Meta data** containing additional information about the patients 
-
-</div>
-
+-   **RNA-seq** of human liver biopsies from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions\
+-   **Meta data** containing additional information about the patients
+:::
 
 ## Data processing
 
----
+------------------------------------------------------------------------
 
 ## Data processing
 
----
+------------------------------------------------------------------------
 
 ## Methods
 
@@ -53,39 +34,37 @@ slide-number: true
 
 ![Workflow Diagram](Pictures_for_presentation/R-flowdiagram.drawio.png){style="margin-top: 30px;"}
 
----
+------------------------------------------------------------------------
 
 ## Results - Descriptive analysis
 
 Some plots
 
----
-
+------------------------------------------------------------------------
 ## Results - PCA/Heatmap
 
-Some plots
+<div style="display: flex; justify-content: space-between;">
+  <img src="Pictures_for_presentation/pca_plots_stacked_left.png" style="margin-top: 30px; width: 45%;" />
+  <img src="Pictures_for_presentation/all_samples_heatmap.png" style="margin-top: 30px; width: 45%;" />
+</div>
 
----
+------------------------------------------------------------------------
 
 ## Results - DEA
 
 Some plots
 
----
+------------------------------------------------------------------------
 
 ## Results - GSEA
 
 Some plots
 
----
+------------------------------------------------------------------------
 
 ## Discussion / Conclusion
 
-- Key points
-- Count_data derived from micro-array
-- Troubles with DESeq2 package and dplyr
-- Key points
-
-
-
-
+-   Key points
+-   Count_data derived from micro-array
+-   Troubles with DESeq2 package and dplyr
+-   Key points

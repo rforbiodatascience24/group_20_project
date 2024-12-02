@@ -31,52 +31,85 @@ library("ggrepel")
 
 data_pheno <- read.csv("../data/03_metadata_aug.csv")
 
-data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv")
+data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv", 
+                              check.names = FALSE)
 
 # We want genes as row names, so we convert the tibble to a dataframe and names the rows
-data_counts <- data.frame(data_counts.total) |>
-  dplyr::select(-gene_id, -gene_symbol, -transcript_ID)
-
-colnames(data_counts) <- colnames(data_counts) |> 
-  substring(2)
-
-# The output of the mapping algorithm they use is an estimated number of reads mapped to each gene. It is a float while we need an integer. We will then convert it.
-data_counts <- data_counts |> 
+data_counts <- data_counts.total |>
+  select(-gene_id, -gene_symbol, -transcript_ID) |>
   mutate(across(where(is.numeric), as.integer))
+
+
+# Doing the PCA
+pca_fit <- data_counts |>
+  scale() |> # scaling data
+  t() |> # transpose data
+  prcomp() # make the PCA
 ```
 
 We would like to:
 
-1.  Look at the data in PC coordinates.
+1.  Look at the variance explained by each PC.
 
-2.  Look at the rotation matrix.
+2.  Look at the data in PC coordinates.
 
-3.  Look at the variance explained by each PC.
+3.  Look at the rotation matrix.
+
+#### The variance by each PC
+
+```{r}
+#| label: 05_variance-of-components
+
+pca_fit |>
+  tidy(matrix = "eigenvalues") |>
+  filter(percent > 0.005) |> 
+  ggplot(aes(x = PC, 
+             y = percent)) +
+  geom_col(fill = "#56B4E9", color = "black") +
+  scale_x_continuous(breaks = 1:length(data_counts)) +
+  scale_y_continuous(labels = scales::percent_format(),
+                     expand = expansion(mult = c(0, 0.01))) +
+  theme_minimal_hgrid(12) +
+  labs(title = "Variance explained by each components",
+       x = "Principal Component",
+       y = "Percentage of variance") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# Extract the percentage of variance explained by each PC
+variance_explained <- pca_fit |>
+  tidy(matrix = "eigenvalues") |>
+  filter(PC %in% c(1, 2)) |>
+  select(PC, percent)
+
+```
 
 #### The data in PC coordinates
 
 ```{r}
 #| label: 05_applying-pca
 
-pca_fit <- data_counts |>
-  scale() |> # scaling data
-  t() |> # transpose data
-  prcomp() # make the PCA
-
-pca_fit |>
+coord_pca <- pca_fit |>
   augment(data_pheno) |> # add metadata
+  mutate(label_points = ifelse(
+    (.fittedPC1 < -50 & .fittedPC2 > 10) | (.fittedPC1 > 50 & .fittedPC2 > 15), 
+    source_name, NA)) |>  #new variable to specify which points should be labeled
   ggplot(aes(x = .fittedPC1, 
              y = .fittedPC2, 
              shape = clinical_information,
              col = disease, 
-             label = source_name)) + 
+             label = label_points)) + 
     geom_point(size = 3) + 
-    labs(title = "PCA of the expression of patients",
-         x = "PC1" , 
-         y = "PC2", 
+    geom_text_repel() +
+    labs(title = "PCA of gene expression in patients",
+         x = paste("PC1 (", round(variance_explained$percent[1] * 100, 2), "%)", 
+                   sep = ""),
+         y = paste("PC2 (", round(variance_explained$percent[2] * 100, 2), "%)", 
+                   sep = ""), 
          color = "Disease", 
          shape = "Clinical information") +
     theme(plot.title = element_text(hjust = 0.5))
+
+coord_pca
 ```
 
 It is hard to split our patients just using a PCA, we will have to use other tools to look at differences in gene expression between the groups.
@@ -107,7 +140,7 @@ PC1_sorted <- pca_fit |>
 biggest_value_PC1 <- PC1_sorted[10]
 
 # plot rotation matrix
-pca_fit |>
+rotation_pca <- pca_fit |>
   tidy(matrix = "rotation") |>
   pivot_wider(names_from = "PC", 
               names_prefix = "PC", 
@@ -125,27 +158,24 @@ pca_fit |>
     color = "#56B4E9"
   ) +
   coord_fixed() +
-  labs(title = "Rotation matrix of most impactful genes") +
+  labs(title = "Rotation matrix of most impactful genes",
+         x = paste("PC1 (", round(variance_explained$percent[1] * 100, 2), "%)", 
+                   sep = ""),
+         y = paste("PC2 (", round(variance_explained$percent[2] * 100, 2), "%)", 
+                   sep = "")) + 
   theme(plot.title = element_text(hjust = 0.5))
+
+rotation_pca
 ```
 
-#### The variance by each PC
+#### Save plots
 
 ```{r}
-#| label: 05_variance-of-components
+# Combine the two plots side by side
+combined_plot <- plot_grid(coord_pca, rotation_pca, nrow = 2, align = "v")
 
-pca_fit |>
-  tidy(matrix = "eigenvalues") |>
-  filter(percent > 0.005) |> 
-  ggplot(aes(x = PC, 
-             y = percent)) +
-  geom_col(fill = "#56B4E9", color = "black") +
-  scale_x_continuous(breaks = 1:length(data_counts)) +
-  scale_y_continuous(labels = scales::percent_format(),
-                     expand = expansion(mult = c(0, 0.01))) +
-  theme_minimal_hgrid(12) +
-  labs(title = "Variance explained by each components",
-       x = "Component",
-       y = "Percentage of variance") +
-  theme(plot.title = element_text(hjust = 0.5))
+combined_plot
+
+# Save the combined plot as PNG
+ggsave("../Pictures_for_presentation/pca_plots_stacked_left.png", plot = combined_plot)
 ```
