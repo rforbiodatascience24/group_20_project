@@ -1,51 +1,35 @@
 ---
 title: "Hepatic Gene Expression Analysis"
-author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
-format: revealjs
+subtitle: "22160 R for bio data science"
+author: Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, and Trine Søgaard
+format: 
+  revealjs:
+    logo: DTU.png
 footer: "Group 20" 
 transition: slide
 slide-number: true
-
 ---
 
 ## Introduction
 
-<div style="font-size: 78%;">
-
+::: {style="font-size: 78%;"}
 **Aim**: Investigating hepatic gene expression by comparing expression levels across:
 
-<table style="width:100%; font-size: inherit; line-height: 1.5;">
-<tr>
-<td style="width:60%; vertical-align: top;"> 
+|  |  |
+|--------------------------------------|:--------------------------------:|
+| \- Healthy individuals - Patients with NAFLD - Patients with cirrhosis \### Data | \![\](doc/Pictures_for_presentation/liver_pic.png){style="width:80%;"} |
 
-  - Healthy individuals  
-  - Patients with NAFLD  
-  - Patients with cirrhosis 
-
-### Data
- 
-</td>
-<td style="width:40%; text-align:center; vertical-align: top;">
-
-![](doc/Pictures_for_presentation/liver_pic.png){style="width:80%;"}
-
-</td>
-</tr>
-</table>
-
-  - **RNA-seq** of human liver biopsies from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions  
-  - **Meta data** containing additional information about the patients 
-
-</div>
-
+-   **RNA-seq** of human liver biopsies from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions\
+-   **Meta data** containing additional information about the patients
+:::
 
 ## Data processing
 
----
+------------------------------------------------------------------------
 
 ## Data processing
 
----
+------------------------------------------------------------------------
 
 ## Methods
 
@@ -53,39 +37,25 @@ slide-number: true
 
 ![Workflow Diagram](doc/Pictures_for_presentation/R-flowdiagram.drawio.png){style="margin-top: 30px;"}
 
----
+------------------------------------------------------------------------
 
 ## Results - Descriptive analysis
 
-<div style="font-size: 78%;">
-
+::: {style="font-size: 78%;"}
 **Aim**: First analysis of our datasets
 
-<table style="height:80%; font-size: inherit; line-height: 1.5;">
-<tr>
+|  |  |
+|:----------------------------------------------------:|:----------------:|
+| \- Distributions are fairly equal throughout our data - Sick people are older on average - No significance in disease between men and women | \![\](results/EDA.png){style="width:85%"} |
+:::
 
-<td style="width:40%; text-align:center; vertical-align:middle; font-size: 20pt">
-- Distributions are fairly equal throughout our data
-- Sick people are older on average
-- No significance in disease between men and women
-</td>
-
-<td style="width:60%; text-align:center; vertical-align: top;">
-![](results/EDA.png){style="width:85%"}
-</td>
-
-</tr>
-</table>
-
-</div>
-
----
+------------------------------------------------------------------------
 
 ## Results - PCA/Heatmap
 
 Some plots
 
----
+------------------------------------------------------------------------
 
 ## Results - DEA
 
@@ -95,37 +65,23 @@ Compare gene expression levels between groups using **DESeq2** [Output:]{.underl
 <img src="results/DEA/DEA-fasting.png" alt="Volcano Plot" style="width: 45%; margin-right: 90px;"/> <img src="results/DEA/heatmap-topN-genes-fasting.png" alt="Heatmap" style="width: 45%;"/>
 :::
 
----
+------------------------------------------------------------------------
 
 ## Results - GSEA
 
-<div style="font-size: 78%;">
-
+::: {style="font-size: 78%;"}
 **Aim**: Investigating hepatic gene set enrichment
 
-<table style="font-size: inherit; line-height: 1.5;">
-<tr>
+|  |  |
+|:-----------------------------------------------:|:--------------------:|
+| \- C11 hepatocytes is a subtype of hepatocytes (1 of 3) - Hepatocytes produces hepatokines (hormone involved in metabolic regulation) - Some therapies try to promote hepatocyte regeneration | \![\](results/GSEA/GSEA_sick_vs_healthy_patients_fasting.png){style="width:100%"} |
+:::
 
-<td style="width:40%; text-align:center; vertical-align:middle; font-size: 20pt">
-- C11 hepatocytes is a subtype of hepatocytes (1 of 3)
-- Hepatocytes produces hepatokines (hormone involved in metabolic regulation)
-- Some therapies try to promote hepatocyte regeneration
-</td>
-
-<td style="width:60%; text-align:center; vertical-align: top;">
-![](results/GSEA/GSEA_sick_vs_healthy_patients_fasting.png){style="width:100%"}
-</td>
-
-</tr>
-</table>
-
-</div>
-
----
+------------------------------------------------------------------------
 
 ## Discussion / Conclusion
 
-- Key points
-- Count_data derived from micro-array
-- Troubles with DESeq2 package and dplyr
-- Key points
+-   Key points
+-   Count_data derived from micro-array
+-   Troubles with DESeq2 package and dplyr
+-   Key points
