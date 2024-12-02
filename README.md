@@ -18,11 +18,11 @@ This project investigates differences in hepatic gene expression between healthy
 ## Project Structure
 - **Data Setup and Download:** `01_load` creates a `data/` directory, with the subdirectories `data/_raw/count_data/`, and `data/_raw/metadata/`. It downloads the raw data from the specified URL (found under `Data`) and saves it into the subfolders.
 
-- **Data Cleaning:** `02_clean`
+- **Data Cleaning:** `02_clean` Cleans the raw data by, for instance, matching patients with RNA count data.
 
-- **Data Augmentation:** `03_augment`
+- **Data Augmentation:** `03_augment`Augment the cleaned data to be ready for analysis. 
 
-- **Data Description:** `04_describe`: Generates descriptive plots of data 
+- **Data Description:** `04_describe`: Generates descriptive plots of data.
 
 - **Data Analysis:**
     `05_analysis_1`: Performs PCA
@@ -30,9 +30,9 @@ This project investigates differences in hepatic gene expression between healthy
     `07_analysis_3`: Performs Differential Expression Analysis (DEA) using DESeq2. Does also perform PCA and generate heatmap & volcano plots
     `08_analysis_4`: Performs Gene Set Enrichment Analysis (GSEA) and plot the 5 most significantly enriched pathways
 
-- **All:** `00_all`: Runs the project in one go
+- **All:** `00_all`: Runs the project in one go.
   
-- **Functions**: `99_proj_func.R`: Contains functions 
+- **Functions**: `99_proj_func.R`: Contains functions.
 
 ## Data
 Data is available here: https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-12807
