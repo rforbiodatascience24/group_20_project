@@ -36,7 +36,7 @@ data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv",
 
 # make matrix of count data
 data_counts <- data_counts.total |>
-  select(-gene_id, -gene_symbol, -transcript_ID) |>
+  dplyr::select(-gene_id, -gene_symbol, -transcript_ID) |>
   mutate(across(where(is.numeric), as.integer))
 
 
@@ -79,7 +79,7 @@ pca_fit |>
 variance_explained <- pca_fit |>
   tidy(matrix = "eigenvalues") |>
   filter(PC %in% c(1, 2)) |>
-  select(PC, percent)
+  dplyr::select(PC, percent)
 
 ```
 
