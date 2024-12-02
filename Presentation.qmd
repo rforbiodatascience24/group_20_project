@@ -27,7 +27,7 @@ slide-number: true
 </td>
 <td style="width:40%; text-align:center; vertical-align: top;">
 
-![](Pictures_for_presentation/liver_pic.png){style="width:80%;"}
+![](doc/Pictures_for_presentation/liver_pic.png){style="width:80%;"}
 
 </td>
 </tr>
@@ -51,7 +51,7 @@ slide-number: true
 
 <br><br>
 
-![Workflow Diagram](Pictures_for_presentation/R-flowdiagram.drawio.png){style="margin-top: 30px;"}
+![Workflow Diagram](doc/Pictures_for_presentation/R-flowdiagram.drawio.png){style="margin-top: 30px;"}
 
 ---
 
@@ -99,7 +99,27 @@ Compare gene expression levels between groups using **DESeq2** [Output:]{.underl
 
 ## Results - GSEA
 
-Some plots
+<div style="font-size: 78%;">
+
+**Aim**: Investigating hepatic gene set enrichment
+
+<table style="font-size: inherit; line-height: 1.5;">
+<tr>
+
+<td style="width:40%; text-align:center; vertical-align:middle; font-size: 20pt">
+- C11 hepatocytes is a subtype of hepatocytes (1 of 3)
+- Hepatocytes produces hepatokines (hormone involved in metabolic regulation)
+- Some therapies try to promote hepatocyte regeneration
+</td>
+
+<td style="width:60%; text-align:center; vertical-align: top;">
+![](results/GSEA/GSEA_sick_vs_healthy_patients_fasting.png){style="width:100%"}
+</td>
+
+</tr>
+</table>
+
+</div>
 
 ---
 
@@ -109,7 +129,3 @@ Some plots
 - Count_data derived from micro-array
 - Troubles with DESeq2 package and dplyr
 - Key points
-
-
-
-
