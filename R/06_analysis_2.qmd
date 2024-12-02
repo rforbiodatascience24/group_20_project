@@ -47,7 +47,7 @@ data_counts <- data_counts |>
   mutate(across(where(is.numeric), as.integer))
 ```
 
-## The analysis - heatmap
+## The analysis - Heatmap
 
 ```{r}
 #| label: 06_heatmap-individual

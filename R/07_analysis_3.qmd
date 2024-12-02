@@ -29,22 +29,24 @@ source(file.path("99_proj_func.R"))
 ```{r}
 #| label: 07_load-data
 
-data_pheno <- read.csv("../data/03_metadata_aug.csv")
+data_pheno <- read.csv("../data/03_metadata_aug.csv", check.names = FALSE)
 
 # We want patients as row names, so we convert the tibble to a dataframe and names the rows
-data_pheno <- data.frame(data_pheno) |> 
+data_pheno <- data_pheno |> 
   column_to_rownames("source_name")
 
 data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv", check.names = FALSE)
 
 # We want genes as row names, so we convert the tibble to a dataframe and names the rows
 data_counts <- data_counts.total |>
-  select(-gene_id, -gene_symbol) |>
-  distinct(transcript_ID, .keep_all = TRUE) |>
-  column_to_rownames("transcript_ID")
+  select(-gene_id, -gene_symbol, -transcript_ID) |>
+  mutate(across(where(is.numeric), as.integer))
 
-colnames(data_counts) <- colnames(data_counts) |> 
-  substring(2)
+#  distinct(transcript_ID, .keep_all = TRUE) |>
+ # column_to_rownames("transcript_ID")
+
+#colnames(data_counts) <- colnames(data_counts) |> 
+#  substring(2)
 
 # The output of the mapping algorithm they use is an estimated number of reads mapped to each gene. It is a float while we need an integer. We will then convert it.
 data_counts <- data_counts |> 
@@ -74,20 +76,20 @@ dds$disease <- relevel(dds$disease,
 
 # DEA
 dds <- DESeq(dds)
-res <- results(dds)
 
 gene_symbol.df <- data_counts.total |> 
-  select(gene_symbol, transcript_ID)
+  rownames_to_column("rowname") |>
+  select(gene_symbol, transcript_ID, rowname)
 
-res <- res |> 
-  as_data_frame() |>
-  rownames_to_column("transcript_ID")
-  
-left_join(gene_symbol.df, 
-            by = c("transcript_ID", "gene_symbol"))
+res <- results(dds) |> 
+  as_tibble() |>
+  rownames_to_column("rowname") |>
+  left_join(gene_symbol.df, by = "rowname") |>
+  select(-rowname)
 
+gene_symbol.df <- gene_symbol.df |>
+  select(gene_symbol)
 # Creating the folder to save the data
-
 DESeq2_data_dir <- "../data/DESeq2"
 if( !dir.exists(DESeq2_data_dir) ){
   dir.create(path = DESeq2_data_dir)
@@ -124,7 +126,7 @@ plot_topN_heatmap(res = res,
 
 regulated_data <- res |>
   filter(pvalue <= 0.05) |>
-  left_join(data_counts.total, by = "transcript_ID")
+  left_join(data_counts.total, by = c("transcript_ID", "gene_sy"))
 ```
 
 ## Testing now in fasting conditions
@@ -135,10 +137,10 @@ regulated_data <- res |>
 #| message: false
 
 data_pheno_fasting <- data_pheno |> 
-  dplyr::filter(clinical_information == "fasting")
+  filter(clinical_information == "fasting")
 
 data_counts_fasting <- data_counts |> 
-  dplyr::select(rownames(data_pheno_fasting))
+  select(rownames(data_pheno_fasting))
 
 dds <- DESeqDataSetFromMatrix(countData = data_counts_fasting,
                               colData = data_pheno_fasting,
