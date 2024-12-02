@@ -22,6 +22,7 @@ library("tidyverse")
 library("broom")
 library("cowplot")
 library("ggrepel")
+library("patchwork")
 ```
 
 #### Data load
@@ -170,18 +171,18 @@ rotation_pca <- pca_fit |>
 rotation_pca
 ```
 
-#### Save Plots
-
 ```{r}
 #| label: 05_save_plot
 #| message: False
 #| warning: False
+#| fig-asp: 1
+#| width: 10
+#| include: false
 
-# Combine the two plots side by side
-combined_plot <- plot_grid(coord_pca, rotation_pca, nrow = 2, align = "v")
+# Combine the two plots
+combined_plot <-  coord_pca / rotation_pca
 
 combined_plot
-
 # Save the combined plot as PNG
 ggsave("../doc/Pictures_for_presentation/pca_plots_stacked_left.png", plot = combined_plot)
 ```

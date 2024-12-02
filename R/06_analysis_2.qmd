@@ -20,6 +20,8 @@ rm(list=ls())
 
 library("tidyverse") 
 library("pheatmap")
+
+source(file.path("99_proj_func.R"))
 ```
 
 ## Load data
@@ -64,8 +66,11 @@ heatmap.individual <- pheatmap(cor.matrix,
                                main = "Heatmap - All samples")
 ```
 
-#### Save plot
-
 ```{r}
-ggsave("../doc/Pictures_for_presentation/all_samples_heatmap.png", plot = heatmap.individual)
+#| label: 06_save-plot
+#| message: false
+#| include: false
+
+save_pheatmap_png(heatmap.individual,
+                  "../doc/Pictures_for_presentation/all_samples_heatmap.png")
 ```
