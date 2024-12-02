@@ -8,9 +8,9 @@
 <link href="presentation_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.555">
+  <meta name="generator" content="quarto-1.5.57">
 
-  <meta name="author" content="Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard">
+  <meta name="author" content="Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, and Trine Søgaard">
   <title>Hepatic Gene Expression Analysis</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -327,11 +327,12 @@
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Hepatic Gene Expression Analysis</h1>
+  <p class="subtitle">22160 R for bio data science</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard 
+Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, and Trine Søgaard 
 </div>
 </div>
 </div>
@@ -341,23 +342,18 @@ Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 <h2>Introduction</h2>
 <div style="font-size: 78%;">
 <p><strong>Aim</strong>: Investigating hepatic gene expression by comparing expression levels across:</p>
-<table style="width:100%; font-size: inherit; line-height: 1.5;">
-<tbody><tr>
-<td style="width:60%; vertical-align: top;">
-<ul>
-<li>Healthy individuals<br>
-</li>
-<li>Patients with NAFLD<br>
-</li>
-<li>Patients with cirrhosis</li>
-</ul>
-<h3 id="data">Data</h3>
-</td>
-<td style="width:40%; text-align:center; vertical-align: top;">
-<p><img data-src="doc/Pictures_for_presentation/liver_pic.png" style="width:80%;"></p>
-</td>
+<table class="caption-top">
+<colgroup>
+<col style="width: 52%">
+<col style="width: 47%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>- Healthy individuals - Patients with NAFLD - Patients with cirrhosis ### Data</td>
+<td style="text-align: center;">![](doc/Pictures_for_presentation/liver_pic.png){style=“width:80%;”}</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <ul>
 <li><strong>RNA-seq</strong> of human liver biopsies from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions<br>
 </li>
@@ -367,33 +363,67 @@ Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 </section>
 <section id="data-processing" class="slide level2">
 <h2>Data processing</h2>
+<div class="r-stack">
+<p><img data-src="Pictures_for_presentation/data_processing1.png"></p>
+<p><img data-src="Pictures_for_presentation/data_processing2.png" class="fragment"></p>
+<p><img data-src="Pictures_for_presentation/data_processing3.png" class="fragment"></p>
+</div>
+<aside class="notes">
+<p>Notes</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="data-processing-1" class="slide level2">
 <h2>Data processing</h2>
+<div class="r-stack">
+<p><img data-src="Pictures_for_presentation/data_processing4.png"></p>
+<p><img data-src="Pictures_for_presentation/data_processing5.png" class="fragment"></p>
+<p><img data-src="Pictures_for_presentation/data_processing6.png" class="fragment"></p>
+</div>
+<aside class="notes">
+<p>Notes</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="methods" class="slide level2">
 <h2>Methods</h2>
 <p><br><br></p>
 
-<img data-src="doc/Pictures_for_presentation/R-flowdiagram.drawio.png" class="r-stretch quarto-figure-center"><p class="caption">Workflow Diagram</p></section>
+<img data-src="Pictures_for_presentation/R-flowdiagram.drawio.png" class="r-stretch quarto-figure-center"><p class="caption">Workflow Diagram</p></section>
 <section id="results---descriptive-analysis" class="slide level2">
 <h2>Results - Descriptive analysis</h2>
 <div style="font-size: 78%;">
 <p><strong>Aim</strong>: First analysis of our datasets</p>
-<table style="height:80%; font-size: inherit; line-height: 1.5;">
-<tbody><tr>
-<td style="width:40%; text-align:center; vertical-align:middle; font-size: 20pt">
-<ul>
-<li>Distributions are fairly equal throughout our data</li>
-<li>Sick people are older on average</li>
-<li>No significance in disease between men and women</li>
-</ul>
-</td>
-<td style="width:60%; text-align:center; vertical-align: top;">
-<img data-src="results/EDA.png" style="width:85%">
-</td>
+<table class="caption-top">
+<colgroup>
+<col style="width: 72%">
+<col style="width: 27%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">- Distributions are fairly equal throughout our data - Sick people are older on average - No significance in disease between men and women</td>
+<td style="text-align: center;">![](results/EDA.png){style=“width:85%”}</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </div>
 </section>
 <section id="results---pcaheatmap" class="slide level2">
@@ -404,27 +434,26 @@ Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 <h2>Results - DEA</h2>
 <p>Compare gene expression levels between groups using <strong>DESeq2</strong> <u>Output:</u> Global Mean - Fold-change - Adjusted-p-value</p>
 <div style="display: flex; align-items: center; justify-content: center;">
-<p><img src="results/DEA/DEA-fasting.png" alt="Volcano Plot" style="width: 45%; margin-right: 90px;"> <img src="results/DEA/heatmap-topN-genes-fasting.png" alt="Heatmap" style="width: 45%;"></p>
+<p><img data-src="images/DEA-fasting.png" width="500"></p>
+<p><img data-src="images/heatmap-topN-genes-fasting.png" width="400"></p>
 </div>
 </section>
 <section id="results---gsea" class="slide level2">
 <h2>Results - GSEA</h2>
 <div style="font-size: 78%;">
 <p><strong>Aim</strong>: Investigating hepatic gene set enrichment</p>
-<table style="font-size: inherit; line-height: 1.5;">
-<tbody><tr>
-<td style="width:40%; text-align:center; vertical-align:middle; font-size: 20pt">
-<ul>
-<li>C11 hepatocytes is a subtype of hepatocytes (1 of 3)</li>
-<li>Hepatocytes produces hepatokines (hormone involved in metabolic regulation)</li>
-<li>Some therapies try to promote hepatocyte regeneration</li>
-</ul>
-</td>
-<td style="width:60%; text-align:center; vertical-align: top;">
-<img data-src="results/GSEA/GSEA_sick_vs_healthy_patients_fasting.png" style="width:100%">
-</td>
+<table class="caption-top">
+<colgroup>
+<col style="width: 67%">
+<col style="width: 32%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">- C11 hepatocytes is a subtype of hepatocytes (1 of 3) - Hepatocytes produces hepatokines (hormone involved in metabolic regulation) - Some therapies try to promote hepatocyte regeneration</td>
+<td style="text-align: center;">![](results/GSEA/GSEA_sick_vs_healthy_patients_fasting.png){style=“width:100%”}</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </div>
 </section>
 <section id="discussion-conclusion" class="slide level2">
@@ -436,6 +465,7 @@ Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
 <li>Key points</li>
 </ul>
 <div class="quarto-auto-generated-content">
+<p><img src="DTU.png" class="slide-logo"></p>
 <div class="footer footer-default">
 <p>Group 20</p>
 </div>
@@ -683,18 +713,7 @@ Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
         }
         return false;
       }
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        text: function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-        }
-      });
-      clipboard.on('success', function(e) {
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -726,7 +745,29 @@ Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
         var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
         var mailtoRegex = new RegExp(/^mailto:/);
           var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -734,7 +775,7 @@ Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, Trine Søgaard
             return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }
         // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
         for (var i=0; i<links.length; i++) {
           const link = links[i];
           if (!isInternal(link.href)) {
