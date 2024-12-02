@@ -11,17 +11,49 @@ slide-number: true
 self-contained: true
 ---
 
-## Introduction
+## Introduction{.smaller}
 
-::: {style="font-size: 78%;"}
-**Aim**: Investigating hepatic gene expression by comparing expression levels across:
+:::: {.columns}
 
-|                                                                                  |                                                                        |
-|--------------------------------------|:--------------------------------:|
-| \- Healthy individuals - Patients with NAFLD - Patients with cirrhosis \### Data | \![\](doc/Pictures_for_presentation/liver_pic.png){style="width:80%;"} |
+::: {.column width="50%"}
 
--   **RNA-seq** of human liver biopsies from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions\
--   **Meta data** containing additional information about the patients
+#### Aim
+
+Investigating hepatic gene expression by comparing expression levels across:
+
+  - Healthy individuals  
+  - Patients with NAFLD  
+  - Patients with cirrhosis 
+
+:::
+
+::: {.column width="40%"}
+![](Pictures_for_presentation/liver_pic.png)
+::: 
+
+::: {.fragment .fade-in}
+#### Data
+
+- **RNA-seq**: from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions
+- **Meta data**: additional information about patients 
+:::
+
+::::
+
+
+
+:::notes
+
+- **Aim**: Investigating hepatic gene expression by comparing expression levels across:
+  - Healthy individuals  
+  - Patients with NAFLD  
+  - Patients with cirrhosis  
+  
+**RNA-seq** of human liver biopsies from patients with NAFLD, patients with cirrhosis, and healthy controls under both fasting and postprandial conditions
+
+ **Meta data** containing additional information about the patients.
+ 
+
 :::
 
 ------------------------------------------------------------------------
@@ -72,49 +104,124 @@ Lastly the column names were changed.
 
 <br><br>
 
-![Workflow Diagram](Pictures_for_presentation/R-flowdiagram.drawio.png){style="margin-top: 30px;"}
+![](Pictures_for_presentation/methods_flow.png){style="margin-top: 30px;"}
 
-------------------------------------------------------------------------
+::: notes
 
-## Results - Descriptive analysis
-
-::: {style="font-size: 78%;"}
-**Aim**: First analysis of our datasets
-
-|                                                                                                                                             |                                           |
-|:-------------------------------------------------:|:-------------------:|
-| \- Distributions are fairly equal throughout our data - Sick people are older on average - No significance in disease between men and women | \![\](results/EDA.png){style="width:85%"} |
+some text
 :::
 
-------------------------------------------------------------------------
-
-## Results - PCA/Heatmap
-
-Some plots
 
 ------------------------------------------------------------------------
 
-## Results - DEA
+## Descriptive analysis{.smaller}
 
-Compare gene expression levels between groups using **DESeq2** [Output:]{.underline} Global Mean - Fold-change - Adjusted-p-value
+:::: {.columns}
 
-::: {style="display: flex; align-items: center; justify-content: center;"}
-![](images/DEA-fasting.png){width="500"}
+::: {.column width="35%"}
 
-![](images/heatmap-topN-genes-fasting.png){width="400"}
+<br>
+
+- Distributions are fairly equal throughout our data
+- Sick people are older on average 
+- No significance in disease between men and women
+
 :::
 
+::: {.column width="65%"}
+![](../results/EDA.png)
+::: 
+
+::::
+
+::: notes
+some text
+:::
+
+
+
 ------------------------------------------------------------------------
 
-## Results - GSEA
+## PCA & Heatmap{.smaller}
 
-::: {style="font-size: 78%;"}
-**Aim**: Investigating hepatic gene set enrichment
 
-|                                                                                                                                                                                               |                                                                                   |
-|:----------------------------------------------:|:----------------------:|
-| \- C11 hepatocytes is a subtype of hepatocytes (1 of 3) - Hepatocytes produces hepatokines (hormone involved in metabolic regulation) - Some therapies try to promote hepatocyte regeneration | \![\](results/GSEA/GSEA_sick_vs_healthy_patients_fasting.png){style="width:100%"} |
+:::: {.columns}
+
+::: {.column width="35%"}
+
+<br>
+
+- item1
+- item2
+- item3
+
 :::
+
+::: {.column width="65%"}
+![](Pictures_for_presentation/heatmap-topN-genes-fasting.png)
+::: 
+
+::::
+
+------------------------------------------------------------------------
+
+## Differential Expression Analysis{.smaller}
+
+:::: {.columns}
+
+::: {.column width="35%"}
+
+<br>
+
+Compare gene expression levels between groups using **DESeq2**
+
+<br>
+
+[Output:]{.underline}
+
+- Global Mean 
+- Fold-change 
+- Adjusted-p-value
+
+:::
+
+::: {.column width="60%"}
+![](Pictures_for_presentation/DEA-fasting.png)
+::: 
+
+::::
+
+
+------------------------------------------------------------------------
+
+## Gene Set Enrichment Analysis{.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="35%"}
+
+<br>
+
+Investigating hepatic gene set enrichment
+
+<br>
+
+- C11 hepatocytes is a subtype of hepatocytes (1 of 3) 
+- Hepatocytes produces hepatokines (hormone involved in metabolic regulation) 
+- Some therapies try to promote hepatocyte regeneration
+
+:::
+
+::: {.column width="65%"}
+
+<br><br>
+
+![](../results/GSEA/GSEA_sick_vs_healthy_patients_fasting.png){width=900}
+::: 
+
+::::
+
 
 ------------------------------------------------------------------------
 
