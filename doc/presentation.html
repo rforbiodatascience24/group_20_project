@@ -369,7 +369,9 @@ Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, and Trine Søgaa
 <p><img data-src="Pictures_for_presentation/data_processing3.png" class="fragment"></p>
 </div>
 <aside class="notes">
-<p>Notes</p>
+<p>We did some data processing in the form of cleaning and augmenting of the data, before using it for analysis.</p>
+<p>The meta data was cleaned by removing duplicate rows and columns and by removing unnecessary columns from the data set. Then the column names were changed to make more sense.</p>
+<p>From the clean data set we removed excluded patients and then by comparing to the count data we only kept the data for patients that were included in both data sets.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -390,7 +392,10 @@ Antoine Andréoletti, Olivier Gaufrès, Amy Surry, Lea Skytthe, and Trine Søgaa
 <p><img data-src="Pictures_for_presentation/data_processing6.png" class="fragment"></p>
 </div>
 <aside class="notes">
-<p>Notes</p>
+<p>The raw count data consists of 31 files, one file per patient. These files were merged together to form one data set including the data for all the patient.</p>
+<p>The cleaned count data was then transformed from the long format to the wide and while doing so we created 2 different data sets, one with the count data and one with the normalised count data.</p>
+<p>The (normalised) count data was then compared to the meta data so we only kept the data for patients that were included in both data sets. Then we removed rows that weren’t different from zero. and added two new columns with the gene IDs and gene symbols related to the transcript IDs in the data set.</p>
+<p>Lastly the column names were changed.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
