@@ -169,7 +169,10 @@ Investigating hepatic gene set enrichment
 
 ## Discussion / Conclusion
 
--   Key points
--   Count_data derived from micro-array
--   Troubles with DESeq2 package and dplyr
--   Key points
+-   Key findings:
+    -   No clear distinction of patients in relation to gene expression.
+    -   Difference for fasting patients - healthy vs sick
+        -   NAFLD patients have altered gene expression compared to normal patients
+        -   Hepatic gene set enrichment change
+-   A bit of troubles with DESeq2 package for tidy workflow
+-   Project workflow designed to facilitate easy continuation and further analysis
