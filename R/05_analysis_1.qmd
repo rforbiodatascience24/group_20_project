@@ -19,7 +19,7 @@ editor: visual
 rm(list=ls())
 
 library("tidyverse")
-library("broom")  # devtools::install_github("tidymodels/broom")
+library("broom")
 library("cowplot")
 library("ggrepel")
 ```
@@ -34,7 +34,7 @@ data_pheno <- read.csv("../data/03_metadata_aug.csv")
 data_counts.total <- read.csv("../data/03_count_data_wide_aug.csv", 
                               check.names = FALSE)
 
-# We want genes as row names, so we convert the tibble to a dataframe and names the rows
+# make matrix of count data
 data_counts <- data_counts.total |>
   select(-gene_id, -gene_symbol, -transcript_ID) |>
   mutate(across(where(is.numeric), as.integer))
@@ -87,6 +87,8 @@ variance_explained <- pca_fit |>
 
 ```{r}
 #| label: 05_applying-pca
+#| message: False
+#| warning: False
 
 coord_pca <- pca_fit |>
   augment(data_pheno) |> # add metadata
@@ -119,7 +121,7 @@ It is hard to split our patients just using a PCA, we will have to use other too
 ```{r}
 #| label: 05_rotation-matrix
 
-# define arrow style for plotting
+# Define arrow style for plotting
 arrow_style <- arrow(
   angle = 20, 
   ends = "first", 
@@ -139,7 +141,7 @@ PC1_sorted <- pca_fit |>
 
 biggest_value_PC1 <- PC1_sorted[10]
 
-# plot rotation matrix
+# Plot rotation matrix
 rotation_pca <- pca_fit |>
   tidy(matrix = "rotation") |>
   pivot_wider(names_from = "PC", 
@@ -171,11 +173,15 @@ rotation_pca
 #### Save Plots
 
 ```{r}
+#| label: 05_save_plot
+#| message: False
+#| warning: False
+
 # Combine the two plots side by side
 combined_plot <- plot_grid(coord_pca, rotation_pca, nrow = 2, align = "v")
 
 combined_plot
 
 # Save the combined plot as PNG
-ggsave("../Pictures_for_presentation/pca_plots_stacked_left.png", plot = combined_plot)
+ggsave("../doc/Pictures_for_presentation/pca_plots_stacked_left.png", plot = combined_plot)
 ```
