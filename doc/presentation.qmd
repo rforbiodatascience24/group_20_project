@@ -77,6 +77,8 @@ From the clean data set we removed excluded patients and then by comparing to th
 ![](Pictures_for_presentation/data_processing5.png){.fragment}
 
 ![](Pictures_for_presentation/data_processing6.png){.fragment}
+
+![](Pictures_for_presentation/data_processing7.png){.fragment}
 :::
 
 ::: notes
