@@ -165,32 +165,19 @@ some text
 
 ------------------------------------------------------------------------
 
-## Differential Expression Analysis{.smaller}
 
-:::: {.columns}
-
-::: {.column width="35%"}
-
-<br>
-
+## Differential Expression Analysis
+::: {style="font-size: 78%;"}
 Compare gene expression levels between groups using **DESeq2**
 
-<br>
+[Output for each gene:]{.underline} Global Mean - Fold-change - Adjusted p-value
 
-[Output:]{.underline}
+::: {style="display: flex; align-items: center; justify-content: center;"}
+![](Pictures_for_presentation/DEA-fasting.png){width="500"}
 
-- Global Mean 
-- Fold-change 
-- Adjusted-p-value
-
+![](Pictures_for_presentation/heatmap-topN-genes-fasting.png){width="400"}
 :::
-
-::: {.column width="60%"}
-![](Pictures_for_presentation/DEA-fasting.png)
-::: 
-
-::::
-
+:::
 
 ------------------------------------------------------------------------
 

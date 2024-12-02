@@ -116,7 +116,7 @@ save_pheatmap_pdf <- function(x, filename, width=7, height=7) {
   dev.off()
 }
 
-save_pheatmap_png <- function(x, filename, width=7, height=7) {
+save_pheatmap_png <- function(x, filename, width=700, height=700) {
   stopifnot(!missing(x))
   stopifnot(!missing(filename))
   png(filename, width=width, height=height)
